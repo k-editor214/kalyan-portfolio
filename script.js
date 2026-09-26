@@ -1,60 +1,57 @@
+const intro=document.getElementById("intro");
+const progress=document.getElementById("introProgress");
+const time=document.getElementById("introTime");
+const pause=document.getElementById("pauseIntro");
+const skip=document.getElementById("skipIntro");
+const started=performance.now();
+let paused=false, pauseAt=0, elapsed=0, finished=false;
 
-const $ = (s, el=document) => el.querySelector(s);
-const $$ = (s, el=document) => [...el.querySelectorAll(s)];
+function finishIntro(){
+ if(finished)return;
+ finished=true;
+ intro.classList.add("leave");
+ intro.style.transition="opacity .8s ease,transform .8s ease";
+ intro.style.opacity="0";
+ intro.style.transform="scale(1.03)";
+ setTimeout(()=>intro.remove(),800);
+ sessionStorage.setItem("kalyan_intro_seen_v5","1");
+}
+function tick(now){
+ if(!finished && !paused){
+   elapsed=Math.min(9,(now-started)/1000);
+   progress.style.width=(elapsed/9*100)+"%";
+   time.textContent="00:"+String(Math.max(0,Math.ceil(9-elapsed))).padStart(2,"0");
+   if(elapsed>=9) finishIntro();
+ }
+ if(!finished) requestAnimationFrame(tick);
+}
+if(sessionStorage.getItem("kalyan_intro_seen_v5")==="1"){intro.remove();}
+else requestAnimationFrame(tick);
 
-function setupNav(){
-  const toggle=$(".mobile-toggle"), nav=$(".nav");
-  if(toggle && nav) toggle.addEventListener("click",()=>nav.classList.toggle("open"));
-}
-function setupReveal(){
-  const items=$$(".reveal");
-  if(!("IntersectionObserver" in window)){items.forEach(x=>x.classList.add("visible"));return}
-  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("visible");io.unobserve(e.target)}}),{threshold:.12});
-  items.forEach(x=>io.observe(x));
-}
-function setupIntro(){
-  const intro=$("#intro");
-  if(!intro) return;
-  const seen=sessionStorage.getItem("kalyan_intro_seen_v4");
-  if(seen==="1"){intro.classList.add("hidden");return;}
-  const first=$("#introFirst"), second=$("#introVideo"), third=$("#introTransition");
-  const play=$("#playIntro"), skip=$("#skipIntro"), skip2=$("#skipIntro2");
-  const vid=$("#introVid"), progress=$("#introProgress");
-  let timer;
-  function enterHome(){
-    sessionStorage.setItem("kalyan_intro_seen_v4","1");
-    clearInterval(timer);
-    if(vid) {vid.pause();vid.currentTime=0}
-    third.classList.add("active");
-    setTimeout(()=>{intro.classList.add("hidden");window.scrollTo(0,0)},1200);
-  }
-  function startVideo(){
-    first.classList.remove("active");second.classList.add("active");
-    if(vid){
-      vid.currentTime=0;
-      const p=vid.play();
-      if(p) p.catch(()=>{});
-      timer=setInterval(()=>{
-        const d=vid.duration||9;
-        progress.style.width=Math.min(100,(vid.currentTime/d)*100)+"%";
-      },80);
-      vid.onended=enterHome;
-      // Hard 9 second ceiling if the supplied file is longer.
-      setTimeout(()=>{if(!intro.classList.contains("hidden") && second.classList.contains("active")) enterHome()},9300);
-    } else setTimeout(enterHome,9000);
-  }
-  play?.addEventListener("click",startVideo);
-  skip?.addEventListener("click",enterHome);
-  skip2?.addEventListener("click",enterHome);
-}
-document.addEventListener("DOMContentLoaded",()=>{setupNav();setupReveal();setupIntro()});
+pause.onclick=()=>{
+ paused=!paused;
+ if(paused){pause.textContent="PLAY";pauseAt=performance.now();}
+ else {pause.textContent="PAUSE";requestAnimationFrame(tick);}
+};
+skip.onclick=finishIntro;
 
-// Expand team cards in place on tap/click.
-document.querySelectorAll('.team-card').forEach(card => {
-  const toggle = () => {
-    document.querySelectorAll('.team-card.open').forEach(other => { if (other !== card) other.classList.remove('open'); });
-    card.classList.toggle('open');
-  };
-  card.addEventListener('click', toggle);
-  card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+document.querySelectorAll(".team-card").forEach(card=>{
+ card.addEventListener("click",()=>{
+   document.querySelectorAll(".team-card").forEach(c=>c!==card&&c.classList.remove("open"));
+   card.classList.toggle("open");
+ });
 });
+
+const sr=document.getElementById("codedShowreel"), counter=document.getElementById("srCounter");
+let srStart=null,srRun=true;
+function showTick(t){
+ if(!srRun)return;
+ if(srStart===null)srStart=t;
+ const sec=Math.floor(((t-srStart)/1000)%18);
+ counter.textContent=String(sec).padStart(2,"0");
+ requestAnimationFrame(showTick);
+}
+requestAnimationFrame(showTick);
+document.getElementById("replayShow").onclick=()=>{
+ srStart=null; srRun=true; requestAnimationFrame(showTick);
+};
