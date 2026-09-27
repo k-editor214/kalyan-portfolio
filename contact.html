@@ -47,7 +47,10 @@
   </a>
 
 
-  <button class="menu-toggle">
+  <button
+    class="menu-toggle"
+    aria-label="Open menu"
+  >
     ☰
   </button>
 
@@ -114,6 +117,8 @@
   <section class="section container contact-grid">
 
 
+    <!-- CONTACT DETAILS -->
+
     <div>
 
       <p>
@@ -126,12 +131,16 @@
       <div class="contact-lines">
 
 
+        <!-- EMAIL -->
+
         <a
           href="mailto:kalyanjpc84@gmail.com"
         >
           kalyanjpc84@gmail.com
         </a>
 
+
+        <!-- PHONE -->
 
         <a
           href="tel:+918686140222"
@@ -140,8 +149,26 @@
         </a>
 
 
-        <a href="#">
-          Instagram / Portfolio
+        <!-- INSTAGRAM -->
+
+        <a
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+          id="instagramLink"
+        >
+          Instagram
+        </a>
+
+
+        <!-- PORTFOLIO -->
+
+        <a
+          href="https://k-editor214.github.io/kalyan-portfolio/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Portfolio
         </a>
 
 
@@ -149,6 +176,8 @@
 
     </div>
 
+
+    <!-- CONTACT FORM -->
 
     <form
       class="contact-form"
@@ -164,6 +193,7 @@
           required
           name="name"
           type="text"
+          placeholder="Your name"
         >
 
       </label>
@@ -177,6 +207,7 @@
           required
           type="email"
           name="email"
+          placeholder="your@email.com"
         >
 
       </label>
@@ -213,6 +244,10 @@
           </option>
 
           <option>
+            Product Promotion
+          </option>
+
+          <option>
             Other
           </option>
 
@@ -229,6 +264,7 @@
           required
           name="message"
           rows="6"
+          placeholder="Tell me about your project..."
         ></textarea>
 
       </label>
