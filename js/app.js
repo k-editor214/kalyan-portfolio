@@ -1,14 +1,145 @@
-const demoProjects=[
- {title:'Juveniles',category:'shortfilms',type:'Short Film',ratio:'landscape',src:'assets/videos/juveniles.mp4',poster:''},
- {title:'Automobile Advertisement',category:'ads',type:'Ad / Advertisement',ratio:'landscape',src:'assets/videos/automobile-ad.mp4',poster:''},
- {title:'Travel Reel',category:'reels',type:'Instagram Reel',ratio:'vertical',src:'assets/videos/travel-reel.mp4',poster:''},
- {title:'Wedding Invitation',category:'reels',type:'Instagram Reel',ratio:'vertical',src:'assets/videos/wedding-invitation.mp4',poster:''},
- {title:'Company Promotion',category:'company',type:'Corporate / Company',ratio:'landscape',src:'assets/videos/company-promo.mp4',poster:''}
+const VIDEO_LIBRARY = {
+  "reels": {label:"Reels", path:"assets/videos/reels/", prefix:"reel-", count:4, ratio:"vertical"},
+  "advertisements": {label:"Advertisements", path:"assets/videos/advertisements/", prefix:"advertisement-", count:4, ratio:"landscape"},
+  "company-designs": {label:"Company Designs", path:"assets/videos/company-designs/", prefix:"company-design-", count:4, ratio:"landscape"},
+  "short-films": {label:"Short Films", path:"assets/videos/short-films/", prefix:"short-film-", count:4, ratio:"landscape"},
+  "wedding-videos": {label:"Wedding Videos", path:"assets/videos/wedding-videos/", prefix:"wedding-video-", count:4, ratio:"landscape"},
+  "story": {label:"Story", path:"assets/videos/story/", prefix:"story-", count:4, ratio:"landscape"},
+  "product-promotions": {label:"Product Promotions", path:"assets/videos/product-promotions/", prefix:"product-promotion-", count:4, ratio:"landscape"},
+  "color-grading": {label:"Color Grading / DI", path:"assets/videos/color-grading/", prefix:"color-grading-", count:4, ratio:"landscape"}
+};
+
+const FEATURED_VIDEOS = [
+  {title:"Reel 01",category:"Reels",key:"reels",file:"reel-1.mp4",ratio:"vertical"},
+  {title:"Advertisement 01",category:"Advertisements",key:"advertisements",file:"advertisement-1.mp4",ratio:"landscape"},
+  {title:"Wedding Video 01",category:"Wedding Videos",key:"wedding-videos",file:"wedding-video-1.mp4",ratio:"landscape"},
+  {title:"Color Grading / DI 01",category:"Color Grading / DI",key:"color-grading",file:"color-grading-1.mp4",ratio:"landscape"},
+  {title:"Short Film 01",category:"Short Films",key:"short-films",file:"short-film-1.mp4",ratio:"landscape"},
+  {title:"Product Promotion 01",category:"Product Promotions",key:"product-promotions",file:"product-promotion-1.mp4",ratio:"landscape"}
 ];
-function nav(){const btn=document.querySelector('.menu-btn'), links=document.querySelector('.navlinks');if(btn)btn.onclick=()=>links.classList.toggle('open')}
-function teamModal(){const modal=document.querySelector('#teamModal');if(!modal)return;document.querySelectorAll('[data-team]').forEach(c=>c.onclick=()=>{modal.querySelector('img').src=c.dataset.photo;modal.querySelector('.modal-name').textContent=c.dataset.name;modal.querySelector('.modal-role').textContent=c.dataset.role;modal.querySelector('.modal-description').textContent=c.dataset.description;modal.classList.add('open');document.body.style.overflow='hidden'});modal.addEventListener('click',e=>{if(e.target===modal||e.target.closest('.modal-close')){modal.classList.remove('open');document.body.style.overflow=''}})}
-function renderWork(filter='all'){const grid=document.querySelector('#workGrid');if(!grid)return;let projects=[...demoProjects];try{const saved=JSON.parse(localStorage.getItem('kalyanProjects')||'[]');projects=saved.length?saved:projects}catch(e){}grid.innerHTML='';const shown=projects.filter(p=>filter==='all'||p.category===filter);if(!shown.length){grid.innerHTML='<div class="card-empty">No projects in this category yet. Add videos from the client dashboard.</div>';return}shown.forEach(p=>{const card=document.createElement('article');card.className='work-card '+(p.ratio==='landscape'?'wide':'');card.dataset.category=p.category;card.innerHTML=`<div class="work-media ${p.ratio}">${p.src?`<video controls preload="metadata" playsinline ${p.poster?`poster="${p.poster}"`:''}><source src="${p.src}" type="video/mp4"></video>`:`<div style="height:100%;display:grid;place-items:center;color:#aaa">VIDEO</div>`}</div><div class="work-info"><div class="work-meta"><span>${p.type}</span><span>${p.ratio==='vertical'?'9:16':p.ratio==='square'?'1:1':'16:9'}</span></div><h3>${p.title}</h3></div>`;grid.appendChild(card)})}
-function filters(){document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderWork(b.dataset.filter)})}
-function showreel(){const c=document.querySelector('#reelCanvas');if(!c)return;const ctx=c.getContext('2d');let start=performance.now();const scenes=[['KALYAN','CHITTETI','VISUAL STORYTELLER'],['EDIT.','GRADE.','CREATE.'],['VIDEO','EDITOR','COLORIST / DI ARTIST'],['FRAME.','LIGHT.','MOTION / STORY / SOUND'],['VISUAL','STORIES.','THAT WORK.']];function resize(){const r=c.getBoundingClientRect(),d=devicePixelRatio||1;c.width=r.width*d;c.height=r.height*d}resize();addEventListener('resize',resize);function draw(now){const t=Math.min((now-start)/1000,20),w=c.clientWidth,h=c.clientHeight,d=devicePixelRatio||1;ctx.setTransform(d,0,0,d,0,0);const g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,'#292929');g.addColorStop(.55,'#050505');g.addColorStop(1,'#242424');ctx.fillStyle=g;ctx.fillRect(0,0,w,h);for(let i=0;i<12;i++){let x=((i*180+t*35)%(w+220))-110;ctx.fillStyle='rgba(255,255,255,.035)';ctx.fillRect(x,0,80,h)}ctx.strokeStyle='rgba(255,255,255,.08)';for(let y=h*.72;y<h;y+=24){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}const s=scenes[Math.min(4,Math.floor(t/4))],local=(t%4)/4,a=Math.min(1,local/.18,(1-local)/.18);ctx.globalAlpha=a;ctx.fillStyle='#fff';ctx.font=`800 ${Math.max(40,w*.075)}px Anton`;ctx.fillText(s[0],w*.07,h*.43);ctx.fillStyle='#ddd';ctx.font=`800 ${Math.max(28,w*.052)}px Anton`;ctx.fillText(s[1],w*.07,h*.43+Math.max(48,w*.072));ctx.fillStyle='#999';ctx.font='12px DM Mono';ctx.fillText(s[2],w*.07,h*.43+Math.max(82,w*.11));ctx.globalAlpha=1;ctx.fillStyle='#aaa';ctx.fillText('KC  |  KALYAN CHITTETI',w*.04,h*.08);ctx.fillText(`00:${String(Math.floor(t)).padStart(2,'0')} / 00:20`,w*.83,h*.08);ctx.fillStyle='#fff';ctx.fillRect(w*.05,h*.92,w*.9*(t/20),2);if(t<20)requestAnimationFrame(draw)}requestAnimationFrame(draw)}
-function admin(){const login=document.querySelector('#loginForm');const panel=document.querySelector('#adminPanel');if(!login||!panel)return;login.onsubmit=e=>{e.preventDefault();const u=document.querySelector('#adminUser').value,p=document.querySelector('#adminPass').value;if(u==='admin'&&p==='kalyan123'){document.querySelector('.login').classList.add('hidden');panel.classList.remove('hidden')}else alert('Demo login: admin / kalyan123')};const add=document.querySelector('#addProject');add.onclick=()=>{const p={title:document.querySelector('#pTitle').value,category:document.querySelector('#pCategory').value,type:document.querySelector('#pType').value,ratio:document.querySelector('#pCategory').value==='reels'?'vertical':'landscape',src:document.querySelector('#pSrc').value};const arr=JSON.parse(localStorage.getItem('kalyanProjects')||'[]');arr.push(p);localStorage.setItem('kalyanProjects',JSON.stringify(arr));alert('Project saved in this browser. For real client uploads, connect this dashboard to a server/database.');document.querySelector('#pTitle').value='';document.querySelector('#pSrc').value=''} }
-nav();teamModal();filters();renderWork();showreel();admin();
+
+const TEAM = [
+  {name:"Kalyan Chitteti",role:"Video Editor • Colorist • DI Artist",image:"assets/images/profile/kalyan-profile.jpg",bio:"5+ years of experience and 100+ editing projects across reels, advertisements, wedding films, short films, promotional content and post-production."},
+  {name:"Team Member 01",role:"Cinematographer / Director",image:"assets/images/team/team-1.jpg",bio:"Add your teammate's real name, role and profile description here."},
+  {name:"Team Member 02",role:"Photographer / Editor",image:"assets/images/team/team-2.jpg",bio:"Add your teammate's real name, role and profile description here."},
+  {name:"Team Member 03",role:"Creative / Production",image:"assets/images/team/team-3.jpg",bio:"Add your teammate's real name, role and profile description here."}
+];
+
+const TOOLS = [
+  ["DR","DaVinci Resolve","Editing • Color Grading • DI"],
+  ["PR","Adobe Premiere Pro","Professional video editing"],
+  ["AE","After Effects","Motion graphics • VFX"],
+  ["PS","Photoshop","Image • Poster • Creative design"],
+  ["CA","Canva","Social creatives • Quick design"],
+  ["FG","Figma","UI • Visual systems • Layout"],
+  ["EX","Excel","Data • Reporting • Workflow"],
+  ["PB","Power BI","Dashboards • Data visualization"]
+];
+
+function setupNav(){
+  const toggle=document.querySelector(".menu-toggle"), nav=document.querySelector(".nav");
+  if(toggle&&nav) toggle.addEventListener("click",()=>nav.classList.toggle("open"));
+}
+
+function videoPath(item){return VIDEO_LIBRARY[item.key].path+item.file}
+
+function initFeatured(){
+  const grid=document.querySelector("[data-featured-work]");
+  if(!grid)return;
+  grid.innerHTML=FEATURED_VIDEOS.map((v,i)=>`
+    <article class="featured-card ${v.ratio==="vertical"?"is-vertical":""}" data-index="${i}">
+      <div class="featured-media">
+        <video muted playsinline preload="metadata" src="${videoPath(v)}"></video>
+        <div class="featured-fallback"><span>${v.category}</span><strong>${v.title}</strong><small>Upload the exact MP4 filename to activate this card.</small></div>
+        <span class="video-status">OPEN</span>
+      </div>
+      <div class="featured-meta"><span>${v.category}</span><h3>${v.title}</h3></div>
+    </article>`).join("");
+  grid.querySelectorAll("video").forEach(v=>{
+    v.addEventListener("loadeddata",()=>v.closest(".featured-media").classList.add("has-video"));
+    v.addEventListener("mouseenter",()=>v.play().catch(()=>{}));
+    v.addEventListener("mouseleave",()=>{v.pause();v.currentTime=0});
+  });
+  grid.querySelectorAll(".featured-card").forEach(card=>card.addEventListener("click",()=>{
+    const v=FEATURED_VIDEOS[Number(card.dataset.index)];
+    openVideo(v.title,v.category,videoPath(v),v.ratio);
+  }));
+}
+
+function openVideo(title,category,src,ratio){
+  let modal=document.getElementById("videoModal");
+  if(!modal){
+    modal=document.createElement("div");
+    modal.id="videoModal";modal.className="modal";
+    modal.innerHTML=`<div class="modal-backdrop"></div><div class="modal-panel video-modal-panel"><button class="modal-close">×</button><p class="eyebrow"></p><h2></h2><video controls playsinline></video></div>`;
+    document.body.appendChild(modal);
+    const close=()=>{modal.classList.remove("open");const p=modal.querySelector("video");p.pause();p.removeAttribute("src");p.load()};
+    modal.querySelector(".modal-backdrop").onclick=close;modal.querySelector(".modal-close").onclick=close;
+  }
+  modal.querySelector(".eyebrow").textContent=category;
+  modal.querySelector("h2").textContent=title;
+  const player=modal.querySelector("video");player.src=src;modal.classList.add("open");
+  player.play().catch(()=>{});
+}
+
+function initWork(){
+  const grid=document.getElementById("workGrid"), filters=document.getElementById("filters");
+  if(!grid||!filters)return;
+  const cats=[["all","All Work"],...Object.entries(VIDEO_LIBRARY).map(([k,v])=>[k,v.label])];
+  filters.innerHTML=cats.map(([k,l],i)=>`<button class="filter-btn ${i===0?"active":""}" data-filter="${k}">${l}</button>`).join("");
+  function render(filter="all"){
+    const items=[];
+    Object.entries(VIDEO_LIBRARY).forEach(([key,c])=>{
+      if(filter!=="all"&&filter!==key)return;
+      for(let i=1;i<=c.count;i++)items.push({key,file:`${c.prefix}${i}.mp4`,title:`${c.label} ${String(i).padStart(2,"0")}`,category:c.label,ratio:c.ratio});
+    });
+    grid.innerHTML=items.map((v,i)=>`
+      <article class="work-card ${v.ratio==="vertical"?"vertical":""}" data-work="${i}">
+        <div class="work-media"><video muted playsinline preload="metadata" src="${VIDEO_LIBRARY[v.key].path}${v.file}"></video></div>
+        <div class="work-meta"><span>${v.category}</span><h3>${v.title}</h3></div>
+      </article>`).join("");
+    grid.querySelectorAll("video").forEach(v=>v.addEventListener("loadeddata",()=>v.closest(".work-media").classList.add("has-video")));
+    grid.querySelectorAll(".work-card").forEach((card,i)=>card.onclick=()=>openVideo(items[i].title,items[i].category,VIDEO_LIBRARY[items[i].key].path+items[i].file,items[i].ratio));
+  }
+  filters.addEventListener("click",e=>{if(!e.target.matches(".filter-btn"))return;filters.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));e.target.classList.add("active");render(e.target.dataset.filter)});
+  const query=new URLSearchParams(location.search).get("category");render(query&&VIDEO_LIBRARY[query]?query:"all");
+}
+
+function initTeam(){
+  const grid=document.getElementById("teamGrid");if(!grid)return;
+  grid.innerHTML=TEAM.map((m,i)=>`<article class="team-card" data-team="${i}"><div class="team-photo"><img src="${m.image}" alt="${m.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="image-placeholder"><span>TEAM PHOTO ${String(i+1).padStart(2,"0")}</span><small>Upload the image shown in the README.</small></div></div><div class="team-info"><span>${m.role}</span><h3>${m.name}</h3></div></article>`).join("");
+  const modal=document.getElementById("teamModal");if(!modal)return;
+  grid.querySelectorAll(".team-card").forEach(card=>card.onclick=()=>{
+    const m=TEAM[Number(card.dataset.team)];
+    modal.querySelector("#modalTeamImage").src=m.image;modal.querySelector("#modalTeamRole").textContent=m.role;modal.querySelector("#modalTeamName").textContent=m.name;modal.querySelector("#modalTeamBio").textContent=m.bio;modal.classList.add("open");
+  });
+  modal.querySelectorAll("[data-close-modal]").forEach(x=>x.onclick=()=>modal.classList.remove("open"));
+}
+
+function initTools(){
+  const grid=document.getElementById("toolsGrid");if(!grid)return;
+  grid.innerHTML=TOOLS.map(t=>`<article class="tool-card"><div class="tool-icon">${t[0]}</div><h3>${t[1]}</h3><p>${t[2]}</p></article>`).join("");
+}
+
+function drawShowreel(canvas){
+  if(!canvas)return;
+  const ctx=canvas.getContext("2d");let t=0;
+  function frame(){
+    t+=.012;const w=canvas.width,h=canvas.height;
+    const g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,"#171412");g.addColorStop(.48,"#6b4033");g.addColorStop(1,"#e18c6d");ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+    for(let i=0;i<16;i++){let x=(Math.sin(t*.65+i*1.7)*.5+.5)*w,y=(Math.cos(t*.42+i)*.5+.5)*h,r=25+22*Math.sin(t+i);ctx.fillStyle=`rgba(255,235,215,${.025+.025*Math.sin(t+i)})`;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()}
+    ctx.fillStyle="rgba(0,0,0,.48)";ctx.fillRect(0,h*.69,w,h*.31);
+    ctx.fillStyle="#fff8f1";ctx.font="500 78px 'Cormorant Garamond', serif";ctx.fillText("KALYAN CHITTETI",55,h*.84);
+    ctx.font="600 20px 'DM Sans', sans-serif";ctx.fillStyle="#f3b19a";ctx.fillText("EDIT  •  COLOR  •  DI  •  MOTION",60,h*.91);
+    requestAnimationFrame(frame);
+  }frame();
+}
+
+function handleContact(e){e.preventDefault();const m=document.getElementById("contactMessage");if(m)m.textContent="Thanks — your enquiry is ready. Connect this form to your email/backend before launch.";return false}
+function demoAdmin(e){e.preventDefault();document.querySelector(".admin-login").style.display="none";document.getElementById("adminPanel").style.display="block";return false}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  setupNav();initFeatured();initWork();initTeam();initTools();
+  drawShowreel(document.getElementById("homeShowreel"));
+  drawShowreel(document.getElementById("fullShowreel"));
+});
