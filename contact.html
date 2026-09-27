@@ -1,309 +1,63 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
-
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <title>Contact — Kalyan Chitteti</title>
-
-  <link
-    rel="preconnect"
-    href="https://fonts.googleapis.com"
-  >
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@400;500;600&display=swap"
-    rel="stylesheet"
-  >
-
-  <link
-    rel="stylesheet"
-    href="css/style.css"
-  >
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Kalyan Chitteti — Video Editor, Colorist and DI Artist.">
+<title>Contact — Kalyan Chitteti</title>
+<link rel="stylesheet" href="css/style.css">
 </head>
-
-
 <body>
 
-
 <header class="site-header">
-
-  <a
-    class="brand"
-    href="index.html"
-  >
-
-    <span>K</span>
-
-    KALYAN CHITTETI
-
+  <a class="brand" href="index.html">
+    <span class="brand-mark">K</span>
+    <span class="brand-text">KALYAN CHITTETI</span>
   </a>
-
-
-  <button
-    class="menu-toggle"
-    aria-label="Open menu"
-  >
-    ☰
-  </button>
-
-
-  <nav class="nav">
-
-    <a href="index.html">
-      Home
-    </a>
-
-    <a href="showreel.html">
-      Showreel
-    </a>
-
-    <a href="work.html">
-      Work
-    </a>
-
-    <a href="projects.html">
-      Projects
-    </a>
-
-    <a href="team.html">
-      Team
-    </a>
-
-    <a href="tools.html">
-      Tools
-    </a>
-
-    <a href="about.html">
-      About
-    </a>
-
-    <a
-      class="active"
-      href="contact.html"
-    >
-      Contact
-    </a>
-
+  <button class="menu-toggle" type="button" aria-label="Open menu">☰</button>
+  <nav class="main-nav">
+    <a href="index.html" data-page="home">Home</a>
+    <a href="showreel.html" data-page="showreel">Showreel</a>
+    <a href="work.html" data-page="work">Work</a>
+    <a href="projects.html" data-page="projects">Projects</a>
+    <a href="team.html" data-page="team">Team</a>
+    <a href="tools.html" data-page="tools">Tools</a>
+    <a href="about.html" data-page="about">About</a>
+    <a href="contact.html" data-page="contact">Contact</a>
   </nav>
-
 </header>
-
 
 <main>
 
-
-  <section class="page-hero container">
-
-    <p class="eyebrow">
-      CONTACT
-    </p>
-
-    <h1>
-      Let's make<br>
-      <em>something memorable.</em>
-    </h1>
-
-  </section>
-
-
-  <section class="section container contact-grid">
-
-
-    <!-- CONTACT DETAILS -->
-
-    <div>
-
-      <p>
-        For editing, color grading, DI,
-        reels, advertisements, wedding films
-        or post-production collaborations.
-      </p>
-
-
-      <div class="contact-lines">
-
-
-        <!-- EMAIL -->
-
-        <a
-          href="mailto:kalyanjpc84@gmail.com"
-        >
-          kalyanjpc84@gmail.com
-        </a>
-
-
-        <!-- PHONE -->
-
-        <a
-          href="tel:+918686140222"
-        >
-          +91 86861 40222
-        </a>
-
-
-        <!-- INSTAGRAM -->
-
-        <a
-          href="#"
-          target="_blank"
-          rel="noopener noreferrer"
-          id="instagramLink"
-        >
-          Instagram
-        </a>
-
-
-        <!-- PORTFOLIO -->
-
-        <a
-          href="https://k-editor214.github.io/kalyan-portfolio/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Portfolio
-        </a>
-
-
-      </div>
-
+<section class="container page-head"><div><div class="eyebrow">Contact / Collaboration</div><h1>Let's make<br><em>it move.</em></h1><p>For editing, color grading, DI, reels, advertisements, wedding films, short films or brand content, get in touch.</p></div></section>
+<section class="section container" style="padding-top:20px">
+  <div class="contact-grid">
+    <div class="contact-panel">
+      <div class="contact-item"><b>EMAIL</b><a href="mailto:kalyanjpc84@gmail.com">kalyanjpc84@gmail.com</a></div>
+      <div class="contact-item"><b>PHONE</b><a href="tel:+918686140222">+91 86861 40222</a></div>
+      <div class="contact-item"><b>PORTFOLIO</b><a href="https://k-editor214.github.io/kalyan-portfolio/">k-editor214.github.io/kalyan-portfolio</a></div>
+      <div class="contact-item"><b>INSTAGRAM</b><span>Instagram link will be added when you provide the URL.</span></div>
     </div>
-
-
-    <!-- CONTACT FORM -->
-
-    <form
-      class="contact-form"
-      onsubmit="return handleContact(event)"
-    >
-
-
-      <label>
-
-        Name
-
-        <input
-          required
-          name="name"
-          type="text"
-          placeholder="Your name"
-        >
-
-      </label>
-
-
-      <label>
-
-        Email
-
-        <input
-          required
-          type="email"
-          name="email"
-          placeholder="your@email.com"
-        >
-
-      </label>
-
-
-      <label>
-
-        Project type
-
-        <select name="type">
-
-          <option>
-            Video Editing
-          </option>
-
-          <option>
-            Color Grading / DI
-          </option>
-
-          <option>
-            Advertisement
-          </option>
-
-          <option>
-            Wedding Film
-          </option>
-
-          <option>
-            Short Film
-          </option>
-
-          <option>
-            Reels
-          </option>
-
-          <option>
-            Product Promotion
-          </option>
-
-          <option>
-            Other
-          </option>
-
-        </select>
-
-      </label>
-
-
-      <label>
-
-        Message
-
-        <textarea
-          required
-          name="message"
-          rows="6"
-          placeholder="Tell me about your project..."
-        ></textarea>
-
-      </label>
-
-
-      <button
-        class="btn btn-primary"
-        type="submit"
-      >
-        Send Enquiry
-      </button>
-
-
-      <p id="contactMessage"></p>
-
-
-    </form>
-
-
-  </section>
-
+    <div class="contact-panel">
+      <h2>Start a project.</h2>
+      <form class="contact-form" id="contactForm">
+        <input id="contactName" required placeholder="Your name">
+        <input id="contactEmail" type="email" required placeholder="Your email">
+        <textarea id="contactMessage" required placeholder="Tell me about your project..."></textarea>
+        <button type="submit">Send Message →</button>
+      </form>
+    </div>
+  </div>
+</section>
 
 </main>
 
-
-<footer class="footer">
-
-  <div class="container">
-
-    © 2026 Kalyan Chitteti
-
-  </div>
-
+<footer class="footer container">
+  <span>© <span class="year"></span> Kalyan Chitteti</span>
+  <span>Video Editor · Colorist · DI Artist</span>
+  <span>India</span>
 </footer>
 
-
 <script src="js/app.js"></script>
-
-
 </body>
-
 </html>

@@ -1,6 +1,60 @@
-<!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Work — Kalyan Chitteti</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="css/style.css"></head>
-<body><header class="site-header"><a class="brand" href="index.html"><span>K</span>KALYAN CHITTETI</a><button class="menu-toggle">☰</button><nav class="nav"><a href="index.html">Home</a><a href="showreel.html">Showreel</a><a class="active" href="work.html">Work</a><a href="projects.html">Projects</a><a href="team.html">Team</a><a href="tools.html">Tools</a><a href="about.html">About</a><a href="contact.html">Contact</a></nav></header>
-<main><section class="page-hero container"><p class="eyebrow">WORK</p><h1>Selected <em>frames.</em></h1><p>Browse the full library. Upload your videos using the exact filenames listed in the README.</p></section>
-<section class="section container"><div class="filter-bar" id="filters"></div><div class="work-grid" id="workGrid"></div></section></main>
-<footer class="footer"><div class="container">© 2026 Kalyan Chitteti</div></footer><script src="js/app.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Kalyan Chitteti — Video Editor, Colorist and DI Artist.">
+<title>Work — Kalyan Chitteti</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <span class="brand-mark">K</span>
+    <span class="brand-text">KALYAN CHITTETI</span>
+  </a>
+  <button class="menu-toggle" type="button" aria-label="Open menu">☰</button>
+  <nav class="main-nav">
+    <a href="index.html" data-page="home">Home</a>
+    <a href="showreel.html" data-page="showreel">Showreel</a>
+    <a href="work.html" data-page="work">Work</a>
+    <a href="projects.html" data-page="projects">Projects</a>
+    <a href="team.html" data-page="team">Team</a>
+    <a href="tools.html" data-page="tools">Tools</a>
+    <a href="about.html" data-page="about">About</a>
+    <a href="contact.html" data-page="contact">Contact</a>
+  </nav>
+</header>
+
+<main>
+
+<section class="container page-head">
+  <div><div class="eyebrow">Work Library</div><h1>Selected Work.</h1><p>Only videos that actually exist in your GitHub folders are shown. Upload one, two, ten or fifty — the page adapts automatically.</p></div>
+</section>
+<section class="container section" style="padding-top:20px">
+  <div class="video-filters">
+    <button class="filter active" data-video-filter="all">All</button>
+    <button class="filter" data-video-filter="reels">Reels</button>
+    <button class="filter" data-video-filter="advertisements">Advertisements</button>
+    <button class="filter" data-video-filter="company-designs">Company Designs</button>
+    <button class="filter" data-video-filter="short-films">Short Films</button>
+    <button class="filter" data-video-filter="wedding-videos">Wedding Videos</button>
+    <button class="filter" data-video-filter="story">Story</button>
+    <button class="filter" data-video-filter="product-promotions">Product Promotions</button>
+    <button class="filter" data-video-filter="color-grading">Color Grading / DI</button>
+  </div>
+  <div id="videoLibrary" class="video-library"></div>
+</section>
+
+</main>
+
+<footer class="footer container">
+  <span>© <span class="year"></span> Kalyan Chitteti</span>
+  <span>Video Editor · Colorist · DI Artist</span>
+  <span>India</span>
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>
