@@ -3,19 +3,14 @@
    DYNAMIC VIDEO LIBRARY
    ========================================================= */
 
-/* =========================
-   VIDEO CATEGORIES
-========================= */
-
 const VIDEO_LIBRARY = {
-
-  "reels": {
+  reels: {
     label: "Reels",
     path: "assets/videos/reels/",
     ratio: "vertical"
   },
 
-  "advertisements": {
+  advertisements: {
     label: "Advertisements",
     path: "assets/videos/advertisements/",
     ratio: "landscape"
@@ -39,7 +34,7 @@ const VIDEO_LIBRARY = {
     ratio: "landscape"
   },
 
-  "story": {
+  story: {
     label: "Story",
     path: "assets/videos/story/",
     ratio: "landscape"
@@ -56,27 +51,35 @@ const VIDEO_LIBRARY = {
     path: "assets/videos/color-grading/",
     ratio: "landscape"
   }
-
 };
 
 
-/* =========================
-   DYNAMIC VIDEO FILES
-========================= */
-
-let VIDEO_FILES = {};
-
-
-/*
-   GitHub repository information.
-   The website checks the repository and
-   finds every .mp4 file that actually exists.
-*/
+/* =========================================================
+   GITHUB REPOSITORY
+   ========================================================= */
 
 const GITHUB_OWNER = "k-editor214";
 const GITHUB_REPO = "kalyan-portfolio";
 const GITHUB_BRANCH = "main";
 
+let VIDEO_FILES = {};
+
+
+/* =========================================================
+   NATURAL SORT
+   ========================================================= */
+
+function naturalSort(a, b) {
+  return a.localeCompare(b, undefined, {
+    numeric: true,
+    sensitivity: "base"
+  });
+}
+
+
+/* =========================================================
+   LOAD ONLY REAL MP4 FILES
+   ========================================================= */
 
 async function loadVideoFiles() {
 
@@ -96,15 +99,14 @@ async function loadVideoFiles() {
     });
 
     if (!response.ok) {
-      throw new Error("GitHub API request failed");
+      throw new Error("GitHub video list could not be loaded.");
     }
 
     const data = await response.json();
 
     if (!data.tree) {
-      throw new Error("GitHub tree not found");
+      throw new Error("GitHub tree not available.");
     }
-
 
     data.tree.forEach(item => {
 
@@ -116,28 +118,21 @@ async function loadVideoFiles() {
         return;
       }
 
-
       Object.entries(VIDEO_LIBRARY).forEach(
         ([key, category]) => {
 
-          const folder =
-            category.path;
+          if (!path.startsWith(category.path)) {
+            return;
+          }
 
-          if (path.startsWith(folder)) {
+          const filename =
+            path.substring(category.path.length);
 
-            const filename =
-              path.substring(folder.length);
-
-            if (
-              filename &&
-              !filename.startsWith(".") &&
-              filename.toLowerCase().endsWith(".mp4")
-            ) {
-
-              VIDEO_FILES[key].push(filename);
-
-            }
-
+          if (
+            filename &&
+            filename.toLowerCase().endsWith(".mp4")
+          ) {
+            VIDEO_FILES[key].push(filename);
           }
 
         }
@@ -146,32 +141,22 @@ async function loadVideoFiles() {
     });
 
 
-    /*
-      Sort files naturally:
-      reel-1.mp4
-      reel-2.mp4
-      reel-10.mp4
-    */
-
     Object.keys(VIDEO_FILES).forEach(key => {
 
-      VIDEO_FILES[key].sort(
-        naturalSort
-      );
+      VIDEO_FILES[key].sort(naturalSort);
 
     });
 
 
     console.log(
-      "Dynamic video library loaded:",
+      "Kalyan video library:",
       VIDEO_FILES
     );
-
 
   } catch (error) {
 
     console.error(
-      "Could not load GitHub video library:",
+      "Video library error:",
       error
     );
 
@@ -180,111 +165,158 @@ async function loadVideoFiles() {
 }
 
 
-/* =========================
-   NATURAL SORT
-========================= */
+/* =========================================================
+   VIDEO TITLE
+   ========================================================= */
 
-function naturalSort(a, b) {
+function createVideoTitle(category, index) {
 
-  return a.localeCompare(
-    b,
-    undefined,
-    {
-      numeric: true,
-      sensitivity: "base"
-    }
-  );
+  return `${category.label} ${String(index + 1).padStart(2, "0")}`;
 
 }
 
 
-/* =========================
-   CREATE VIDEO TITLE
-========================= */
-
-function createVideoTitle(
-  category,
-  filename,
-  index
-) {
-
-  const number =
-    String(index + 1).padStart(2, "0");
-
-  return `${category.label} ${number}`;
-
-}
-
-
-/* =========================
-   BUILD VIDEO OBJECT
-========================= */
+/* =========================================================
+   BUILD REAL VIDEO ITEMS
+   ========================================================= */
 
 function buildVideoItems() {
 
   const items = [];
 
-
   Object.entries(VIDEO_LIBRARY).forEach(
     ([key, category]) => {
 
-      const files =
-        VIDEO_FILES[key] || [];
+      const files = VIDEO_FILES[key] || [];
 
+      files.forEach((file, index) => {
 
-      files.forEach(
-        (file, index) => {
+        items.push({
 
-          items.push({
+          key: key,
 
-            key: key,
+          file: file,
 
-            file: file,
+          title: createVideoTitle(
+            category,
+            index
+          ),
 
-            title:
-              createVideoTitle(
-                category,
-                file,
-                index
-              ),
+          category: category.label,
 
-            category:
-              category.label,
+          ratio: category.ratio
 
-            ratio:
-              category.ratio
+        });
 
-          });
-
-        }
-      );
+      });
 
     }
   );
-
 
   return items;
 
 }
 
 
-/* =========================
-   FEATURED VIDEOS
-========================= */
+/* =========================================================
+   VIDEO PATH
+   ========================================================= */
 
-/*
-   Home Selected Work now uses the
-   first uploaded video from each
-   category.
+function videoPath(item) {
 
-   If a category has no video,
-   it is automatically skipped.
-*/
+  return (
+    VIDEO_LIBRARY[item.key].path +
+    item.file
+  );
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+function setupNav() {
+
+  const toggle =
+    document.querySelector(".menu-toggle");
+
+  const nav =
+    document.querySelector(".nav");
+
+  if (!toggle || !nav) return;
+
+  toggle.addEventListener("click", () => {
+
+    nav.classList.toggle("open");
+
+  });
+
+}
+
+
+/* =========================================================
+   VIDEO ERROR HANDLER
+   ========================================================= */
+
+function attachVideoEvents(video) {
+
+  if (!video) return;
+
+
+  video.addEventListener(
+    "loadeddata",
+    () => {
+
+      const parent =
+        video.closest(
+          ".featured-media, .work-media"
+        );
+
+      if (parent) {
+        parent.classList.add("has-video");
+      }
+
+    }
+  );
+
+
+  video.addEventListener(
+    "error",
+    () => {
+
+      const parent =
+        video.closest(
+          ".featured-media, .work-media"
+        );
+
+      if (!parent) return;
+
+      parent.classList.add("video-error");
+
+      const message =
+        parent.querySelector(
+          ".video-error-message"
+        );
+
+      if (message) {
+        message.textContent =
+          "This video cannot be played. Check MP4 format / codec.";
+      }
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   FEATURED WORK
+   ========================================================= */
 
 function getFeaturedVideos() {
 
   const featured = [];
-
 
   const preferredCategories = [
 
@@ -303,90 +335,639 @@ function getFeaturedVideos() {
   ];
 
 
-  preferredCategories.forEach(
-    key => {
+  preferredCategories.forEach(key => {
 
-      const files =
-        VIDEO_FILES[key] || [];
+    const files =
+      VIDEO_FILES[key] || [];
 
+    if (!files.length) return;
 
-      if (!files.length) {
-        return;
-      }
+    const category =
+      VIDEO_LIBRARY[key];
 
+    featured.push({
 
-      const category =
-        VIDEO_LIBRARY[key];
+      title:
+        createVideoTitle(
+          category,
+          0
+        ),
 
+      category:
+        category.label,
 
-      featured.push({
+      key: key,
 
-        title:
-          createVideoTitle(
-            category,
-            files[0],
-            0
-          ),
+      file:
+        files[0],
 
-        category:
-          category.label,
+      ratio:
+        category.ratio
 
-        key: key,
+    });
 
-        file: files[0],
-
-        ratio:
-          category.ratio
-
-      });
-
-    }
-  );
-
+  });
 
   return featured;
 
 }
 
 
-/* =========================
+/* =========================================================
+   INIT FEATURED
+   ========================================================= */
+
+function initFeatured() {
+
+  const grid =
+    document.querySelector(
+      "[data-featured-work]"
+    );
+
+  if (!grid) return;
+
+
+  const featured =
+    getFeaturedVideos();
+
+
+  if (!featured.length) {
+
+    grid.innerHTML = "";
+
+    return;
+
+  }
+
+
+  grid.innerHTML =
+    featured.map((item, index) => `
+
+      <article
+        class="featured-card ${
+          item.ratio === "vertical"
+            ? "is-vertical"
+            : ""
+        }"
+        data-index="${index}"
+      >
+
+        <div class="featured-media">
+
+          <video
+            muted
+            playsinline
+            controls
+            preload="metadata"
+            type="video/mp4"
+            src="${videoPath(item)}"
+          ></video>
+
+          <div class="featured-fallback">
+
+            <span>
+              ${item.category}
+            </span>
+
+            <strong>
+              ${item.title}
+            </strong>
+
+          </div>
+
+          <div class="video-error-message">
+          </div>
+
+          <span class="video-status">
+            OPEN
+          </span>
+
+        </div>
+
+
+        <div class="featured-meta">
+
+          <span>
+            ${item.category}
+          </span>
+
+          <h3>
+            ${item.title}
+          </h3>
+
+        </div>
+
+      </article>
+
+    `).join("");
+
+
+  grid
+    .querySelectorAll("video")
+    .forEach(video => {
+
+      attachVideoEvents(video);
+
+    });
+
+
+  grid
+    .querySelectorAll(".featured-card")
+    .forEach((card, index) => {
+
+      card.addEventListener(
+        "click",
+        event => {
+
+          if (
+            event.target.tagName === "VIDEO" ||
+            event.target.closest("video")
+          ) {
+            return;
+          }
+
+          const item =
+            featured[index];
+
+          openVideo(
+            item.title,
+            item.category,
+            videoPath(item),
+            item.ratio
+          );
+
+        }
+      );
+
+    });
+
+}
+
+
+/* =========================================================
+   VIDEO MODAL
+   ========================================================= */
+
+function openVideo(
+  title,
+  category,
+  src,
+  ratio
+) {
+
+  let modal =
+    document.getElementById(
+      "videoModal"
+    );
+
+
+  if (!modal) {
+
+    modal =
+      document.createElement(
+        "div"
+      );
+
+    modal.id =
+      "videoModal";
+
+    modal.className =
+      "modal";
+
+
+    modal.innerHTML = `
+
+      <div class="modal-backdrop"></div>
+
+      <div class="modal-panel video-modal-panel">
+
+        <button
+          class="modal-close"
+          aria-label="Close video"
+        >
+          ×
+        </button>
+
+        <p class="eyebrow"></p>
+
+        <h2></h2>
+
+        <video
+          controls
+          playsinline
+          preload="auto"
+        ></video>
+
+      </div>
+
+    `;
+
+
+    document.body.appendChild(
+      modal
+    );
+
+
+    const closeModal = () => {
+
+      modal.classList.remove(
+        "open"
+      );
+
+      const player =
+        modal.querySelector(
+          "video"
+        );
+
+      if (!player) return;
+
+      player.pause();
+
+      player.removeAttribute(
+        "src"
+      );
+
+      player.load();
+
+    };
+
+
+    modal
+      .querySelector(
+        ".modal-backdrop"
+      )
+      .onclick =
+      closeModal;
+
+
+    modal
+      .querySelector(
+        ".modal-close"
+      )
+      .onclick =
+      closeModal;
+
+  }
+
+
+  modal
+    .querySelector(
+      ".eyebrow"
+    )
+    .textContent =
+    category;
+
+
+  modal
+    .querySelector(
+      "h2"
+    )
+    .textContent =
+    title;
+
+
+  const player =
+    modal.querySelector(
+      "video"
+    );
+
+
+  player.classList.toggle(
+    "vertical-video",
+    ratio === "vertical"
+  );
+
+
+  player.pause();
+
+  player.src = src;
+
+  player.load();
+
+
+  modal.classList.add(
+    "open"
+  );
+
+
+  /*
+     Try autoplay.
+     If the browser blocks it,
+     the controls remain available.
+  */
+
+  const playPromise =
+    player.play();
+
+  if (
+    playPromise &&
+    typeof playPromise.catch === "function"
+  ) {
+
+    playPromise.catch(() => {});
+
+  }
+
+}
+
+
+/* =========================================================
+   WORK PAGE
+   ========================================================= */
+
+function initWork() {
+
+  const grid =
+    document.getElementById(
+      "workGrid"
+    );
+
+  const filters =
+    document.getElementById(
+      "filters"
+    );
+
+  if (!grid || !filters) return;
+
+
+  const categories = [
+
+    ["all", "All Work"],
+
+    ...Object.entries(
+      VIDEO_LIBRARY
+    ).map(
+      ([key, value]) => [
+        key,
+        value.label
+      ]
+    )
+
+  ];
+
+
+  filters.innerHTML =
+    categories.map(
+      ([key, label], index) => `
+
+        <button
+          class="filter-btn ${
+            index === 0
+              ? "active"
+              : ""
+          }"
+          data-filter="${key}"
+        >
+          ${label}
+        </button>
+
+      `
+    ).join("");
+
+
+  function render(
+    filter = "all"
+  ) {
+
+    let items =
+      buildVideoItems();
+
+
+    if (filter !== "all") {
+
+      items =
+        items.filter(
+          item =>
+            item.key === filter
+        );
+
+    }
+
+
+    /*
+       IMPORTANT:
+       Only real uploaded videos
+       are rendered.
+       No blank cards.
+    */
+
+    if (!items.length) {
+
+      grid.innerHTML = "";
+
+      return;
+
+    }
+
+
+    grid.innerHTML =
+      items.map(
+        (item, index) => `
+
+          <article
+            class="work-card ${
+              item.ratio === "vertical"
+                ? "vertical"
+                : ""
+            }"
+            data-work="${index}"
+          >
+
+            <div class="work-media">
+
+              <video
+                muted
+                playsinline
+                controls
+                preload="metadata"
+                type="video/mp4"
+                src="${videoPath(item)}"
+              ></video>
+
+              <div class="video-error-message">
+              </div>
+
+            </div>
+
+
+            <div class="work-meta">
+
+              <span>
+                ${item.category}
+              </span>
+
+              <h3>
+                ${item.title}
+              </h3>
+
+            </div>
+
+          </article>
+
+        `
+      ).join("");
+
+
+    grid
+      .querySelectorAll("video")
+      .forEach(video => {
+
+        attachVideoEvents(
+          video
+        );
+
+      });
+
+
+    grid
+      .querySelectorAll(".work-card")
+      .forEach(
+        (card, index) => {
+
+          card.onclick =
+            event => {
+
+              if (
+                event.target.tagName ===
+                "VIDEO" ||
+                event.target.closest(
+                  "video"
+                )
+              ) {
+                return;
+              }
+
+              const item =
+                items[index];
+
+              if (!item) return;
+
+              openVideo(
+                item.title,
+                item.category,
+                videoPath(item),
+                item.ratio
+              );
+
+            };
+
+        }
+      );
+
+  }
+
+
+  filters.addEventListener(
+    "click",
+    event => {
+
+      const button =
+        event.target.closest(
+          ".filter-btn"
+        );
+
+      if (!button) return;
+
+
+      filters
+        .querySelectorAll(
+          ".filter-btn"
+        )
+        .forEach(
+          btn =>
+            btn.classList.remove(
+              "active"
+            )
+        );
+
+
+      button.classList.add(
+        "active"
+      );
+
+
+      render(
+        button.dataset.filter
+      );
+
+    }
+  );
+
+
+  const query =
+    new URLSearchParams(
+      location.search
+    ).get("category");
+
+
+  render(
+    query &&
+    VIDEO_LIBRARY[query]
+      ? query
+      : "all"
+  );
+
+}
+
+
+/* =========================================================
    TEAM
-========================= */
+   ========================================================= */
 
 const TEAM = [
 
   {
-    name: "Kalyan Chitteti",
-    role: "Video Editor • Colorist • DI Artist",
+    name:
+      "Kalyan Chitteti",
+
+    role:
+      "Video Editor • Colorist • DI Artist",
+
     image:
       "assets/images/profile/kalyan-profile.jpg",
+
     bio:
       "5+ years of experience and 100+ editing projects across reels, advertisements, wedding films, short films, promotional content and post-production."
   },
 
   {
-    name: "Team Member 01",
-    role: "Cinematographer / Director",
+    name:
+      "Team Member 01",
+
+    role:
+      "Cinematographer / Director",
+
     image:
       "assets/images/team/team-1.jpg",
+
     bio:
       "Add your teammate's real name, role and profile description here."
   },
 
   {
-    name: "Team Member 02",
-    role: "Photographer / Editor",
+    name:
+      "Team Member 02",
+
+    role:
+      "Photographer / Editor",
+
     image:
       "assets/images/team/team-2.jpg",
+
     bio:
       "Add your teammate's real name, role and profile description here."
   },
 
   {
-    name: "Team Member 03",
-    role: "Creative / Production",
+    name:
+      "Team Member 03",
+
+    role:
+      "Creative / Production",
+
     image:
       "assets/images/team/team-3.jpg",
+
     bio:
       "Add your teammate's real name, role and profile description here."
   }
@@ -394,9 +975,169 @@ const TEAM = [
 ];
 
 
-/* =========================
+/* =========================================================
+   TEAM INIT
+   ========================================================= */
+
+function initTeam() {
+
+  const grid =
+    document.getElementById(
+      "teamGrid"
+    );
+
+  if (!grid) return;
+
+
+  grid.innerHTML =
+    TEAM.map(
+      (member, index) => `
+
+        <article
+          class="team-card"
+          data-team="${index}"
+        >
+
+          <div class="team-photo">
+
+            <img
+              src="${member.image}"
+              alt="${member.name}"
+              onerror="
+                this.style.display='none';
+                this.nextElementSibling.style.display='flex'
+              "
+            >
+
+            <div class="image-placeholder">
+
+              <span>
+                TEAM PHOTO
+                ${String(index + 1).padStart(2, "0")}
+              </span>
+
+              <small>
+                Upload the team image.
+              </small>
+
+            </div>
+
+          </div>
+
+
+          <div class="team-info">
+
+            <span>
+              ${member.role}
+            </span>
+
+            <h3>
+              ${member.name}
+            </h3>
+
+          </div>
+
+        </article>
+
+      `
+    ).join("");
+
+
+  const modal =
+    document.getElementById(
+      "teamModal"
+    );
+
+  if (!modal) return;
+
+
+  grid
+    .querySelectorAll(
+      ".team-card"
+    )
+    .forEach(card => {
+
+      card.onclick = () => {
+
+        const member =
+          TEAM[
+            Number(
+              card.dataset.team
+            )
+          ];
+
+        if (!member) return;
+
+
+        const image =
+          modal.querySelector(
+            "#modalTeamImage"
+          );
+
+        const role =
+          modal.querySelector(
+            "#modalTeamRole"
+          );
+
+        const name =
+          modal.querySelector(
+            "#modalTeamName"
+          );
+
+        const bio =
+          modal.querySelector(
+            "#modalTeamBio"
+          );
+
+
+        if (image)
+          image.src =
+            member.image;
+
+        if (role)
+          role.textContent =
+            member.role;
+
+        if (name)
+          name.textContent =
+            member.name;
+
+        if (bio)
+          bio.textContent =
+            member.bio;
+
+
+        modal.classList.add(
+          "open"
+        );
+
+      };
+
+    });
+
+
+  modal
+    .querySelectorAll(
+      "[data-close-modal]"
+    )
+    .forEach(button => {
+
+      button.onclick = () => {
+
+        modal.classList.remove(
+          "open"
+        );
+
+      };
+
+    });
+
+}
+
+
+/* =========================================================
    TOOLS
-========================= */
+   ========================================================= */
 
 const TOOLS = [
 
@@ -451,862 +1192,12 @@ const TOOLS = [
 ];
 
 
-/* =========================
-   NAVIGATION
-========================= */
-
-function setupNav() {
-
-  const toggle =
-    document.querySelector(
-      ".menu-toggle"
-    );
-
-  const nav =
-    document.querySelector(
-      ".nav"
-    );
-
-
-  if (toggle && nav) {
-
-    toggle.addEventListener(
-      "click",
-      () => {
-
-        nav.classList.toggle(
-          "open"
-        );
-
-      }
-    );
-
-  }
-
-}
-
-
-/* =========================
-   VIDEO PATH
-========================= */
-
-function videoPath(item) {
-
-  if (
-    !VIDEO_LIBRARY[item.key]
-  ) {
-    return "";
-  }
-
-
-  return (
-    VIDEO_LIBRARY[item.key].path +
-    item.file
-  );
-
-}
-
-
-/* =========================
-   FEATURED VIDEOS
-========================= */
-
-function initFeatured() {
-
-  const grid =
-    document.querySelector(
-      "[data-featured-work]"
-    );
-
-
-  if (!grid) return;
-
-
-  const featured =
-    getFeaturedVideos();
-
-
-  /*
-    No videos = no blank cards.
-  */
-
-  if (!featured.length) {
-
-    grid.innerHTML = "";
-
-    return;
-
-  }
-
-
-  grid.innerHTML =
-    featured.map(
-      (v, i) => `
-
-        <article
-          class="featured-card ${
-            v.ratio === "vertical"
-              ? "is-vertical"
-              : ""
-          }"
-          data-index="${i}"
-        >
-
-          <div class="featured-media">
-
-            <video
-              muted
-              playsinline
-              preload="metadata"
-              src="${videoPath(v)}"
-            ></video>
-
-            <div class="featured-fallback">
-
-              <span>
-                ${v.category}
-              </span>
-
-              <strong>
-                ${v.title}
-              </strong>
-
-            </div>
-
-            <span class="video-status">
-              OPEN
-            </span>
-
-          </div>
-
-
-          <div class="featured-meta">
-
-            <span>
-              ${v.category}
-            </span>
-
-            <h3>
-              ${v.title}
-            </h3>
-
-          </div>
-
-        </article>
-
-      `
-    ).join("");
-
-
-  grid
-    .querySelectorAll("video")
-    .forEach(video => {
-
-      video.addEventListener(
-        "loadeddata",
-        () => {
-
-          const media =
-            video.closest(
-              ".featured-media"
-            );
-
-          if (media) {
-            media.classList.add(
-              "has-video"
-            );
-          }
-
-        }
-      );
-
-
-      video.addEventListener(
-        "mouseenter",
-        () => {
-
-          video
-            .play()
-            .catch(() => {});
-
-        }
-      );
-
-
-      video.addEventListener(
-        "mouseleave",
-        () => {
-
-          video.pause();
-
-          try {
-            video.currentTime = 0;
-          } catch (error) {}
-
-        }
-      );
-
-    });
-
-
-  grid
-    .querySelectorAll(
-      ".featured-card"
-    )
-    .forEach(card => {
-
-      card.addEventListener(
-        "click",
-        () => {
-
-          const video =
-            featured[
-              Number(
-                card.dataset.index
-              )
-            ];
-
-
-          if (!video) return;
-
-
-          openVideo(
-            video.title,
-            video.category,
-            videoPath(video),
-            video.ratio
-          );
-
-        }
-      );
-
-    });
-
-}
-
-
-/* =========================
-   VIDEO MODAL
-========================= */
-
-function openVideo(
-  title,
-  category,
-  src,
-  ratio
-) {
-
-  let modal =
-    document.getElementById(
-      "videoModal"
-    );
-
-
-  if (!modal) {
-
-    modal =
-      document.createElement(
-        "div"
-      );
-
-    modal.id =
-      "videoModal";
-
-    modal.className =
-      "modal";
-
-
-    modal.innerHTML = `
-
-      <div
-        class="modal-backdrop"
-      ></div>
-
-      <div
-        class="modal-panel video-modal-panel"
-      >
-
-        <button
-          class="modal-close"
-        >
-          ×
-        </button>
-
-        <p class="eyebrow"></p>
-
-        <h2></h2>
-
-        <video
-          controls
-          playsinline
-        ></video>
-
-      </div>
-
-    `;
-
-
-    document.body.appendChild(
-      modal
-    );
-
-
-    const close = () => {
-
-      modal.classList.remove(
-        "open"
-      );
-
-
-      const player =
-        modal.querySelector(
-          "video"
-        );
-
-
-      if (player) {
-
-        player.pause();
-
-        player.removeAttribute(
-          "src"
-        );
-
-        player.load();
-
-      }
-
-    };
-
-
-    modal
-      .querySelector(
-        ".modal-backdrop"
-      )
-      .onclick = close;
-
-
-    modal
-      .querySelector(
-        ".modal-close"
-      )
-      .onclick = close;
-
-  }
-
-
-  modal
-    .querySelector(
-      ".eyebrow"
-    )
-    .textContent =
-    category;
-
-
-  modal
-    .querySelector(
-      "h2"
-    )
-    .textContent =
-    title;
-
-
-  const player =
-    modal.querySelector(
-      "video"
-    );
-
-
-  player.src = src;
-
-
-  /*
-    Vertical reels can use the
-    existing CSS styling.
-  */
-
-  if (
-    ratio === "vertical"
-  ) {
-
-    player.classList.add(
-      "vertical-video"
-    );
-
-  } else {
-
-    player.classList.remove(
-      "vertical-video"
-    );
-
-  }
-
-
-  modal.classList.add(
-    "open"
-  );
-
-
-  player
-    .play()
-    .catch(() => {});
-
-}
-
-
-/* =========================
-   WORK PAGE
-========================= */
-
-function initWork() {
-
-  const grid =
-    document.getElementById(
-      "workGrid"
-    );
-
-  const filters =
-    document.getElementById(
-      "filters"
-    );
-
-
-  if (!grid || !filters) {
-    return;
-  }
-
-
-  const categories = [
-
-    [
-      "all",
-      "All Work"
-    ],
-
-    ...Object.entries(
-      VIDEO_LIBRARY
-    ).map(
-      ([key, value]) => [
-        key,
-        value.label
-      ]
-    )
-
-  ];
-
-
-  filters.innerHTML =
-    categories.map(
-      ([key, label], index) => `
-
-        <button
-          class="filter-btn ${
-            index === 0
-              ? "active"
-              : ""
-          }"
-          data-filter="${key}"
-        >
-          ${label}
-        </button>
-
-      `
-    ).join("");
-
-
-  function render(
-    filter = "all"
-  ) {
-
-    let items =
-      buildVideoItems();
-
-
-    if (
-      filter !== "all"
-    ) {
-
-      items =
-        items.filter(
-          item =>
-            item.key === filter
-        );
-
-    }
-
-
-    /*
-      IMPORTANT:
-      If no videos exist,
-      render nothing.
-    */
-
-    if (!items.length) {
-
-      grid.innerHTML = "";
-
-      return;
-
-    }
-
-
-    grid.innerHTML =
-      items.map(
-        (video, index) => `
-
-          <article
-            class="work-card ${
-              video.ratio === "vertical"
-                ? "vertical"
-                : ""
-            }"
-            data-work="${index}"
-          >
-
-            <div
-              class="work-media"
-            >
-
-              <video
-                muted
-                playsinline
-                preload="metadata"
-                src="${
-                  VIDEO_LIBRARY[
-                    video.key
-                  ].path
-                }${video.file}"
-              ></video>
-
-            </div>
-
-
-            <div
-              class="work-meta"
-            >
-
-              <span>
-                ${video.category}
-              </span>
-
-              <h3>
-                ${video.title}
-              </h3>
-
-            </div>
-
-          </article>
-
-        `
-      ).join("");
-
-
-    grid
-      .querySelectorAll(
-        "video"
-      )
-      .forEach(video => {
-
-        video.addEventListener(
-          "loadeddata",
-          () => {
-
-            const media =
-              video.closest(
-                ".work-media"
-              );
-
-            if (media) {
-
-              media.classList.add(
-                "has-video"
-              );
-
-            }
-
-          }
-        );
-
-      });
-
-
-    grid
-      .querySelectorAll(
-        ".work-card"
-      )
-      .forEach(
-        (card, index) => {
-
-          card.onclick = () => {
-
-            const item =
-              items[index];
-
-
-            if (!item) return;
-
-
-            openVideo(
-              item.title,
-              item.category,
-              VIDEO_LIBRARY[
-                item.key
-              ].path +
-                item.file,
-              item.ratio
-            );
-
-          };
-
-        }
-      );
-
-  }
-
-
-  filters.addEventListener(
-    "click",
-    event => {
-
-      if (
-        !event.target.matches(
-          ".filter-btn"
-        )
-      ) {
-        return;
-      }
-
-
-      filters
-        .querySelectorAll(
-          ".filter-btn"
-        )
-        .forEach(
-          button => {
-
-            button.classList.remove(
-              "active"
-            );
-
-          }
-        );
-
-
-      event.target.classList.add(
-        "active"
-      );
-
-
-      render(
-        event.target.dataset.filter
-      );
-
-    }
-  );
-
-
-  const query =
-    new URLSearchParams(
-      location.search
-    ).get("category");
-
-
-  render(
-    query &&
-    VIDEO_LIBRARY[query]
-      ? query
-      : "all"
-  );
-
-}
-
-
-/* =========================
-   TEAM
-========================= */
-
-function initTeam() {
-
-  const grid =
-    document.getElementById(
-      "teamGrid"
-    );
-
-
-  if (!grid) return;
-
-
-  grid.innerHTML =
-    TEAM.map(
-      (member, index) => `
-
-        <article
-          class="team-card"
-          data-team="${index}"
-        >
-
-          <div
-            class="team-photo"
-          >
-
-            <img
-              src="${member.image}"
-              alt="${member.name}"
-              onerror="
-                this.style.display='none';
-                this.nextElementSibling.style.display='flex'
-              "
-            >
-
-            <div
-              class="image-placeholder"
-            >
-
-              <span>
-                TEAM PHOTO
-                ${String(
-                  index + 1
-                ).padStart(2, "0")}
-              </span>
-
-              <small>
-                Upload the team image.
-              </small>
-
-            </div>
-
-          </div>
-
-
-          <div
-            class="team-info"
-          >
-
-            <span>
-              ${member.role}
-            </span>
-
-            <h3>
-              ${member.name}
-            </h3>
-
-          </div>
-
-        </article>
-
-      `
-    ).join("");
-
-
-  const modal =
-    document.getElementById(
-      "teamModal"
-    );
-
-
-  if (!modal) return;
-
-
-  grid
-    .querySelectorAll(
-      ".team-card"
-    )
-    .forEach(card => {
-
-      card.onclick = () => {
-
-        const member =
-          TEAM[
-            Number(
-              card.dataset.team
-            )
-          ];
-
-
-        if (!member) return;
-
-
-        const image =
-          modal.querySelector(
-            "#modalTeamImage"
-          );
-
-        const role =
-          modal.querySelector(
-            "#modalTeamRole"
-          );
-
-        const name =
-          modal.querySelector(
-            "#modalTeamName"
-          );
-
-        const bio =
-          modal.querySelector(
-            "#modalTeamBio"
-          );
-
-
-        if (image) {
-          image.src =
-            member.image;
-        }
-
-        if (role) {
-          role.textContent =
-            member.role;
-        }
-
-        if (name) {
-          name.textContent =
-            member.name;
-        }
-
-        if (bio) {
-          bio.textContent =
-            member.bio;
-        }
-
-
-        modal.classList.add(
-          "open"
-        );
-
-      };
-
-    });
-
-
-  modal
-    .querySelectorAll(
-      "[data-close-modal]"
-    )
-    .forEach(button => {
-
-      button.onclick = () => {
-
-        modal.classList.remove(
-          "open"
-        );
-
-      };
-
-    });
-
-}
-
-
-/* =========================
-   TOOLS
-========================= */
-
 function initTools() {
 
   const grid =
     document.getElementById(
       "toolsGrid"
     );
-
 
   if (!grid) return;
 
@@ -1315,13 +1206,9 @@ function initTools() {
     TOOLS.map(
       tool => `
 
-        <article
-          class="tool-card"
-        >
+        <article class="tool-card">
 
-          <div
-            class="tool-icon"
-          >
+          <div class="tool-icon">
             ${tool[0]}
           </div>
 
@@ -1341,13 +1228,11 @@ function initTools() {
 }
 
 
-/* =========================
+/* =========================================================
    SHOWREEL
-========================= */
+   ========================================================= */
 
-function drawShowreel(
-  canvas
-) {
+function drawShowreel(canvas) {
 
   if (!canvas) return;
 
@@ -1356,7 +1241,6 @@ function drawShowreel(
     canvas.getContext(
       "2d"
     );
-
 
   let start = null;
 
@@ -1442,10 +1326,8 @@ function drawShowreel(
 
     ctx.font = font;
 
-
     const words =
       text.split(" ");
-
 
     let line = "";
 
@@ -1458,9 +1340,7 @@ function drawShowreel(
 
       const test =
         line
-          ? line +
-            " " +
-            word
+          ? line + " " + word
           : word;
 
 
@@ -1476,20 +1356,21 @@ function drawShowreel(
           line
         );
 
-        line = word;
+        line =
+          word;
 
       } else {
 
-        line = test;
+        line =
+          test;
 
       }
 
     }
 
 
-    if (line) {
+    if (line)
       lines.push(line);
-    }
 
 
     return lines;
@@ -1499,19 +1380,14 @@ function drawShowreel(
 
   function frame(now) {
 
-    if (
-      start === null
-    ) {
-
+    if (start === null) {
       start = now;
-
     }
 
 
     const elapsed =
       Math.min(
-        (now - start) /
-          1000,
+        (now - start) / 1000,
         20
       );
 
@@ -1584,9 +1460,7 @@ function drawShowreel(
 
       const radius =
         18 +
-        (
-          i % 4
-        ) * 14;
+        (i % 4) * 14;
 
 
       ctx.beginPath();
@@ -1607,7 +1481,6 @@ function drawShowreel(
     ctx.fillStyle =
       "rgba(0,0,0,.42)";
 
-
     ctx.fillRect(
       0,
       height * 0.62,
@@ -1618,7 +1491,6 @@ function drawShowreel(
 
     ctx.fillStyle =
       "rgba(255,248,241,.12)";
-
 
     ctx.fillRect(
       0,
@@ -1664,7 +1536,7 @@ function drawShowreel(
         ? Math.max(
             0,
             (1 - local) /
-              0.22
+            0.22
           )
         : 1;
 
@@ -1677,8 +1549,7 @@ function drawShowreel(
 
 
     const yOffset =
-      (1 - intro) *
-      34;
+      (1 - intro) * 34;
 
 
     const maxWidth =
@@ -1687,14 +1558,11 @@ function drawShowreel(
 
     ctx.save();
 
-
     ctx.globalAlpha =
       opacity;
 
-
     ctx.textAlign =
       "center";
-
 
     ctx.textBaseline =
       "middle";
@@ -1713,8 +1581,7 @@ function drawShowreel(
 
 
     const lineGap =
-      scene.size *
-      0.84;
+      scene.size * 0.84;
 
 
     const startY =
@@ -1722,8 +1589,8 @@ function drawShowreel(
       (
         lines.length - 1
       ) *
-        lineGap /
-        2 +
+      lineGap /
+      2 +
       yOffset;
 
 
@@ -1732,17 +1599,13 @@ function drawShowreel(
 
 
     lines.forEach(
-      (
-        line,
-        index
-      ) => {
+      (line, index) => {
 
         ctx.fillText(
           line,
           width / 2,
           startY +
-            index *
-              lineGap
+          index * lineGap
         );
 
       }
@@ -1752,7 +1615,6 @@ function drawShowreel(
     ctx.font =
       '600 22px "DM Sans", sans-serif';
 
-
     ctx.fillStyle =
       "#f1aa91";
 
@@ -1761,10 +1623,10 @@ function drawShowreel(
       scene.sub,
       width / 2,
       startY +
-        lines.length *
-          lineGap *
-          0.72 +
-        36
+      lines.length *
+      lineGap *
+      0.72 +
+      36
     );
 
 
@@ -1774,10 +1636,8 @@ function drawShowreel(
     ctx.fillStyle =
       "rgba(255,248,241,.62)";
 
-
     ctx.font =
       '600 14px "DM Sans", sans-serif';
-
 
     ctx.textAlign =
       "left";
@@ -1796,23 +1656,21 @@ function drawShowreel(
 
     ctx.fillText(
       "00:" +
-        String(
-          Math.floor(
-            elapsed
-          )
-        ).padStart(
-          2,
-          "0"
-        ) +
-        " / 00:20",
+      String(
+        Math.floor(
+          elapsed
+        )
+      ).padStart(
+        2,
+        "0"
+      ) +
+      " / 00:20",
       width - 42,
       42
     );
 
 
-    if (
-      elapsed < 20
-    ) {
+    if (elapsed < 20) {
 
       requestAnimationFrame(
         frame
@@ -1845,22 +1703,18 @@ function drawShowreel(
 }
 
 
-/* =========================
-   CONTACT FORM
-========================= */
+/* =========================================================
+   CONTACT
+   ========================================================= */
 
-function handleContact(
-  event
-) {
+function handleContact(event) {
 
   event.preventDefault();
-
 
   const message =
     document.getElementById(
       "contactMessage"
     );
-
 
   if (message) {
 
@@ -1869,59 +1723,47 @@ function handleContact(
 
   }
 
-
   return false;
 
 }
 
 
-/* =========================
+/* =========================================================
    ADMIN DEMO
-========================= */
+   ========================================================= */
 
-function demoAdmin(
-  event
-) {
+function demoAdmin(event) {
 
   event.preventDefault();
-
 
   const login =
     document.querySelector(
       ".admin-login"
     );
 
-
   const panel =
     document.getElementById(
       "adminPanel"
     );
 
-
   if (login) {
-
     login.style.display =
       "none";
-
   }
-
 
   if (panel) {
-
     panel.style.display =
       "block";
-
   }
-
 
   return false;
 
 }
 
 
-/* =========================
+/* =========================================================
    INITIALIZE
-========================= */
+   ========================================================= */
 
 document.addEventListener(
   "DOMContentLoaded",
@@ -1930,20 +1772,8 @@ document.addEventListener(
     setupNav();
 
 
-    /*
-      IMPORTANT:
-      Load the real uploaded
-      videos FIRST.
-    */
-
     await loadVideoFiles();
 
-
-    /*
-      Only after GitHub has
-      returned the real video
-      list do we build cards.
-    */
 
     initFeatured();
 
