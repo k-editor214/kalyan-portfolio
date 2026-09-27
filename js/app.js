@@ -1,1233 +1,269 @@
-const REPO_API =
-  'https://api.github.com/repos/k-editor214/kalyan-portfolio/contents/assets/videos';
 
+const REPO_API = 'https://api.github.com/repos/k-editor214/kalyan-portfolio/contents/assets/videos';
 const CATEGORIES = {
-  reels: {
-    label: 'Reels',
-    folder: 'reels',
-    ratio: '9:16'
-  },
-
-  advertisements: {
-    label: 'Advertisements',
-    folder: 'advertisements',
-    ratio: '16:9'
-  },
-
-  companyDesigns: {
-    label: 'Company Designs',
-    folder: 'company-designs',
-    ratio: '16:9'
-  },
-
-  shortFilms: {
-    label: 'Short Films',
-    folder: 'short-films',
-    ratio: '16:9'
-  },
-
-  weddingVideos: {
-    label: 'Wedding Videos',
-    folder: 'wedding-videos',
-    ratio: '16:9'
-  },
-
-  story: {
-    label: 'Story',
-    folder: 'story',
-    ratio: '16:9'
-  },
-
-  productPromotions: {
-    label: 'Product Promotions',
-    folder: 'product-promotions',
-    ratio: '16:9'
-  },
-
-  colorGrading: {
-    label: 'Color Grading / DI',
-    folder: 'color-grading',
-    ratio: '16:9'
-  }
+  reels: {label:'Reels', folder:'reels', ratio:'9:16'},
+  advertisements: {label:'Advertisements', folder:'advertisements', ratio:'16:9'},
+  companyDesigns: {label:'Company Designs', folder:'company-designs', ratio:'16:9'},
+  shortFilms: {label:'Short Films', folder:'short-films', ratio:'16:9'},
+  weddingVideos: {label:'Wedding Videos', folder:'wedding-videos', ratio:'16:9'},
+  story: {label:'Story', folder:'story', ratio:'16:9'},
+  productPromotions: {label:'Product Promotions', folder:'product-promotions', ratio:'16:9'},
+  colorGrading: {label:'Color Grading / DI', folder:'color-grading', ratio:'16:9'}
 };
 
+const $ = (s, root=document) => root.querySelector(s);
+const $$ = (s, root=document) => [...root.querySelectorAll(s)];
 
-const $ = (selector, root = document) =>
-  root.querySelector(selector);
-
-const $$ = (selector, root = document) =>
-  [...root.querySelectorAll(selector)];
-
-
-/* =========================
-   NAVIGATION
-========================= */
-
-function initNav() {
-
+function initNav(){
   const toggle = $('.menu-toggle');
   const nav = $('.main-nav');
+  toggle?.addEventListener('click', () => nav?.classList.toggle('open'));
 
-  toggle?.addEventListener('click', () => {
-    nav?.classList.toggle('open');
-  });
-
-  const file =
-    location.pathname.split('/').pop() || 'index.html';
-
-  const page =
-    file === 'index.html' || file === ''
-      ? 'home'
-      : file.replace('.html', '');
-
-  $$('.main-nav a[data-page]').forEach(link => {
-
-    if (link.dataset.page === page) {
-      link.classList.add('active');
-    }
-
+  const file = location.pathname.split('/').pop() || 'index.html';
+  const page = file === 'index.html' || file === '' ? 'home' : file.replace('.html','');
+  $$('.main-nav a[data-page]').forEach(a=>{
+    if(a.dataset.page === page) a.classList.add('active');
   });
 }
 
+function setYear(){ $$('.year').forEach(el => el.textContent = new Date().getFullYear()); }
 
-/* =========================
-   YEAR
-========================= */
-
-function setYear() {
-
-  $$('.year').forEach(element => {
-    element.textContent = new Date().getFullYear();
-  });
-
-}
-
-
-/* =========================
-   IMAGE FALLBACK
-========================= */
-
-function imageFallback(img) {
-
-  img.addEventListener('error', () => {
-
-    img.style.display = 'none';
-
+function imageFallback(img){
+  img.addEventListener('error', ()=> {
+    img.style.display='none';
     img.parentElement?.classList.add('image-missing');
-
   });
-
 }
 
+function initImages(){ $$('img').forEach(imageFallback); }
 
-function initImages() {
+async function listVideos(folder){
+  const cacheKey = `kalyan-videos-${folder}`;
+  try{
+    const cached = sessionStorage.getItem(cacheKey);
+    if(cached) return JSON.parse(cached);
 
-  $$('img').forEach(imageFallback);
+    const res = await fetch(`${REPO_API}/${folder}?ref=main`, {cache:'no-store'});
+    if(!res.ok) throw new Error(`GitHub API ${res.status}`);
+    const data = await res.json();
 
-}
+    const files = Array.isArray(data)
+      ? data.filter(x => x.type === 'file' && /\.mp4$/i.test(x.name))
+      : [];
 
-
-/* =========================
-   LOAD VIDEOS FROM GITHUB
-========================= */
-
-async function listVideos(folder) {
-
-  const cacheKey =
-    `kalyan-videos-${folder}`;
-
-  try {
-
-    const cached =
-      sessionStorage.getItem(cacheKey);
-
-    if (cached) {
-      return JSON.parse(cached);
-    }
-
-
-    const response = await fetch(
-      `${REPO_API}/${folder}?ref=main`,
-      {
-        cache: 'no-store'
-      }
-    );
-
-
-    if (!response.ok) {
-      throw new Error(
-        `GitHub API ${response.status}`
-      );
-    }
-
-
-    const data = await response.json();
-
-
-    const files =
-      Array.isArray(data)
-
-        ? data.filter(
-            file =>
-              file.type === 'file' &&
-              /\.mp4$/i.test(file.name)
-          )
-
-        : [];
-
-
-    files.sort(
-      (a, b) =>
-        a.name.localeCompare(
-          b.name,
-          undefined,
-          {
-            numeric: true
-          }
-        )
-    );
-
-
-    sessionStorage.setItem(
-      cacheKey,
-      JSON.stringify(files)
-    );
-
-
+    files.sort((a,b)=>a.name.localeCompare(b.name, undefined, {numeric:true}));
+    sessionStorage.setItem(cacheKey, JSON.stringify(files));
     return files;
-
-  } catch (error) {
-
-    console.warn(
-      `Could not load ${folder}:`,
-      error
-    );
-
+  }catch(err){
+    console.warn(`Could not load ${folder}:`, err);
     return [];
-
   }
-
 }
 
-
-/* =========================
-   CLEAR VIDEO CACHE
-========================= */
-
-function clearVideoCaches() {
-
-  Object.keys(sessionStorage)
-    .filter(
-      key =>
-        key.startsWith(
-          'kalyan-videos-'
-        )
-    )
-    .forEach(
-      key =>
-        sessionStorage.removeItem(key)
-    );
-
+function clearVideoCaches(){
+  Object.keys(sessionStorage).filter(k=>k.startsWith('kalyan-videos-')).forEach(k=>sessionStorage.removeItem(k));
 }
 
-
-/* =========================
-   VIDEO TITLE
-========================= */
-
-function prettyName(filename, category) {
-
-  const stem =
-    filename
-      .replace(/\.[^.]+$/, '')
-      .replace(/[-_]+/g, ' ');
-
-
-  const escaped =
-    category.replace(
-      /[.*+?^${}()|[\]\\]/g,
-      '\\$&'
-    );
-
-
-  const withoutPrefix =
-    stem.replace(
-      new RegExp(
-        `^${escaped}\\s*`,
-        'i'
-      ),
-      ''
-    );
-
-
-  return (
-    `${category} ${withoutPrefix || ''}`
-      .trim()
-      .replace(
-        /\b\w/g,
-        letter =>
-          letter.toUpperCase()
-      )
-  );
-
+function prettyName(filename, category){
+  const stem = filename.replace(/\.[^.]+$/,'').replace(/[-_]+/g,' ');
+  const withoutPrefix = stem.replace(new RegExp(`^${category.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}\\s*`, 'i'),'');
+  return `${category} ${withoutPrefix || ''}`.trim().replace(/\b\w/g,m=>m.toUpperCase());
 }
 
-
-/* =========================
-   VIDEO MODAL
-========================= */
-
-function openVideoModal(
-  src,
-  title,
-  category,
-  vertical = false
-) {
-
-  let modal =
-    $('#siteVideoModal');
-
-
-  if (!modal) {
-
-    modal =
-      document.createElement('div');
-
-    modal.id =
-      'siteVideoModal';
-
-    modal.className =
-      'modal-backdrop';
-
-
+function openVideoModal(src,title,category,vertical=false){
+  let modal = $('#siteVideoModal');
+  if(!modal){
+    modal = document.createElement('div');
+    modal.id='siteVideoModal';
+    modal.className='modal-backdrop';
     modal.innerHTML = `
-
-      <div
-        class="modal"
-        role="dialog"
-        aria-modal="true"
-      >
-
-        <button
-          class="modal-close"
-          type="button"
-          aria-label="Close"
-        >
-          ×
-        </button>
-
-
-        <div
-          class="eyebrow"
-          data-modal-category
-        ></div>
-
-
-        <h2
-          data-modal-title
-          style="
-            font:600 48px 'Cormorant Garamond',serif;
-            margin:4px 0 18px
-          "
-        ></h2>
-
-
-        <video
-          class="video-modal-player"
-          controls
-          playsinline
-          preload="metadata"
-        ></video>
-
-
-        <div
-          class="empty-state"
-          data-video-error
-          style="
-            display:none;
-            margin-top:14px
-          "
-        >
-          This video could not be played.
-          Check that the MP4 is valid and
-          below GitHub's 100 MB file limit.
+      <div class="modal" role="dialog" aria-modal="true">
+        <button class="modal-close" type="button" aria-label="Close">×</button>
+        <div class="eyebrow" data-modal-category></div>
+        <h2 data-modal-title style="font:600 48px 'Cormorant Garamond',serif;margin:4px 0 18px"></h2>
+        <video class="video-modal-player" controls playsinline preload="metadata"></video>
+        <div class="empty-state" data-video-error style="display:none;margin-top:14px">
+          This video could not be played. Check that the file is a valid MP4 and is below GitHub's 100 MB file limit.
         </div>
-
-      </div>
-    `;
-
-
+      </div>`;
     document.body.appendChild(modal);
 
-
-    const close = () => {
-
-      const player =
-        $('video', modal);
-
-      player.pause();
-
-      player.removeAttribute('src');
-
-      player.load();
-
-      modal.classList.remove('open');
-
-      document.body.classList.remove(
-        'modal-open'
-      );
-
+    const close = ()=>{
+      const p=$('video',modal);
+      p.pause(); p.removeAttribute('src'); p.load();
+      modal.classList.remove('open'); document.body.classList.remove('modal-open');
     };
-
-
-    $('.modal-close', modal)
-      .addEventListener(
-        'click',
-        close
-      );
-
-
-    modal.addEventListener(
-      'click',
-      event => {
-
-        if (
-          event.target === modal
-        ) {
-          close();
-        }
-
-      }
-    );
-
-
-    document.addEventListener(
-      'keydown',
-      event => {
-
-        if (
-          event.key === 'Escape'
-        ) {
-          close();
-        }
-
-      }
-    );
-
+    $('.modal-close',modal).addEventListener('click',close);
+    modal.addEventListener('click',e=>{if(e.target===modal)close()});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
   }
 
-
-  const player =
-    $('video', modal);
-
-
-  $('[data-modal-category]', modal)
-    .textContent =
-      `${category} · ${
-        vertical
-          ? '9:16'
-          : '16:9'
-      }`;
-
-
-  $('[data-modal-title]', modal)
-    .textContent =
-      title;
-
-
-  $('[data-video-error]', modal)
-    .style.display =
-      'none';
-
-
-  player.style.aspectRatio =
-    vertical
-      ? '9 / 16'
-      : '16 / 9';
-
-
-  player.style.objectFit =
-    'contain';
-
-
-  player.src =
-    src;
-
-
-  player.onerror = () => {
-
-    $('[data-video-error]', modal)
-      .style.display =
-      'block';
-
-  };
-
-
-  modal.classList.add('open');
-
-  document.body.classList.add(
-    'modal-open'
-  );
-
-
-  player.play().catch(
-    () => {}
-  );
-
+  const player = $('video',modal);
+  $('[data-modal-category]',modal).textContent = `${category} · ${vertical?'9:16':'16:9'}`;
+  $('[data-modal-title]',modal).textContent = title;
+  $('[data-video-error]',modal).style.display='none';
+  player.style.aspectRatio = vertical ? '9 / 16' : '16 / 9';
+  player.style.objectFit='contain';
+  player.src=src;
+  player.onerror=()=>{$('[data-video-error]',modal).style.display='block'};
+  modal.classList.add('open'); document.body.classList.add('modal-open');
+  player.play().catch(()=>{});
 }
 
+function makeVideoCard(file, meta){
+  const src = `assets/videos/${meta.folder}/${file.name}`;
+  const vertical = meta.ratio === '9:16';
+  const title = prettyName(file.name, meta.label);
 
-/* =========================
-   VIDEO CARD
-========================= */
-
-function makeVideoCard(
-  file,
-  meta
-) {
-
-  const src =
-    `assets/videos/${meta.folder}/${file.name}`;
-
-
-  const vertical =
-    meta.ratio === '9:16';
-
-
-  const title =
-    prettyName(
-      file.name,
-      meta.label
-    );
-
-
-  const card =
-    document.createElement('article');
-
-
-  card.className =
-    'video-card';
-
-
-  card.dataset.category =
-    meta.folder;
-
-
-  card.innerHTML = `
-
-    <div
-      class="video-thumb ${
-        vertical
-          ? 'vertical'
-          : ''
-      }"
-    >
-
-      <video
-        preload="metadata"
-        muted
-        playsinline
-        src="${src}"
-      ></video>
-
-
+  const card = document.createElement('article');
+  card.className='video-card';
+  card.dataset.category=meta.folder;
+  card.innerHTML=`
+    <div class="video-thumb ${vertical?'vertical':''}">
+      <video preload="metadata" muted playsinline src="${src}"></video>
       <div class="video-overlay">
-
-        <button
-          class="video-play"
-          type="button"
-          aria-label="Play ${title}"
-        >
-          ▶
-        </button>
-
+        <button class="video-play" type="button" aria-label="Play ${title}">▶</button>
       </div>
-
     </div>
-
-
     <div class="video-info">
+      <div class="meta"><span>${meta.label}</span><span>${meta.ratio}</span></div>
+      <h3>${title}</h3>
+      <div class="video-status">${file.name}</div>
+    </div>`;
 
-      <div class="meta">
-
-        <span>
-          ${meta.label}
-        </span>
-
-        <span>
-          ${meta.ratio}
-        </span>
-
-      </div>
-
-
-      <h3>
-        ${title}
-      </h3>
-
-
-      <div class="video-status">
-        ${file.name}
-      </div>
-
-    </div>
-
-  `;
-
-
-  const video =
-    $('video', card);
-
-
-  video.addEventListener(
-    'error',
-    () => {
-      card.classList.add(
-        'video-error'
-      );
-    }
-  );
-
-
-  $('.video-play', card)
-    .addEventListener(
-      'click',
-      () => {
-
-        openVideoModal(
-          src,
-          title,
-          meta.label,
-          vertical
-        );
-
-      }
-    );
-
-
+  const video = $('video',card);
+  video.addEventListener('error',()=>card.classList.add('video-error'));
+  $('.video-play',card).addEventListener('click',()=>openVideoModal(src,title,meta.label,vertical));
   return card;
-
 }
 
+async function initWorkLibrary(){
+  const container = $('#videoLibrary');
+  if(!container) return;
 
-/* =========================
-   WORK PAGE
-========================= */
-
-async function initWorkLibrary() {
-
-  const container =
-    $('#videoLibrary');
-
-
-  if (!container) {
-    return;
-  }
-
-
-  const filterBar =
-    $('.video-filters');
-
+  const filterBar = $('.video-filters');
+  const allBtn = $('[data-video-filter="all"]');
 
   const groups = [];
-
-
-  for (
-    const meta of
-    Object.values(CATEGORIES)
-  ) {
-
-    const files =
-      await listVideos(
-        meta.folder
-      );
-
-
-    /*
-      IMPORTANT:
-
-      Only categories containing
-      real uploaded MP4 files
-      are added.
-
-      No blank cards.
-      No fixed four videos.
-    */
-
-    if (files.length) {
-
-      groups.push({
-        meta,
-        files
-      });
-
-    }
-
+  for(const meta of Object.values(CATEGORIES)){
+    const files = await listVideos(meta.folder);
+    if(files.length) groups.push({meta,files});
   }
 
-
-  container.innerHTML =
-    '';
-
-
-  if (!groups.length) {
-
-    container.innerHTML = `
-      <div class="empty-state">
-        No videos have been uploaded yet.
-      </div>
-    `;
-
-    return;
-
-  }
-
-
-  groups.forEach(
-    ({ meta, files }) => {
-
-      const label =
-        document.createElement(
-          'div'
-        );
-
-
-      label.className =
-        'video-section-label';
-
-
-      label.dataset.section =
-        meta.folder;
-
-
-      label.textContent =
-        meta.label;
-
-
-      container.appendChild(
-        label
-      );
-
-
-      /*
-        Only the videos that
-        actually exist are created.
-      */
-
-      files.forEach(file => {
-
-        const card =
-          makeVideoCard(
-            file,
-            meta
-          );
-
-
-        container.appendChild(
-          card
-        );
-
-      });
-
-    }
-  );
-
-
-  if (!filterBar) {
+  container.innerHTML='';
+  if(!groups.length){
+    container.innerHTML=`<div class="empty-state">No videos have been uploaded yet.</div>`;
     return;
   }
 
-
-  $$('.filter', filterBar)
-    .forEach(button => {
-
-      button.addEventListener(
-        'click',
-        () => {
-
-          $$('.filter', filterBar)
-            .forEach(
-              item =>
-                item.classList.remove(
-                  'active'
-                )
-            );
-
-
-          button.classList.add(
-            'active'
-          );
-
-
-          const filter =
-            button.dataset.videoFilter;
-
-
-          $$('.video-card', container)
-            .forEach(card => {
-
-              card.style.display =
-                (
-                  filter === 'all' ||
-                  card.dataset.category === filter
-                )
-                  ? ''
-                  : 'none';
-
-            });
-
-
-          $$('.video-section-label', container)
-            .forEach(label => {
-
-              label.style.display =
-                (
-                  filter === 'all' ||
-                  label.dataset.section === filter
-                )
-                  ? ''
-                  : 'none';
-
-            });
-
-        }
-      );
-
+  groups.forEach(({meta,files})=>{
+    const label=document.createElement('div');
+    label.className='video-section-label';
+    label.dataset.section=meta.folder;
+    label.textContent=meta.label;
+    container.appendChild(label);
+    files.forEach(file=>{
+      const card=makeVideoCard(file,meta);
+      container.appendChild(card);
     });
+  });
 
+  $$('.filter',filterBar).forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      $$('.filter',filterBar).forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter=btn.dataset.videoFilter;
+      $$('.video-card',container).forEach(card=>{
+        card.style.display=(filter==='all'||card.dataset.category===filter)?'':'none';
+      });
+      $$('.video-section-label',container).forEach(label=>{
+        label.style.display=(filter==='all'||label.dataset.section===filter)?'':'none';
+      });
+    });
+  });
 }
 
+async function initFeaturedWork(){
+  const grid=$('[data-featured-work]');
+  if(!grid) return;
 
-/* =========================
-   HOME SELECTED WORK
-========================= */
+  const wanted = ['reels','advertisements','wedding-videos','color-grading','short-films','product-promotions'];
+  const found=[];
+  for(const folder of wanted){
+    const meta=Object.values(CATEGORIES).find(x=>x.folder===folder);
+    const files=await listVideos(folder);
+    if(files.length) found.push({meta,file:files[0]});
+  }
 
-async function initFeaturedWork() {
-
-  const grid =
-    $('[data-featured-work]');
-
-
-  if (!grid) {
+  grid.innerHTML='';
+  if(!found.length){
+    grid.innerHTML=`<div class="empty-state">Upload videos to your video folders and they will appear here automatically.</div>`;
     return;
   }
 
-
-  const wanted = [
-    'reels',
-    'advertisements',
-    'wedding-videos',
-    'color-grading',
-    'short-films',
-    'product-promotions'
-  ];
-
-
-  const found = [];
-
-
-  for (
-    const folder of wanted
-  ) {
-
-    const meta =
-      Object.values(CATEGORIES)
-        .find(
-          item =>
-            item.folder === folder
-        );
-
-
-    const files =
-      await listVideos(
-        folder
-      );
-
-
-    if (files.length) {
-
-      found.push({
-        meta,
-        file: files[0]
-      });
-
-    }
-
-  }
-
-
-  grid.innerHTML =
-    '';
-
-
-  if (!found.length) {
-
-    grid.innerHTML = `
-      <div class="empty-state">
-        Upload videos to your video folders
-        and they will appear here automatically.
+  found.forEach(({meta,file})=>{
+    const src=`assets/videos/${meta.folder}/${file.name}`;
+    const vertical=meta.ratio==='9:16';
+    const title=prettyName(file.name,meta.label);
+    const card=document.createElement('article');
+    card.className=`featured-card ${vertical?'is-vertical':''}`;
+    card.innerHTML=`
+      <div class="featured-media">
+        <video src="${src}" muted playsinline preload="metadata"></video>
+        <div class="featured-fallback"><div><strong>${title}</strong><small>${meta.ratio}</small></div></div>
+        <button class="featured-play" type="button">▶</button>
       </div>
-    `;
-
-    return;
-
-  }
-
-
-  found.forEach(
-    ({ meta, file }) => {
-
-      const src =
-        `assets/videos/${meta.folder}/${file.name}`;
-
-
-      const vertical =
-        meta.ratio === '9:16';
-
-
-      const title =
-        prettyName(
-          file.name,
-          meta.label
-        );
-
-
-      const card =
-        document.createElement(
-          'article'
-        );
-
-
-      card.className =
-        `featured-card ${
-          vertical
-            ? 'is-vertical'
-            : ''
-        }`;
-
-
-      card.innerHTML = `
-
-        <div class="featured-media">
-
-          <video
-            src="${src}"
-            muted
-            playsinline
-            preload="metadata"
-          ></video>
-
-
-          <div class="featured-fallback">
-
-            <div>
-
-              <strong>
-                ${title}
-              </strong>
-
-              <small>
-                ${meta.ratio}
-              </small>
-
-            </div>
-
-          </div>
-
-
-          <button
-            class="featured-play"
-            type="button"
-          >
-            ▶
-          </button>
-
-        </div>
-
-
-        <div class="featured-meta">
-
-          <span>
-            ${meta.label}
-          </span>
-
-          <h3>
-            ${title}
-          </h3>
-
-        </div>
-
-      `;
-
-
-      const video =
-        $('video', card);
-
-
-      video.addEventListener(
-        'loadeddata',
-        () => {
-
-          $('.featured-media', card)
-            .classList.add(
-              'has-video'
-            );
-
-        }
-      );
-
-
-      video.addEventListener(
-        'error',
-        () => {
-
-          $('.featured-media', card)
-            .classList.remove(
-              'has-video'
-            );
-
-        }
-      );
-
-
-      $('.featured-play', card)
-        .addEventListener(
-          'click',
-          () => {
-
-            openVideoModal(
-              src,
-              title,
-              meta.label,
-              vertical
-            );
-
-          }
-        );
-
-
-      grid.appendChild(
-        card
-      );
-
-    }
-  );
-
+      <div class="featured-meta"><span>${meta.label}</span><h3>${title}</h3></div>`;
+    const v=$('video',card);
+    v.addEventListener('loadeddata',()=>$('.featured-media',card).classList.add('has-video'));
+    v.addEventListener('error',()=>$('.featured-media',card).classList.remove('has-video'));
+    $('.featured-play',card).addEventListener('click',()=>openVideoModal(src,title,meta.label,vertical));
+    grid.appendChild(card);
+  });
 }
 
-
-/* =========================
-   TEAM MODAL
-========================= */
-
-function initTeam() {
-
-  const modal =
-    $('#teamModal');
-
-
-  if (!modal) {
-    return;
-  }
-
-
-  $$('[data-team]')
-    .forEach(card => {
-
-      card.addEventListener(
-        'click',
-        () => {
-
-          const data =
-            JSON.parse(
-              card.dataset.team
-            );
-
-
-          $('[data-modal-img]', modal)
-            .src =
-            data.image;
-
-
-          $('[data-modal-name]', modal)
-            .textContent =
-            data.name;
-
-
-          $('[data-modal-role]', modal)
-            .textContent =
-            data.role;
-
-
-          $('[data-modal-bio]', modal)
-            .textContent =
-            data.bio;
-
-
-          modal.classList.add(
-            'open'
-          );
-
-
-          document.body.classList.add(
-            'modal-open'
-          );
-
-        }
-      );
-
+function initTeam(){
+  const modal=$('#teamModal');
+  if(!modal) return;
+  $$('[data-team]').forEach(card=>{
+    card.addEventListener('click',()=>{
+      const data=JSON.parse(card.dataset.team);
+      $('[data-modal-img]',modal).src=data.image;
+      $('[data-modal-name]',modal).textContent=data.name;
+      $('[data-modal-role]',modal).textContent=data.role;
+      $('[data-modal-bio]',modal).textContent=data.bio;
+      modal.classList.add('open'); document.body.classList.add('modal-open');
     });
-
-
-  const close = () => {
-
-    modal.classList.remove(
-      'open'
-    );
-
-    document.body.classList.remove(
-      'modal-open'
-    );
-
+  });
+  const close=()=>{
+    modal.classList.remove('open');document.body.classList.remove('modal-open');
   };
-
-
-  $('[data-close]', modal)
-    ?.addEventListener(
-      'click',
-      close
-    );
-
-
-  modal.addEventListener(
-    'click',
-    event => {
-
-      if (
-        event.target === modal
-      ) {
-        close();
-      }
-
-    }
-  );
-
-
-  document.addEventListener(
-    'keydown',
-    event => {
-
-      if (
-        event.key === 'Escape'
-      ) {
-        close();
-      }
-
-    }
-  );
-
+  $('[data-close]',modal)?.addEventListener('click',close);
+  modal.addEventListener('click',e=>{if(e.target===modal)close()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
 }
 
-
-/* =========================
-   CONTACT FORM
-========================= */
-
-function initContactForm() {
-
-  const form =
-    $('#contactForm');
-
-
-  if (!form) {
-    return;
-  }
-
-
-  form.addEventListener(
-    'submit',
-    event => {
-
-      event.preventDefault();
-
-
-      const name =
-        $('#contactName')
-          ?.value
-          .trim();
-
-
-      const email =
-        $('#contactEmail')
-          ?.value
-          .trim();
-
-
-      const message =
-        $('#contactMessage')
-          ?.value
-          .trim();
-
-
-      if (
-        !name ||
-        !email ||
-        !message
-      ) {
-
-        alert(
-          'Please complete your name, email and message.'
-        );
-
-        return;
-
-      }
-
-
-      window.location.href =
-        `mailto:kalyanjpc84@gmail.com?subject=${
-          encodeURIComponent(
-            'Portfolio enquiry from ' +
-            name
-          )
-        }&body=${
-          encodeURIComponent(
-            message +
-            '\n\nReply to: ' +
-            email
-          )
-        }`;
-
-    }
-  );
-
+function initContactForm(){
+  const form=$('#contactForm');
+  if(!form) return;
+  form.addEventListener('submit',e=>{
+    e.preventDefault();
+    const name=$('#contactName')?.value.trim();
+    const email=$('#contactEmail')?.value.trim();
+    const message=$('#contactMessage')?.value.trim();
+    if(!name||!email||!message){alert('Please complete your name, email and message.');return;}
+    window.location.href=`mailto:kalyanjpc84@gmail.com?subject=${encodeURIComponent('Portfolio enquiry from '+name)}&body=${encodeURIComponent(message+'\n\nReply to: '+email)}`;
+  });
 }
 
-
-/* =========================
-   INITIALIZE
-========================= */
-
-function init() {
-
+function init(){
   initNav();
-
   setYear();
-
   initImages();
-
   initTeam();
-
   initContactForm();
-
   initWorkLibrary();
-
   initFeaturedWork();
-
 }
 
-
-document.addEventListener(
-  'DOMContentLoaded',
-  init
-);
+document.addEventListener('DOMContentLoaded',init);
