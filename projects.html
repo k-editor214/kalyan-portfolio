@@ -1,56 +1,907 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Kalyan Chitteti — Video Editor, Colorist and DI Artist.">
-<title>Projects — Kalyan Chitteti</title>
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Projects — Kalyan Chitteti</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
+<!-- ================= HEADER ================= -->
+
 <header class="site-header">
-  <a class="brand" href="index.html">
-    <span class="brand-mark">K</span>
-    <span class="brand-text">KALYAN CHITTETI</span>
-  </a>
-  <button class="menu-toggle" type="button" aria-label="Open menu">☰</button>
-  <nav class="main-nav">
-    <a href="index.html" data-page="home">Home</a>
-    <a href="showreel.html" data-page="showreel">Showreel</a>
-    <a href="work.html" data-page="work">Work</a>
-    <a href="projects.html" data-page="projects">Projects</a>
-    <a href="team.html" data-page="team">Team</a>
-    <a href="tools.html" data-page="tools">Tools</a>
-    <a href="about.html" data-page="about">About</a>
-    <a href="contact.html" data-page="contact">Contact</a>
-  </nav>
+
+  <div class="header-inner">
+
+    <a href="index.html" class="brand">
+      <span class="brand-mark">K</span>
+      <span class="brand-name">KALYAN CHITTETI</span>
+    </a>
+
+    <button class="menu-toggle" type="button" aria-label="Open menu">
+      ☰
+    </button>
+
+    <nav class="main-nav">
+
+      <a href="index.html" data-page="home">Home</a>
+
+      <a href="showreel.html" data-page="showreel">
+        Showreel
+      </a>
+
+      <a href="work.html" data-page="work">
+        Work
+      </a>
+
+      <a href="projects.html" data-page="projects">
+        Projects
+      </a>
+
+      <a href="team.html" data-page="team">
+        Team
+      </a>
+
+      <a href="tools.html" data-page="tools">
+        Tools
+      </a>
+
+      <a href="about.html" data-page="about">
+        About
+      </a>
+
+      <a href="contact.html" data-page="contact">
+        Contact
+      </a>
+
+    </nav>
+
+  </div>
+
 </header>
+
+
+<!-- ================= PROJECTS ================= -->
 
 <main>
 
-<section class="container page-head">
-  <div><div class="eyebrow">Projects</div><h1>From footage<br><em>to final.</em></h1><p>Selected projects across films, advertisements, company content, social edits and color-driven work.</p></div>
-</section>
-<section class="section container" style="padding-top:20px">
-  <div class="project-grid">
-    <article class="project-card"><span class="num">01</span><h3>Short Films</h3><p>Story-led editing, pacing, continuity, sound and cinematic finishing.</p><div class="project-tags"><span>Editing</span><span>Color</span><span>DI</span></div></article>
-    <article class="project-card"><span class="num">02</span><h3>Advertisements</h3><p>Fast, clear and visually polished edits built around the message.</p><div class="project-tags"><span>Brand</span><span>Motion</span><span>SFX</span></div></article>
-    <article class="project-card"><span class="num">03</span><h3>Wedding Films</h3><p>Emotion-first storytelling, music-led structure and color finishing.</p><div class="project-tags"><span>Wedding</span><span>Story</span><span>Color</span></div></article>
-    <article class="project-card"><span class="num">04</span><h3>Color & DI</h3><p>Look development, color balance, mood and final cinematic treatment.</p><div class="project-tags"><span>DaVinci Resolve</span><span>DI</span></div></article>
-    <article class="project-card"><span class="num">05</span><h3>Company Designs</h3><p>Professional visual communication for companies, campaigns and digital platforms.</p><div class="project-tags"><span>Corporate</span><span>Brand</span></div></article>
-    <article class="project-card"><span class="num">06</span><h3>Product Promotions</h3><p>Product-focused edits designed to make details, movement and messaging clear.</p><div class="project-tags"><span>Product</span><span>Ad Film</span></div></article>
-  </div>
-</section>
+  <section class="page-hero">
+
+    <div class="container">
+
+      <div class="eyebrow">
+        PROJECTS
+      </div>
+
+      <h1>
+        From footage<br>
+        <em>to final.</em>
+      </h1>
+
+      <p class="page-intro">
+        Selected projects across films, advertisements,
+        company content, social edits and color-driven work.
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <!-- ================= PROJECT GRID ================= -->
+
+  <section class="projects-section">
+
+    <div class="container">
+
+      <div class="projects-grid">
+
+
+        <!-- 01 SHORT FILMS -->
+
+        <article class="project-card" data-project="short-films">
+
+          <div class="project-number">
+            01
+          </div>
+
+          <h2>
+            Short Films
+          </h2>
+
+          <p>
+            Story-led editing, pacing, continuity,
+            sound and cinematic finishing.
+          </p>
+
+          <div class="project-tags">
+            <span>Editing</span>
+            <span>Color</span>
+            <span>DI</span>
+          </div>
+
+          <div class="project-video-area"
+               data-project-videos="short-films">
+
+            <div class="project-loading">
+              Loading videos...
+            </div>
+
+          </div>
+
+        </article>
+
+
+        <!-- 02 ADVERTISEMENTS -->
+
+        <article class="project-card" data-project="advertisements">
+
+          <div class="project-number">
+            02
+          </div>
+
+          <h2>
+            Advertisements
+          </h2>
+
+          <p>
+            Fast, clear and visually polished edits
+            built around the message.
+          </p>
+
+          <div class="project-tags">
+            <span>Brand</span>
+            <span>Motion</span>
+            <span>SFX</span>
+          </div>
+
+          <div class="project-video-area"
+               data-project-videos="advertisements">
+
+            <div class="project-loading">
+              Loading videos...
+            </div>
+
+          </div>
+
+        </article>
+
+
+        <!-- 03 WEDDING -->
+
+        <article class="project-card" data-project="wedding-videos">
+
+          <div class="project-number">
+            03
+          </div>
+
+          <h2>
+            Wedding Films
+          </h2>
+
+          <p>
+            Emotion-first storytelling, music-led
+            structure and color finishing.
+          </p>
+
+          <div class="project-tags">
+            <span>Wedding</span>
+            <span>Story</span>
+            <span>Color</span>
+          </div>
+
+          <div class="project-video-area"
+               data-project-videos="wedding-videos">
+
+            <div class="project-loading">
+              Loading videos...
+            </div>
+
+          </div>
+
+        </article>
+
+
+        <!-- 04 COLOR -->
+
+        <article class="project-card" data-project="color-grading">
+
+          <div class="project-number">
+            04
+          </div>
+
+          <h2>
+            Color &amp; DI
+          </h2>
+
+          <p>
+            Look development, color balance, mood
+            and final cinematic treatment.
+          </p>
+
+          <div class="project-tags">
+            <span>DaVinci Resolve</span>
+            <span>DI</span>
+          </div>
+
+          <div class="project-video-area"
+               data-project-videos="color-grading">
+
+            <div class="project-loading">
+              Loading videos...
+            </div>
+
+          </div>
+
+        </article>
+
+
+        <!-- 05 COMPANY -->
+
+        <article class="project-card" data-project="company-designs">
+
+          <div class="project-number">
+            05
+          </div>
+
+          <h2>
+            Company Content
+          </h2>
+
+          <p>
+            Professional company films, promotional
+            edits and visual communication.
+          </p>
+
+          <div class="project-tags">
+            <span>Corporate</span>
+            <span>Editing</span>
+            <span>Design</span>
+          </div>
+
+          <div class="project-video-area"
+               data-project-videos="company-designs">
+
+            <div class="project-loading">
+              Loading videos...
+            </div>
+
+          </div>
+
+        </article>
+
+
+        <!-- 06 PRODUCT -->
+
+        <article class="project-card" data-project="product-promotions">
+
+          <div class="project-number">
+            06
+          </div>
+
+          <h2>
+            Product Promotions
+          </h2>
+
+          <p>
+            Product-focused visuals designed for
+            advertising, social media and campaigns.
+          </p>
+
+          <div class="project-tags">
+            <span>Product</span>
+            <span>Commercial</span>
+            <span>Motion</span>
+          </div>
+
+          <div class="project-video-area"
+               data-project-videos="product-promotions">
+
+            <div class="project-loading">
+              Loading videos...
+            </div>
+
+          </div>
+
+        </article>
+
+
+        <!-- 07 STORY -->
+
+        <article class="project-card" data-project="story">
+
+          <div class="project-number">
+            07
+          </div>
+
+          <h2>
+            Story
+          </h2>
+
+          <p>
+            Narrative edits built around emotion,
+            rhythm, atmosphere and visual storytelling.
+          </p>
+
+          <div class="project-tags">
+            <span>Story</span>
+            <span>Editing</span>
+            <span>Sound</span>
+          </div>
+
+          <div class="project-video-area"
+               data-project-videos="story">
+
+            <div class="project-loading">
+              Loading videos...
+            </div>
+
+          </div>
+
+        </article>
+
+
+        <!-- 08 REELS -->
+
+        <article class="project-card" data-project="reels">
+
+          <div class="project-number">
+            08
+          </div>
+
+          <h2>
+            Reels
+          </h2>
+
+          <p>
+            Short-form vertical edits created for
+            social platforms, brands and creators.
+          </p>
+
+          <div class="project-tags">
+            <span>9:16</span>
+            <span>Social</span>
+            <span>Editing</span>
+          </div>
+
+          <div class="project-video-area"
+               data-project-videos="reels">
+
+            <div class="project-loading">
+              Loading videos...
+            </div>
+
+          </div>
+
+        </article>
+
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ================= CTA ================= -->
+
+  <section class="cta-section">
+
+    <div class="container">
+
+      <div class="cta-box">
+
+        <div class="eyebrow">
+          HAVE A PROJECT?
+        </div>
+
+        <h2>
+          Let's make<br>
+          <em>something memorable.</em>
+        </h2>
+
+        <a href="contact.html" class="button">
+          Start a Conversation
+        </a>
+
+      </div>
+
+    </div>
+
+  </section>
 
 </main>
 
-<footer class="footer container">
-  <span>© <span class="year"></span> Kalyan Chitteti</span>
-  <span>Video Editor · Colorist · DI Artist</span>
-  <span>India</span>
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="site-footer">
+
+  <div class="container footer-inner">
+
+    <div>
+      © <span class="year"></span> Kalyan Chitteti
+    </div>
+
+    <div>
+      Video Editor · Colorist · DI Artist
+    </div>
+
+    <div>
+      India
+    </div>
+
+  </div>
+
 </footer>
 
+
+<!-- ================= VIDEO MODAL ================= -->
+
+<div id="projectsVideoModal"
+     class="modal-backdrop"
+     aria-hidden="true">
+
+  <div class="modal project-video-modal"
+       role="dialog"
+       aria-modal="true">
+
+    <button
+      class="modal-close"
+      type="button"
+      aria-label="Close video">
+      ×
+    </button>
+
+    <div class="eyebrow"
+         id="projectModalCategory">
+    </div>
+
+    <h2 id="projectModalTitle">
+    </h2>
+
+    <video
+      id="projectModalPlayer"
+      controls
+      playsinline
+      preload="metadata">
+    </video>
+
+  </div>
+
+</div>
+
+
+<!-- ================= PROJECT VIDEO SCRIPT ================= -->
+
+<script>
+
+const PROJECT_REPO_API =
+  'https://api.github.com/repos/k-editor214/kalyan-portfolio/contents/assets/videos';
+
+
+const PROJECT_NAMES = {
+
+  'short-films': 'Short Films',
+
+  'advertisements': 'Advertisements',
+
+  'wedding-videos': 'Wedding Films',
+
+  'color-grading': 'Color & DI',
+
+  'company-designs': 'Company Content',
+
+  'product-promotions': 'Product Promotions',
+
+  'story': 'Story',
+
+  'reels': 'Reels'
+
+};
+
+
+async function getProjectVideos(folder) {
+
+  try {
+
+    const response = await fetch(
+      PROJECT_REPO_API +
+      '/' +
+      folder +
+      '?ref=main&v=' +
+      Date.now(),
+      {
+        cache: 'no-store'
+      }
+    );
+
+    if (!response.ok) {
+
+      throw new Error(
+        'GitHub returned ' + response.status
+      );
+
+    }
+
+    const files = await response.json();
+
+    if (!Array.isArray(files)) {
+      return [];
+    }
+
+    return files
+      .filter(file =>
+        file.type === 'file' &&
+        /\.mp4$/i.test(file.name)
+      )
+      .sort((a, b) =>
+        a.name.localeCompare(
+          b.name,
+          undefined,
+          { numeric: true }
+        )
+      );
+
+  } catch (error) {
+
+    console.error(
+      'Could not load ' + folder,
+      error
+    );
+
+    return [];
+
+  }
+
+}
+
+
+function createProjectVideo(file, folder) {
+
+  const videoURL =
+    'assets/videos/' +
+    folder +
+    '/' +
+    file.name;
+
+  const wrapper =
+    document.createElement('div');
+
+  wrapper.className =
+    'project-video-item';
+
+
+  const video =
+    document.createElement('video');
+
+  video.src = videoURL;
+
+  video.controls = true;
+
+  video.playsInline = true;
+
+  video.preload = 'metadata';
+
+  video.muted = true;
+
+
+  /*
+    Reels = vertical
+    Everything else = landscape
+  */
+
+  if (folder === 'reels') {
+
+    video.classList.add(
+      'project-video-vertical'
+    );
+
+  } else {
+
+    video.classList.add(
+      'project-video-landscape'
+    );
+
+  }
+
+
+  const title =
+    document.createElement('div');
+
+  title.className =
+    'project-video-name';
+
+  title.textContent =
+    file.name;
+
+
+  /*
+    Click video itself to open
+    larger modal.
+  */
+
+  video.addEventListener(
+    'click',
+    function(event) {
+
+      event.preventDefault();
+
+      openProjectVideo(
+        videoURL,
+        file.name,
+        PROJECT_NAMES[folder],
+        folder === 'reels'
+      );
+
+    }
+  );
+
+
+  wrapper.appendChild(video);
+
+  wrapper.appendChild(title);
+
+  return wrapper;
+
+}
+
+
+async function loadProjectCard(card) {
+
+  const folder =
+    card.dataset.project;
+
+  const container =
+    card.querySelector(
+      '[data-project-videos]'
+    );
+
+  if (!container) return;
+
+
+  const files =
+    await getProjectVideos(folder);
+
+
+  container.innerHTML = '';
+
+
+  /*
+    No videos in this folder
+  */
+
+  if (!files.length) {
+
+    container.innerHTML = `
+      <div class="project-no-video">
+        No videos uploaded yet.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  /*
+    Show every uploaded video.
+    1 video = 1 video.
+    10 videos = 10 videos.
+  */
+
+  files.forEach(file => {
+
+    const video =
+      createProjectVideo(
+        file,
+        folder
+      );
+
+    container.appendChild(video);
+
+  });
+
+}
+
+
+function openProjectVideo(
+  src,
+  title,
+  category,
+  vertical
+) {
+
+  const modal =
+    document.getElementById(
+      'projectsVideoModal'
+    );
+
+  const player =
+    document.getElementById(
+      'projectModalPlayer'
+    );
+
+  const titleElement =
+    document.getElementById(
+      'projectModalTitle'
+    );
+
+  const categoryElement =
+    document.getElementById(
+      'projectModalCategory'
+    );
+
+
+  categoryElement.textContent =
+    category +
+    ' · ' +
+    (vertical ? '9:16' : '16:9');
+
+
+  titleElement.textContent =
+    title;
+
+
+  player.src = src;
+
+
+  player.style.aspectRatio =
+    vertical ? '9 / 16' : '16 / 9';
+
+
+  player.style.objectFit =
+    'contain';
+
+
+  modal.classList.add('open');
+
+  document.body.classList.add(
+    'modal-open'
+  );
+
+
+  modal.setAttribute(
+    'aria-hidden',
+    'false'
+  );
+
+
+  player.play().catch(() => {});
+
+}
+
+
+function closeProjectVideo() {
+
+  const modal =
+    document.getElementById(
+      'projectsVideoModal'
+    );
+
+  const player =
+    document.getElementById(
+      'projectModalPlayer'
+    );
+
+
+  player.pause();
+
+  player.removeAttribute('src');
+
+  player.load();
+
+
+  modal.classList.remove('open');
+
+  document.body.classList.remove(
+    'modal-open'
+  );
+
+
+  modal.setAttribute(
+    'aria-hidden',
+    'true'
+  );
+
+}
+
+
+document.addEventListener(
+  'DOMContentLoaded',
+  function() {
+
+
+    /*
+      Load every project card
+    */
+
+    document
+      .querySelectorAll(
+        '[data-project]'
+      )
+      .forEach(card => {
+
+        loadProjectCard(card);
+
+      });
+
+
+    /*
+      Close button
+    */
+
+    const closeButton =
+      document.querySelector(
+        '#projectsVideoModal .modal-close'
+      );
+
+    closeButton?.addEventListener(
+      'click',
+      closeProjectVideo
+    );
+
+
+    /*
+      Click outside modal
+    */
+
+    document
+      .getElementById(
+        'projectsVideoModal'
+      )
+      ?.addEventListener(
+        'click',
+        function(event) {
+
+          if (
+            event.target === this
+          ) {
+
+            closeProjectVideo();
+
+          }
+
+        }
+      );
+
+
+    /*
+      Escape key
+    */
+
+    document.addEventListener(
+      'keydown',
+      function(event) {
+
+        if (
+          event.key === 'Escape'
+        ) {
+
+          closeProjectVideo();
+
+        }
+
+      }
+    );
+
+  });
+
+</script>
+
+
+<!-- ================= GLOBAL JS ================= -->
+
 <script src="js/app.js"></script>
+
 </body>
 </html>
