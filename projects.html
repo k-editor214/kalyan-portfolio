@@ -1,52 +1,71 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Kalyan Chitteti — selected creative projects.">
-<title>Projects — Kalyan Chitteti</title>
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects | KalyanEditz</title>
+
+  <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
-<header class="site-header">
-  <a class="brand" href="index.html">
-    <span class="brand-mark">K</span>
-    <span class="brand-text">KALYAN CHITTETI</span>
-  </a>
-  <button class="menu-toggle" type="button" aria-label="Open menu">☰</button>
-  <nav class="main-nav">
-    <a href="index.html" data-page="home">Home</a>
-    <a href="showreel.html" data-page="showreel">Showreel</a>
-    <a href="work.html" data-page="work">Work</a>
-    <a href="projects.html" data-page="projects">Projects</a>
-    <a href="team.html" data-page="team">Team</a>
-    <a href="tools.html" data-page="tools">Tools</a>
-    <a href="about.html" data-page="about">About</a>
-    <a href="contact.html" data-page="contact">Contact</a>
-  </nav>
-</header>
+  <div id="projectLibrary"></div>
 
-<main>
-  <section class="container page-head">
-    <div>
-      <div class="eyebrow">Selected Projects</div>
-      <h1>Ideas into finished work.</h1>
-      <p>Creative projects across editing, post-production, brand content and visual storytelling.</p>
-    </div>
-  </section>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/config.js"></script>
 
-  <section class="section container" style="padding-top:20px">
-    <div id="projectGrid" class="project-grid" aria-live="polite"></div>
-  </section>
-</main>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
 
-<footer class="footer container">
-  <span>© <span class="year"></span> Kalyan Chitteti</span>
-  <span>Video Editor · Colorist · DI Artist</span>
-  <span>India</span>
-</footer>
+      const container = document.getElementById("projectLibrary");
 
-<script src="js/app.js"></script>
+      if (!window.supabaseClient) {
+        container.innerHTML = "<p>Supabase connection not found.</p>";
+        return;
+      }
+
+      const { data, error } = await window.supabaseClient
+        .from("projects")
+        .select("*")
+        .eq("published", true)
+        .order("created_at", { ascending: true });
+
+      if (error) {
+        console.error(error);
+        container.innerHTML =
+          "<p>Unable to load projects.</p>";
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        container.innerHTML =
+          "<p>No projects available yet.</p>";
+        return;
+      }
+
+      container.innerHTML = data.map(project => `
+        <article class="project-card">
+
+          ${
+            project.thumbnail_url
+              ? `<img src="${project.thumbnail_url}" alt="${project.title}">`
+              : ""
+          }
+
+          <div class="project-content">
+            <span>${project.category || ""}</span>
+
+            <h2>${project.title}</h2>
+
+            <p>${project.description || ""}</p>
+          </div>
+
+        </article>
+      `).join("");
+
+    });
+  </script>
+
 </body>
 </html>
