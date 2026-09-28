@@ -1,73 +1,70 @@
-<section class="admin-section" id="tab-team">
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="KalyanEditz team — editors, photographers and production collaborators.">
+<title>Team — Kalyan Chitteti</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
 
-  <h2>Team Manager</h2>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <span class="brand-mark">K</span>
+    <span class="brand-text">KALYAN CHITTETI</span>
+  </a>
+  <button class="menu-toggle" type="button" aria-label="Open menu">☰</button>
+  <nav class="main-nav">
+    <a href="index.html" data-page="home">Home</a>
+    <a href="showreel.html" data-page="showreel">Showreel</a>
+    <a href="work.html" data-page="work">Work</a>
+    <a href="projects.html" data-page="projects">Projects</a>
+    <a href="team.html" data-page="team">Team</a>
+    <a href="tools.html" data-page="tools">Tools</a>
+    <a href="about.html" data-page="about">About</a>
+    <a href="contact.html" data-page="contact">Contact</a>
+  </nav>
+</header>
 
-  <form id="teamForm">
-
-    <div class="admin-field">
-      <label for="teamName">Name</label>
-      <input
-        type="text"
-        id="teamName"
-        placeholder="Team member name"
-        required
-      >
+<main>
+  <section class="container page-head">
+    <div>
+      <div class="eyebrow">KalyanEditz · Collaboration</div>
+      <h1>The team behind the frame.</h1>
+      <p>Editors, photographers, social media creatives and production collaborators working together across visual projects.</p>
     </div>
+  </section>
 
-    <div class="admin-field">
-      <label for="teamRole">Role</label>
-      <input
-        type="text"
-        id="teamRole"
-        placeholder="Film Editor, Photographer, etc."
-        required
-      >
+  <section class="section container" style="padding-top:20px">
+    <div id="teamGrid" class="team-grid" aria-live="polite"></div>
+  </section>
+</main>
+
+<div class="modal-backdrop" id="teamModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="teamModalName">
+    <button class="modal-close" type="button" data-close aria-label="Close">×</button>
+    <div class="modal-team">
+      <img data-modal-img alt="Team member">
+      <div class="modal-content">
+        <div class="role" data-modal-role></div>
+        <h2 id="teamModalName" data-modal-name></h2>
+        <p data-modal-bio></p>
+        <div class="hero-actions" style="margin-top:22px">
+          <a data-modal-instagram class="btn-outline" target="_blank" rel="noopener">Instagram →</a>
+          <a data-modal-linkedin class="btn-outline" target="_blank" rel="noopener">LinkedIn →</a>
+        </div>
+      </div>
     </div>
+  </div>
+</div>
 
-    <div class="admin-field">
-      <label for="teamBio">Bio</label>
-      <textarea
-        id="teamBio"
-        placeholder="Short description"
-        rows="4"
-      ></textarea>
-    </div>
+<footer class="footer container">
+  <span>© <span class="year"></span> Kalyan Chitteti</span>
+  <span>Video Editor · Colorist · DI Artist</span>
+  <span>India</span>
+</footer>
 
-    <div class="admin-field">
-      <label for="teamInstagram">Instagram</label>
-      <input
-        type="url"
-        id="teamInstagram"
-        placeholder="https://instagram.com/..."
-      >
-    </div>
-
-    <div class="admin-field">
-      <label for="teamLinkedin">LinkedIn</label>
-      <input
-        type="url"
-        id="teamLinkedin"
-        placeholder="https://linkedin.com/in/..."
-      >
-    </div>
-
-    <div class="admin-field">
-      <label for="teamPhoto">Team Photo</label>
-      <input
-        type="file"
-        id="teamPhoto"
-        accept="image/*"
-      >
-    </div>
-
-    <button type="submit" class="admin-btn">
-      Add Team Member
-    </button>
-
-    <p id="teamMsg"></p>
-
-  </form>
-
-  <div id="teamList"></div>
-
-</section>
+<script src="js/app.js"></script>
+</body>
+</html>

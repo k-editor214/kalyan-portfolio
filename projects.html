@@ -1,55 +1,52 @@
-<section class="admin-section" id="tab-projects">
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Kalyan Chitteti — selected creative projects.">
+<title>Projects — Kalyan Chitteti</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
 
-  <h2>Projects Manager</h2>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <span class="brand-mark">K</span>
+    <span class="brand-text">KALYAN CHITTETI</span>
+  </a>
+  <button class="menu-toggle" type="button" aria-label="Open menu">☰</button>
+  <nav class="main-nav">
+    <a href="index.html" data-page="home">Home</a>
+    <a href="showreel.html" data-page="showreel">Showreel</a>
+    <a href="work.html" data-page="work">Work</a>
+    <a href="projects.html" data-page="projects">Projects</a>
+    <a href="team.html" data-page="team">Team</a>
+    <a href="tools.html" data-page="tools">Tools</a>
+    <a href="about.html" data-page="about">About</a>
+    <a href="contact.html" data-page="contact">Contact</a>
+  </nav>
+</header>
 
-  <form id="projectForm">
-
-    <div class="admin-field">
-      <label for="projectTitle">Project Title</label>
-      <input
-        type="text"
-        id="projectTitle"
-        placeholder="Project name"
-        required
-      >
+<main>
+  <section class="container page-head">
+    <div>
+      <div class="eyebrow">Selected Projects</div>
+      <h1>Ideas into finished work.</h1>
+      <p>Creative projects across editing, post-production, brand content and visual storytelling.</p>
     </div>
+  </section>
 
-    <div class="admin-field">
-      <label for="projectCategory">Category</label>
-      <input
-        type="text"
-        id="projectCategory"
-        placeholder="Short Film, Advertisement, Reel, etc."
-        required
-      >
-    </div>
+  <section class="section container" style="padding-top:20px">
+    <div id="projectGrid" class="project-grid" aria-live="polite"></div>
+  </section>
+</main>
 
-    <div class="admin-field">
-      <label for="projectDescription">Description</label>
-      <textarea
-        id="projectDescription"
-        placeholder="Project description"
-        rows="4"
-      ></textarea>
-    </div>
+<footer class="footer container">
+  <span>© <span class="year"></span> Kalyan Chitteti</span>
+  <span>Video Editor · Colorist · DI Artist</span>
+  <span>India</span>
+</footer>
 
-    <div class="admin-field">
-      <label for="projectThumb">Project Thumbnail</label>
-      <input
-        type="file"
-        id="projectThumb"
-        accept="image/*"
-      >
-    </div>
-
-    <button type="submit" class="admin-btn">
-      Add Project
-    </button>
-
-    <p id="projectMsg"></p>
-
-  </form>
-
-  <div id="projectList"></div>
-
-</section>
+<script src="js/app.js"></script>
+</body>
+</html>
