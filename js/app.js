@@ -1,11 +1,6 @@
 // ============================================================
 // KALYANEDITZ PORTFOLIO
-// Supabase-powered Work / Videos
-// ============================================================
-
-
-// ============================================================
-// CATEGORIES
+// Existing portfolio videos + Supabase uploaded videos
 // ============================================================
 
 const CATEGORIES = {
@@ -75,16 +70,13 @@ const $$ = (selector, root = document) =>
 // ============================================================
 
 async function setupSupabase() {
-
   try {
 
-    // Supabase library
     if (!window.supabase) {
 
       await new Promise((resolve, reject) => {
 
-        const script =
-          document.createElement("script");
+        const script = document.createElement("script");
 
         script.src =
           "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
@@ -98,17 +90,13 @@ async function setupSupabase() {
 
     }
 
-
-    // config.js
     if (!window.supabaseClient) {
 
       await new Promise((resolve, reject) => {
 
-        const script =
-          document.createElement("script");
+        const script = document.createElement("script");
 
-        script.src =
-          "assets/js/config.js";
+        script.src = "assets/js/config.js";
 
         script.onload = resolve;
         script.onerror = reject;
@@ -119,31 +107,15 @@ async function setupSupabase() {
 
     }
 
-
-    if (!window.supabaseClient) {
-
-      console.error(
-        "Supabase client was not created."
-      );
-
-      return false;
-
-    }
-
-
-    return true;
+    return !!window.supabaseClient;
 
   } catch (error) {
 
-    console.error(
-      "Supabase setup failed:",
-      error
-    );
+    console.error("Supabase setup failed:", error);
 
     return false;
 
   }
-
 }
 
 
@@ -153,47 +125,28 @@ async function setupSupabase() {
 
 function initNav() {
 
-  const toggle =
-    $(".menu-toggle");
+  const toggle = $(".menu-toggle");
+  const nav = $(".main-nav");
 
-  const nav =
-    $(".main-nav");
-
-
-  toggle?.addEventListener(
-    "click",
-    () => {
-
-      nav?.classList.toggle("open");
-
-    }
-  );
-
+  toggle?.addEventListener("click", () => {
+    nav?.classList.toggle("open");
+  });
 
   const file =
-    location.pathname
-      .split("/")
-      .pop() || "index.html";
-
+    location.pathname.split("/").pop() || "index.html";
 
   const page =
     file === "index.html" || file === ""
       ? "home"
       : file.replace(".html", "");
 
+  $$(".main-nav a[data-page]").forEach(link => {
 
-  $$(".main-nav a[data-page]")
-    .forEach(link => {
+    if (link.dataset.page === page) {
+      link.classList.add("active");
+    }
 
-      if (
-        link.dataset.page === page
-      ) {
-
-        link.classList.add("active");
-
-      }
-
-    });
+  });
 
 }
 
@@ -204,40 +157,12 @@ function initNav() {
 
 function setYear() {
 
-  $$(".year").forEach(
-    element => {
+  $$(".year").forEach(element => {
 
-      element.textContent =
-        new Date().getFullYear();
+    element.textContent =
+      new Date().getFullYear();
 
-    }
-  );
-
-}
-
-
-// ============================================================
-// IMAGE ERROR
-// ============================================================
-
-function initImages() {
-
-  $$("img").forEach(
-    image => {
-
-      image.addEventListener(
-        "error",
-        () => {
-
-          image.classList.add(
-            "image-load-error"
-          );
-
-        }
-      );
-
-    }
-  );
+  });
 
 }
 
@@ -253,125 +178,165 @@ function getCategoryMeta(category) {
       .trim()
       .toLowerCase();
 
-
   const found =
-    Object.values(CATEGORIES)
-      .find(item =>
-        item.folder.toLowerCase() === value
-      );
+    Object.values(CATEGORIES).find(
+      item => item.folder.toLowerCase() === value
+    );
 
-
-  if (found) {
-
-    return found;
-
-  }
-
-
-  return {
-
-    label:
-      category || "Work",
-
-    folder:
-      value || "other",
-
-    ratio:
-      "16:9"
-
+  return found || {
+    label: category || "Work",
+    folder: value || "other",
+    ratio: "16:9"
   };
+}
+
+
+// ============================================================
+// OLD / EXISTING PORTFOLIO VIDEOS
+// ============================================================
+
+const STATIC_VIDEOS = {
+
+  reels: [
+    "reel-1.mp4",
+    "reel-5.mp4"
+  ],
+
+  advertisements: [
+    "advertisement-1.mp4"
+  ],
+
+  companyDesigns: [],
+
+  shortFilms: [
+    "short-film-1.mp4",
+    "short-film-2.mp4"
+  ],
+
+  weddingVideos: [],
+
+  story: [
+    "story-1.mp4",
+    "story-2.mp4"
+  ],
+
+  productPromotions: [],
+
+  colorGrading: [
+    "color-grading-1.mp4"
+  ]
+
+};
+
+
+// ============================================================
+// GET OLD STATIC VIDEOS
+// ============================================================
+
+function getStaticVideos() {
+
+  const videos = [];
+
+  Object.entries(STATIC_VIDEOS).forEach(
+    ([folder, files]) => {
+
+      const meta =
+        getCategoryMeta(folder);
+
+      files.forEach(file => {
+
+        videos.push({
+
+          id:
+            `static-${folder}-${file}`,
+
+          name:
+            file
+              .replace(/\.[^/.]+$/, "")
+              .replace(/[-_]/g, " "),
+
+          url:
+            `assets/videos/${folder}/${encodeURIComponent(file)}`,
+
+          category:
+            folder,
+
+          static:
+            true
+
+        });
+
+      });
+
+    }
+  );
+
+  return videos;
 
 }
 
 
 // ============================================================
-// LOAD VIDEOS FROM SUPABASE
+// GET SUPABASE VIDEOS
 // ============================================================
 
 async function getSupabaseVideos() {
 
+  if (!window.supabaseClient) {
+    return [];
+  }
+
   try {
 
-    if (!window.supabaseClient) {
-
-      console.error(
-        "Supabase client unavailable."
-      );
-
-      return [];
-
-    }
-
-
-    const result =
+    const { data, error } =
       await window.supabaseClient
         .from("videos")
         .select("*")
         .eq("published", true)
-        .order(
-          "created_at",
-          {
-            ascending: false
-          }
-        );
+        .order("created_at", {
+          ascending: false
+        });
 
-
-    if (result.error) {
+    if (error) {
 
       console.error(
         "Supabase videos error:",
-        result.error
+        error
       );
 
       return [];
 
     }
 
-
-    return result.data || [];
+    return data || [];
 
   } catch (error) {
 
     console.error(
-      "Video loading error:",
+      "Could not load Supabase videos:",
       error
     );
 
     return [];
 
   }
-
 }
 
 
 // ============================================================
-// GET VIDEOS FOR CATEGORY
+// COMBINE OLD + NEW VIDEOS
 // ============================================================
 
-async function listVideos(category) {
+async function getAllVideos() {
 
-  const allVideos =
+  const staticVideos =
+    getStaticVideos();
+
+  const supabaseVideos =
     await getSupabaseVideos();
 
-
-  const wanted =
-    String(category || "")
-      .trim()
-      .toLowerCase();
-
-
-  return allVideos
-    .filter(video => {
-
-      const actual =
-        String(video.category || "")
-          .trim()
-          .toLowerCase();
-
-      return actual === wanted;
-
-    })
-    .map(video => ({
+  const newVideos =
+    supabaseVideos.map(video => ({
 
       id:
         video.id,
@@ -383,7 +348,9 @@ async function listVideos(category) {
         video.file_url,
 
       category:
-        video.category,
+        String(video.category || "")
+          .trim()
+          .toLowerCase(),
 
       file_path:
         video.file_path,
@@ -392,9 +359,21 @@ async function listVideos(category) {
         video.media_type,
 
       created_at:
-        video.created_at
+        video.created_at,
+
+      static:
+        false
 
     }));
+
+
+  // IMPORTANT:
+  // Keep old portfolio work AND new Supabase work.
+
+  return [
+    ...staticVideos,
+    ...newVideos
+  ];
 
 }
 
@@ -428,24 +407,21 @@ function openVideoModal(
 
     modal.innerHTML = `
 
-      <div
-        class="modal"
-        role="dialog"
-        aria-modal="true"
-      >
+      <div class="modal"
+           role="dialog"
+           aria-modal="true">
 
         <button
           class="modal-close"
           type="button"
-          aria-label="Close"
-        >
+          aria-label="Close">
           ×
         </button>
 
         <div
           class="eyebrow"
-          data-modal-category
-        ></div>
+          data-modal-category>
+        </div>
 
         <h2 data-modal-title></h2>
 
@@ -453,8 +429,8 @@ function openVideoModal(
           class="video-modal-player"
           controls
           playsinline
-          preload="metadata"
-        ></video>
+          preload="metadata">
+        </video>
 
       </div>
 
@@ -464,35 +440,28 @@ function openVideoModal(
     document.body.appendChild(modal);
 
 
-    const close =
-      () => {
+    const close = () => {
 
-        const player =
-          $("video", modal);
+      const player =
+        $("video", modal);
 
+      if (player) {
 
-        if (player) {
+        player.pause();
 
-          player.pause();
+        player.removeAttribute("src");
 
-          player.removeAttribute(
-            "src"
-          );
+        player.load();
 
-          player.load();
+      }
 
-        }
+      modal.classList.remove("open");
 
+      document.body.classList.remove(
+        "modal-open"
+      );
 
-        modal.classList.remove(
-          "open"
-        );
-
-        document.body.classList.remove(
-          "modal-open"
-        );
-
-      };
+    };
 
 
     $(".modal-close", modal)
@@ -506,12 +475,8 @@ function openVideoModal(
       "click",
       event => {
 
-        if (
-          event.target === modal
-        ) {
-
+        if (event.target === modal) {
           close();
-
         }
 
       }
@@ -522,12 +487,8 @@ function openVideoModal(
       "keydown",
       event => {
 
-        if (
-          event.key === "Escape"
-        ) {
-
+        if (event.key === "Escape") {
           close();
-
         }
 
       }
@@ -540,20 +501,16 @@ function openVideoModal(
     $("video", modal);
 
 
-  $(
-    "[data-modal-category]",
-    modal
-  ).textContent =
-    `${category} · ${
-      vertical ? "9:16" : "16:9"
-    }`;
+  $("[data-modal-category]", modal)
+    .textContent =
+      `${category} · ${
+        vertical ? "9:16" : "16:9"
+      }`;
 
 
-  $(
-    "[data-modal-title]",
-    modal
-  ).textContent =
-    title;
+  $("[data-modal-title]", modal)
+    .textContent =
+      title;
 
 
   player.style.aspectRatio =
@@ -565,14 +522,10 @@ function openVideoModal(
   player.src =
     src;
 
-
   player.load();
 
 
-  modal.classList.add(
-    "open"
-  );
-
+  modal.classList.add("open");
 
   document.body.classList.add(
     "modal-open"
@@ -582,36 +535,26 @@ function openVideoModal(
 
 
 // ============================================================
-// VIDEO CARD
+// CREATE VIDEO CARD
 // ============================================================
 
-function createVideoCard(
-  video,
-  meta
-) {
+function createVideoCard(video) {
 
-  const src =
-    video.url;
-
-
-  const title =
-    video.name ||
-    meta.label;
-
+  const meta =
+    getCategoryMeta(video.category);
 
   const vertical =
     meta.ratio === "9:16";
 
+  const title =
+    video.name || meta.label;
+
 
   const card =
-    document.createElement(
-      "article"
-    );
-
+    document.createElement("article");
 
   card.className =
     "video-card";
-
 
   card.dataset.category =
     meta.folder;
@@ -619,26 +562,22 @@ function createVideoCard(
 
   card.innerHTML = `
 
-    <div
-      class="video-thumb ${
-        vertical ? "vertical" : ""
-      }"
-    >
+    <div class="video-thumb ${
+      vertical ? "vertical" : ""
+    }">
 
       <video
-        src="${src}"
+        src="${video.url}"
         preload="metadata"
         muted
-        playsinline
-      ></video>
+        playsinline>
+      </video>
 
       <div class="video-overlay">
 
         <button
           class="video-play"
-          type="button"
-          aria-label="Play ${title}"
-        >
+          type="button">
           ▶
         </button>
 
@@ -650,35 +589,30 @@ function createVideoCard(
 
       <div class="meta">
 
-        <span>
-          ${meta.label}
-        </span>
+        <span>${meta.label}</span>
 
-        <span>
-          ${meta.ratio}
-        </span>
+        <span>${meta.ratio}</span>
 
       </div>
 
-      <h3>
-        ${title}
-      </h3>
+      <h3>${title}</h3>
 
     </div>
 
   `;
 
 
-  const videoElement =
+  const player =
     $("video", card);
 
 
-  videoElement?.addEventListener(
+  player?.addEventListener(
     "error",
     () => {
 
-      card.classList.add(
-        "video-error"
+      console.warn(
+        "Video could not load:",
+        video.url
       );
 
     }
@@ -691,7 +625,7 @@ function createVideoCard(
       () => {
 
         openVideoModal(
-          src,
+          video.url,
           title,
           meta.label,
           vertical
@@ -707,79 +641,7 @@ function createVideoCard(
 
 
 // ============================================================
-// ALL VIDEO GROUPS
-// ============================================================
-
-async function getAllVideoGroups() {
-
-  const allVideos =
-    await getSupabaseVideos();
-
-
-  const groups = [];
-
-
-  Object.values(CATEGORIES)
-    .forEach(meta => {
-
-      const files =
-        allVideos.filter(video => {
-
-          const category =
-            String(
-              video.category || ""
-            )
-              .trim()
-              .toLowerCase();
-
-
-          return (
-            category ===
-            meta.folder.toLowerCase()
-          );
-
-        });
-
-
-      if (files.length) {
-
-        groups.push({
-
-          meta,
-
-          files: files.map(video => ({
-
-            id:
-              video.id,
-
-            name:
-              video.title,
-
-            url:
-              video.file_url,
-
-            category:
-              video.category,
-
-            file_path:
-              video.file_path
-
-          }))
-
-        });
-
-      }
-
-    });
-
-
-  return groups;
-
-}
-
-
-// ============================================================
-// WORK LIBRARY
+// WORK PAGE
 // ============================================================
 
 async function initWorkLibrary() {
@@ -787,46 +649,31 @@ async function initWorkLibrary() {
   const container =
     $("#videoLibrary");
 
-
   if (!container) {
-
     return;
-
   }
 
 
-  container.innerHTML = `
-
-    <div class="video-loading">
-
-      Loading work...
-
-    </div>
-
-  `;
-
-
-  const filterBar =
-    $(".video-filters");
-
-
-  const groups =
-    await getAllVideoGroups();
-
-
   container.innerHTML =
-    "";
+    `<div class="video-loading">
+      Loading work...
+    </div>`;
 
 
-  if (!groups.length) {
+  const allVideos =
+    await getAllVideos();
+
+
+  container.innerHTML = "";
+
+
+  if (!allVideos.length) {
 
     container.innerHTML = `
 
       <div class="empty-state">
 
-        <h3>
-          No published work yet.
-        </h3>
+        <h3>No work available.</h3>
 
         <p>
           Upload videos from the admin dashboard.
@@ -841,63 +688,69 @@ async function initWorkLibrary() {
   }
 
 
-  groups.forEach(
-    ({ meta, files }) => {
+  // ----------------------------------------------------------
+  // GROUP VIDEOS BY CATEGORY
+  // ----------------------------------------------------------
 
-      const label =
-        document.createElement(
-          "div"
-        );
+  Object.values(CATEGORIES).forEach(meta => {
 
-
-      label.className =
-        "video-section-label";
-
-
-      label.dataset.section =
-        meta.folder;
+    const videos =
+      allVideos.filter(video =>
+        String(video.category)
+          .toLowerCase() ===
+        meta.folder.toLowerCase()
+      );
 
 
-      label.textContent =
-        meta.label;
+    if (!videos.length) {
+      return;
+    }
 
+
+    const label =
+      document.createElement("div");
+
+    label.className =
+      "video-section-label";
+
+    label.dataset.section =
+      meta.folder;
+
+    label.textContent =
+      meta.label;
+
+
+    container.appendChild(label);
+
+
+    videos.forEach(video => {
 
       container.appendChild(
-        label
+        createVideoCard(video)
       );
 
+    });
 
-      files.forEach(
-        file => {
-
-          container.appendChild(
-            createVideoCard(
-              file,
-              meta
-            )
-          );
-
-        }
-      );
-
-    }
-  );
+  });
 
 
+  // ----------------------------------------------------------
   // FILTERS
+  // ----------------------------------------------------------
+
+  const filterBar =
+    $(".video-filters");
 
   if (!filterBar) {
-
     return;
-
   }
 
 
   const available =
     new Set(
-      groups.map(
-        ({ meta }) =>
-          meta.folder
+      allVideos.map(video =>
+        String(video.category)
+          .toLowerCase()
       )
     );
 
@@ -911,11 +764,12 @@ async function initWorkLibrary() {
 
       if (
         filter !== "all" &&
-        !available.has(filter)
+        !available.has(
+          filter.toLowerCase()
+        )
       ) {
 
-        button.hidden =
-          true;
+        button.hidden = true;
 
       }
 
@@ -925,27 +779,20 @@ async function initWorkLibrary() {
         () => {
 
           $$(".filter", filterBar)
-            .forEach(
-              item =>
-                item.classList.remove(
-                  "active"
-                )
+            .forEach(item =>
+              item.classList.remove("active")
             );
 
 
-          button.classList.add(
-            "active"
-          );
+          button.classList.add("active");
 
 
           $$(".video-card", container)
             .forEach(card => {
 
               card.style.display =
-                (
-                  filter === "all" ||
-                  card.dataset.category === filter
-                )
+                filter === "all" ||
+                card.dataset.category === filter
                   ? ""
                   : "none";
 
@@ -956,10 +803,8 @@ async function initWorkLibrary() {
             .forEach(label => {
 
               label.style.display =
-                (
-                  filter === "all" ||
-                  label.dataset.section === filter
-                )
+                filter === "all" ||
+                label.dataset.section === filter
                   ? ""
                   : "none";
 
@@ -974,7 +819,7 @@ async function initWorkLibrary() {
 
 
 // ============================================================
-// FEATURED WORK
+// FEATURED WORK ON HOME PAGE
 // ============================================================
 
 async function initFeaturedWork() {
@@ -982,418 +827,380 @@ async function initFeaturedWork() {
   const grid =
     $("[data-featured-work]");
 
-
   if (!grid) {
-
     return;
-
   }
-
-
-  const wanted = [
-
-    "reels",
-
-    "advertisements",
-
-    "wedding-videos",
-
-    "color-grading",
-
-    "short-films",
-
-    "product-promotions"
-
-  ];
-
-
-  const found = [];
 
 
   const allVideos =
-    await getSupabaseVideos();
+    await getAllVideos();
 
 
-  wanted.forEach(
-    folder => {
+  grid.innerHTML = "";
 
-      const meta =
-        Object.values(
-          CATEGORIES
-        ).find(
-          item =>
-            item.folder === folder
+
+  const wanted = [
+    "reels",
+    "advertisements",
+    "wedding-videos",
+    "color-grading",
+    "short-films",
+    "product-promotions"
+  ];
+
+
+  wanted.forEach(folder => {
+
+    const meta =
+      Object.values(CATEGORIES)
+        .find(item =>
+          item.folder === folder
         );
 
 
-      if (!meta) {
-
-        return;
-
-      }
-
-
-      const video =
-        allVideos.find(
-          item =>
-            String(
-              item.category || ""
-            )
-              .trim()
-              .toLowerCase() ===
-            folder.toLowerCase()
-        );
-
-
-      if (video) {
-
-        found.push({
-
-          meta,
-
-          file: {
-
-            name:
-              video.title,
-
-            url:
-              video.file_url
-
-          }
-
-        });
-
-      }
-
+    if (!meta) {
+      return;
     }
-  );
 
 
-  grid.innerHTML =
-    "";
-
-
-  if (!found.length) {
-
-    grid.closest("section")
-      ?.classList.add(
-        "is-empty"
+    const video =
+      allVideos.find(item =>
+        String(item.category)
+          .toLowerCase() ===
+        folder.toLowerCase()
       );
 
-    return;
 
-  }
-
-
-  found.forEach(
-    ({ meta, file }) => {
-
-      const vertical =
-        meta.ratio === "9:16";
+    if (!video) {
+      return;
+    }
 
 
-      const card =
-        document.createElement(
-          "article"
-        );
+    const vertical =
+      meta.ratio === "9:16";
 
 
-      card.className =
-        `featured-card ${
-          vertical
-            ? "is-vertical"
-            : ""
-        }`;
+    const card =
+      document.createElement("article");
+
+    card.className =
+      `featured-card ${
+        vertical ? "is-vertical" : ""
+      }`;
 
 
-      card.innerHTML = `
+    card.innerHTML = `
 
-        <div class="featured-media">
+      <div class="featured-media">
 
-          <video
-            src="${file.url}"
-            muted
-            playsinline
-            preload="metadata"
-          ></video>
+        <video
+          src="${video.url}"
+          muted
+          playsinline
+          preload="metadata">
+        </video>
 
-          <div class="featured-fallback">
+        <div class="featured-fallback">
 
-            <div>
+          <div>
 
-              <strong>
-                ${file.name}
-              </strong>
+            <strong>
+              ${video.name}
+            </strong>
 
-              <small>
-                ${meta.ratio}
-              </small>
-
-            </div>
+            <small>
+              ${meta.ratio}
+            </small>
 
           </div>
 
-          <button
-            class="featured-play"
-            type="button"
-          >
-            ▶
-          </button>
-
         </div>
 
+        <button
+          class="featured-play"
+          type="button">
+          ▶
+        </button>
 
-        <div class="featured-meta">
-
-          <span>
-            ${meta.label}
-          </span>
-
-          <h3>
-            ${file.name}
-          </h3>
-
-        </div>
-
-      `;
+      </div>
 
 
-      const player =
-        $("video", card);
+      <div class="featured-meta">
+
+        <span>
+          ${meta.label}
+        </span>
+
+        <h3>
+          ${video.name}
+        </h3>
+
+      </div>
+
+    `;
 
 
-      player?.addEventListener(
-        "loadeddata",
+    const player =
+      $("video", card);
+
+
+    player?.addEventListener(
+      "loadeddata",
+      () => {
+
+        $(".featured-media", card)
+          ?.classList.add("has-video");
+
+      }
+    );
+
+
+    $(".featured-play", card)
+      ?.addEventListener(
+        "click",
         () => {
 
-          $(".featured-media", card)
-            ?.classList.add(
-              "has-video"
-            );
-
-        }
-      );
-
-
-      player?.addEventListener(
-        "error",
-        () => {
-
-          console.warn(
-            "Featured video could not load:",
-            file.url
+          openVideoModal(
+            video.url,
+            video.name,
+            meta.label,
+            vertical
           );
 
         }
       );
 
 
-      $(".featured-play", card)
-        ?.addEventListener(
-          "click",
-          () => {
+    grid.appendChild(card);
 
-            openVideoModal(
-              file.url,
-              file.name,
-              meta.label,
-              vertical
-            );
-
-          }
-        );
-
-
-      grid.appendChild(
-        card
-      );
-
-    }
-  );
-
-}
-
-
-// ============================================================
-// TEAM MODAL
-// ============================================================
-
-function initTeam() {
-  const grid = $("#teamGrid");
-  const modal = $("#teamModal");
-
-  if (!grid) return;
-
-  const openModal = (data) => {
-    if (!modal) return;
-
-    const image = $("[data-modal-img]", modal);
-    const name = $("[data-modal-name]", modal);
-    const role = $("[data-modal-role]", modal);
-    const bio = $("[data-modal-bio]", modal);
-    const instagram = $("[data-modal-instagram]", modal);
-    const linkedin = $("[data-modal-linkedin]", modal);
-
-    if (image) {
-      image.src = data.image || "";
-      image.alt = data.name || "Team member";
-      image.hidden = !data.image;
-    }
-    if (name) name.textContent = data.name || "Team";
-    if (role) role.textContent = data.role || "";
-    if (bio) bio.textContent = data.bio || "Profile details will be added soon.";
-
-    if (instagram) {
-      instagram.href = data.instagram || "#";
-      instagram.hidden = !data.instagram;
-    }
-    if (linkedin) {
-      linkedin.href = data.linkedin || "#";
-      linkedin.hidden = !data.linkedin;
-    }
-
-    modal.classList.add("open");
-    document.body.classList.add("modal-open");
-  };
-
-  const closeModal = () => {
-    if (!modal) return;
-    modal.classList.remove("open");
-    document.body.classList.remove("modal-open");
-  };
-
-  if (modal) {
-    $("[data-close]", modal)?.addEventListener("click", closeModal);
-    modal.addEventListener("click", event => {
-      if (event.target === modal) closeModal();
-    });
-  }
-
-  document.addEventListener("keydown", event => {
-    if (event.key === "Escape") closeModal();
   });
 
-  (async () => {
-    const { data, error } = await window.supabaseClient
-      .from("team_members")
-      .select("*")
-      .eq("published", true)
-      .order("created_at", { ascending: false });
+}
 
-    if (error) {
-      console.error("Team loading error:", error);
-    }
 
-    grid.innerHTML = "";
+// ============================================================
+// TEAM
+// ============================================================
 
-    if (!error && data && data.length) {
-      data.forEach(member => {
-        const card = document.createElement("article");
-        card.className = "team-card";
-        card.tabIndex = 0;
+async function initPublicTeam() {
 
-        const photo = member.photo_url
-          ? `<img src="${member.photo_url}" alt="${escapeHtml(member.name)}">`
-          : `<div class="team-avatar">${escapeHtml((member.role || "Team").slice(0, 1))}</div>`;
+  const grid =
+    $("#teamGrid");
 
-        card.innerHTML = `
-          <div class="team-photo">${photo}</div>
-          <div class="team-role">${escapeHtml(member.role)}</div>
-          <h3>${escapeHtml(member.name)}</h3>
-          <p>${escapeHtml(member.bio || "")}</p>
-        `;
+  if (!grid) {
+    return;
+  }
 
-        const details = {
-          name: member.name,
-          role: member.role,
-          bio: member.bio,
-          image: member.photo_url,
-          instagram: member.instagram,
-          linkedin: member.linkedin
-        };
 
-        card.addEventListener("click", () => openModal(details));
-        card.addEventListener("keydown", event => {
-          if (event.key === "Enter" || event.key === " ") {
-            event.preventDefault();
-            openModal(details);
-          }
+  if (!window.supabaseClient) {
+    return;
+  }
+
+
+  try {
+
+    const { data, error } =
+      await window.supabaseClient
+        .from("team_members")
+        .select("*")
+        .eq("published", true)
+        .order("created_at", {
+          ascending: true
         });
 
-        grid.appendChild(card);
-      });
+
+    if (error) {
+
+      console.error(
+        "Team loading error:",
+        error
+      );
+
+      return;
+
+    }
+
+
+    if (!data || !data.length) {
       return;
     }
 
-    // Clean role placeholders — no fake names or photos.
-    [
-      ["Film Editor", "Editing, pacing and story structure."],
-      ["Photographer", "Photography and visual capture."],
-      ["Social Media Team", "Social-first content and publishing."],
-      ["Production Team", "Shoot support and end-to-end production."]
-    ].forEach(([role, bio]) => {
-      const card = document.createElement("article");
-      card.className = "team-card team-placeholder";
-      card.innerHTML = `
-        <div class="team-photo"><div class="team-avatar">+</div></div>
-        <div class="team-role">${role}</div>
-        <h3>Profile coming soon</h3>
-        <p>${bio}</p>
-      `;
-      grid.appendChild(card);
-    });
-  })();
-}
-
-function initProjects() {
-  const grid = $("#projectGrid");
-  if (!grid) return;
-
-  (async () => {
-    const { data, error } = await window.supabaseClient
-      .from("projects")
-      .select("*")
-      .eq("published", true)
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error("Projects loading error:", error);
-    }
 
     grid.innerHTML = "";
 
-    if (!error && data && data.length) {
-      data.forEach((project, index) => {
-        const card = document.createElement("article");
-        card.className = "project-card";
-        card.innerHTML = `
-          ${project.thumbnail_url ? `<img class="project-thumb" src="${project.thumbnail_url}" alt="${escapeHtml(project.title)}">` : ""}
-          <div class="num">${String(index + 1).padStart(2, "0")}</div>
-          <h3>${escapeHtml(project.title)}</h3>
-          <p>${escapeHtml(project.description || "")}</p>
-          <div class="project-tags"><span>${escapeHtml(project.category)}</span></div>
-        `;
-        grid.appendChild(card);
-      });
+
+    data.forEach(member => {
+
+      const card =
+        document.createElement("article");
+
+      card.className =
+        "team-card";
+
+
+      const image =
+        member.photo_url
+          ? `<img src="${member.photo_url}" alt="${member.name}">`
+          : `<div class="team-avatar">
+               ${String(member.name)
+                 .charAt(0)
+                 .toUpperCase()}
+             </div>`;
+
+
+      card.innerHTML = `
+
+        <div class="team-photo">
+          ${image}
+        </div>
+
+        <div class="team-role">
+          ${member.role || ""}
+        </div>
+
+        <h3>
+          ${member.name || ""}
+        </h3>
+
+        <p>
+          ${member.bio || ""}
+        </p>
+
+      `;
+
+
+      grid.appendChild(card);
+
+    });
+
+  } catch (error) {
+
+    console.error(
+      "Team error:",
+      error
+    );
+
+  }
+
+}
+
+
+// ============================================================
+// PROJECTS
+// ============================================================
+
+async function initPublicProjects() {
+
+  const grid =
+    $("#projectGrid");
+
+  if (!grid) {
+    return;
+  }
+
+
+  if (!window.supabaseClient) {
+    return;
+  }
+
+
+  try {
+
+    const { data, error } =
+      await window.supabaseClient
+        .from("projects")
+        .select("*")
+        .eq("published", true)
+        .order("created_at", {
+          ascending: true
+        });
+
+
+    if (error) {
+
+      console.error(
+        "Projects loading error:",
+        error
+      );
+
+      return;
+
+    }
+
+
+    if (!data || !data.length) {
       return;
     }
 
-    grid.innerHTML = `
-      <div class="empty-state">
-        <h3>No projects published yet.</h3>
-        <p>Add projects from the private admin dashboard.</p>
-      </div>
-    `;
-  })();
-}
 
-function escapeHtml(value) {
-  return String(value ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+    grid.innerHTML = "";
+
+
+    data.forEach((project, index) => {
+
+      const card =
+        document.createElement("article");
+
+      card.className =
+        "project-card";
+
+
+      card.innerHTML = `
+
+        <div class="num">
+          ${String(index + 1).padStart(2, "0")}
+        </div>
+
+        ${
+          project.thumbnail_url
+            ? `
+              <img
+                src="${project.thumbnail_url}"
+                alt="${project.title}"
+                style="
+                  width:100%;
+                  height:220px;
+                  object-fit:cover;
+                  border-radius:14px;
+                  margin-top:18px;
+                "
+              >
+            `
+            : ""
+        }
+
+        <h3>
+          ${project.title || ""}
+        </h3>
+
+        <p>
+          ${project.description || ""}
+        </p>
+
+        <div class="project-tags">
+
+          <span>
+            ${project.category || "Project"}
+          </span>
+
+        </div>
+
+      `;
+
+
+      grid.appendChild(card);
+
+    });
+
+  } catch (error) {
+
+    console.error(
+      "Projects error:",
+      error
+    );
+
+  }
+
 }
 
 
@@ -1406,11 +1213,8 @@ function initContactForm() {
   const form =
     $("#contactForm");
 
-
   if (!form) {
-
     return;
-
   }
 
 
@@ -1422,25 +1226,16 @@ function initContactForm() {
 
 
       const name =
-        $("#contactName")
-          ?.value.trim();
-
+        $("#contactName")?.value.trim();
 
       const email =
-        $("#contactEmail")
-          ?.value.trim();
-
+        $("#contactEmail")?.value.trim();
 
       const message =
-        $("#contactMessage")
-          ?.value.trim();
+        $("#contactMessage")?.value.trim();
 
 
-      if (
-        !name ||
-        !email ||
-        !message
-      ) {
+      if (!name || !email || !message) {
 
         alert(
           "Please complete your name, email and message."
@@ -1454,8 +1249,7 @@ function initContactForm() {
       window.location.href =
         `mailto:kalyanjpc84@gmail.com?subject=${
           encodeURIComponent(
-            "Portfolio enquiry from " +
-            name
+            "Portfolio enquiry from " + name
           )
         }&body=${
           encodeURIComponent(
@@ -1478,24 +1272,14 @@ function initContactForm() {
 function initShowreel() {
 
   const player =
-    document.querySelector(
-      ".showreel-player"
-    );
-
+    $(".showreel-player");
 
   const missing =
-    document.querySelector(
-      ".showreel-missing"
-    );
+    $(".showreel-missing");
 
 
-  if (
-    !player ||
-    !missing
-  ) {
-
+  if (!player || !missing) {
     return;
-
   }
 
 
@@ -1503,12 +1287,9 @@ function initShowreel() {
     "error",
     () => {
 
-      player.hidden =
-        true;
+      player.hidden = true;
 
-
-      missing.hidden =
-        false;
+      missing.hidden = false;
 
     }
   );
@@ -1517,7 +1298,7 @@ function initShowreel() {
 
 
 // ============================================================
-// MAIN
+// START
 // ============================================================
 
 async function init() {
@@ -1537,30 +1318,20 @@ async function init() {
     await setupSupabase();
 
 
-  if (!ready) {
+  // These work even if Supabase temporarily fails.
+  await initWorkLibrary();
+  await initFeaturedWork();
 
-    console.error(
-      "Supabase connection failed."
-    );
 
-    return;
+  if (ready) {
+
+    await initPublicTeam();
+    await initPublicProjects();
 
   }
 
-
-  await initWorkLibrary();
-
-  await initFeaturedWork();
-
-  initTeam();
-  initProjects();
-
 }
 
-
-// ============================================================
-// START
-// ============================================================
 
 document.addEventListener(
   "DOMContentLoaded",
