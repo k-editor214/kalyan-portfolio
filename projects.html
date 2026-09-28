@@ -15,7 +15,6 @@
     .project-content{padding:20px}
     .project-content h3{margin:6px 0}
     .project-play{position:absolute;left:18px;bottom:18px;border:0;border-radius:999px;padding:12px 16px;cursor:pointer;font-size:18px}
-    .project-empty{padding:40px;background:#fff;border-radius:24px}
   </style>
 </head>
 <body>
@@ -38,7 +37,7 @@
   <section class="page-hero projects-intro">
     <div class="eyebrow">PROJECTS</div>
     <h1>Selected visual projects.</h1>
-    <p>Projects are pulled directly from the video folders in this repository. Upload a video once and it can be surfaced here.</p>
+    
   </section>
 
   <section id="projectLibrary" class="project-grid" aria-live="polite"></section>
@@ -64,7 +63,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   root.innerHTML = '';
 
   if(!groups.length){
-    root.innerHTML = '<div class="project-empty">No project videos have been uploaded yet.</div>';
+    root.closest('main')?.classList.add('is-empty');
     return;
   }
 

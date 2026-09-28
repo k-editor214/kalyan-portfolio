@@ -45,11 +45,20 @@
     </div>
   </div>
 </section>
-<section class="section container">
-  <div class="section-top"><div><div class="eyebrow">Showreel video</div><h2>Your real cut goes here.</h2></div><p>When you upload a showreel MP4 to <b>assets/videos/</b>, it can be added here without changing the design.</p></div>
+<section class="section container showreel-video-section" hidden>
+  <div class="section-top"><div><div class="eyebrow">Showreel video</div><h2>Kalyan Chitteti — Showreel</h2></div></div>
+  <div class="showreel-player-wrap">
+    <video class="showreel-player" controls playsinline preload="metadata" poster="assets/images/profile/kalyan--profile.jpg">
+      <source src="assets/videos/showreel.mp4" type="video/mp4">
+      Your browser does not support HTML5 video.
+    </video>
+  </div>
 </section>
 
 </main>
+<style>
+.showreel-video-section{padding-top:20px}.showreel-player-wrap{margin-top:28px;background:#1f1917;border-radius:28px;overflow:hidden;box-shadow:0 18px 50px rgba(40,25,20,.12);min-height:260px;display:flex;align-items:center;justify-content:center}.showreel-player{display:block;width:100%;max-height:720px;aspect-ratio:16/9;object-fit:contain;background:#171211}@media(max-width:700px){.showreel-player-wrap{border-radius:18px;min-height:200px}.showreel-player{aspect-ratio:16/9}}
+</style>
 
 <footer class="footer container">
   <span>© <span class="year"></span> Kalyan Chitteti</span>
@@ -57,6 +66,18 @@
   <span>India</span>
 </footer>
 
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const section = document.querySelector('.showreel-video-section');
+  const video = document.querySelector('.showreel-player');
+  if (!section || !video) return;
+  const reveal = () => { section.hidden = false; };
+  video.addEventListener('loadedmetadata', reveal, { once:true });
+  video.addEventListener('loadeddata', reveal, { once:true });
+  video.addEventListener('error', () => { section.hidden = true; }, { once:true });
+  if (video.readyState >= 1) reveal();
+});
+</script>
 <script src="js/app.js"></script>
 </body>
 </html>
