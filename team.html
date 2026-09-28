@@ -4,188 +4,234 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<meta name="description"
+content="KalyanEditz creative team — editing, photography, video and social media.">
+
 <title>Team — Kalyan Chitteti</title>
 
 <link rel="stylesheet" href="css/style.css">
 
 <style>
-.team-page {
-  padding: 55px 0 90px;
+.team-page{
+  padding:54px 0 90px;
 }
 
-.team-intro {
-  display: flex;
-  justify-content: space-between;
-  align-items: end;
-  gap: 40px;
-  margin-bottom: 40px;
+.team-intro{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:40px;
+  margin-bottom:38px;
 }
 
-.team-intro h1 {
-  font-family: "Cormorant Garamond", serif;
-  font-size: clamp(55px, 7vw, 90px);
-  line-height: .9;
-  margin: 0;
+.team-intro h1{
+  font-family:"Cormorant Garamond",serif;
+  font-size:clamp(58px,7vw,94px);
+  line-height:.9;
+  margin:0;
+  letter-spacing:-.025em;
 }
 
-.team-intro p {
-  max-width: 430px;
-  color: var(--muted);
+.team-intro p{
+  max-width:430px;
+  color:var(--muted);
+  margin:0;
 }
 
-.team-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
+.team-showcase{
+  display:grid;
+  grid-template-columns:minmax(280px,1.15fr) minmax(0,1.85fr);
+  gap:22px;
+  align-items:stretch;
 }
 
-.team-card {
-  background: var(--paper-2);
-  border: 1px solid var(--line);
-  border-radius: 24px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: .2s ease;
+.team-lead{
+  background:var(--paper-2);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:14px;
+  cursor:pointer;
+  box-shadow:0 10px 35px rgba(50,38,25,.05);
+  transition:transform .2s ease,box-shadow .2s ease;
 }
 
-.team-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 18px 45px rgba(50,38,25,.1);
+.team-lead:hover{
+  transform:translateY(-4px);
+  box-shadow:0 18px 45px rgba(50,38,25,.09);
 }
 
-.team-photo {
-  width: 100%;
-  aspect-ratio: 4 / 4.5;
-  background: #ddd0c2;
-  overflow: hidden;
+.team-lead-photo{
+  aspect-ratio:4/4.7;
+  border-radius:18px;
+  overflow:hidden;
+  background:#ddd0c2;
 }
 
-.team-photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.team-lead-photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
 }
 
-.team-info {
-  padding: 20px;
+.team-lead-copy{
+  padding:20px 8px 10px;
 }
 
-.team-info h3 {
-  margin: 5px 0;
-  font-size: 28px;
+.team-lead-copy .eyebrow{
+  margin-bottom:8px;
 }
 
-.team-role {
-  color: var(--accent);
-  font-size: 11px;
-  letter-spacing: .15em;
-  text-transform: uppercase;
+.team-lead-copy h2{
+  font-size:clamp(25px,2.6vw,36px);
+  margin:0 0 7px;
 }
 
-.team-info p {
-  color: var(--muted);
-  margin: 8px 0 0;
+.team-lead-copy p{
+  margin:0;
+  color:var(--muted);
+  font-size:15px;
 }
 
-/* EMPTY STATE */
-
-.team-empty {
-  padding: 50px;
-  border: 1px dashed var(--line);
-  border-radius: 20px;
-  text-align: center;
-  color: var(--muted);
+.role-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:22px;
 }
 
-/* MODAL */
-
-.team-modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(20,15,12,.65);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  z-index: 9999;
+.role-card{
+  min-height:250px;
+  padding:26px;
+  border:1px solid var(--line);
+  border-radius:24px;
+  background:var(--paper-2);
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  transition:transform .2s ease,box-shadow .2s ease;
 }
 
-.team-modal.active {
-  display: flex;
+.role-card::before{
+  content:"";
+  position:absolute;
+  width:180px;
+  height:180px;
+  border-radius:50%;
+  right:-65px;
+  top:-70px;
+  background:radial-gradient(
+    circle,
+    rgba(189,128,110,.22),
+    rgba(189,128,110,0) 68%
+  );
 }
 
-.team-modal-box {
-  background: var(--paper, #fffaf2);
-  max-width: 750px;
-  width: 100%;
-  border-radius: 24px;
-  padding: 25px;
-  position: relative;
+.role-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 18px 45px rgba(50,38,25,.08);
 }
 
-.team-modal-close {
-  position: absolute;
-  right: 18px;
-  top: 15px;
-  border: 0;
-  background: transparent;
-  font-size: 30px;
-  cursor: pointer;
+.role-number{
+  font-size:11px;
+  letter-spacing:.18em;
+  color:var(--accent);
 }
 
-.team-modal-content {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 25px;
-  align-items: center;
+.role-icon{
+  width:54px;
+  height:54px;
+  border:1px solid var(--line);
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  font:500 27px "Cormorant Garamond",serif;
+  background:#fffaf2;
+  margin-top:25px;
 }
 
-.team-modal-content img {
-  width: 100%;
-  aspect-ratio: 1;
-  object-fit: cover;
-  border-radius: 18px;
+.role-card h3{
+  font-size:clamp(25px,2.4vw,34px);
+  margin:18px 0 0;
+  position:relative;
 }
 
-.team-modal-content h2 {
-  margin: 5px 0;
-  font-size: 35px;
+.role-card p{
+  color:var(--muted);
+  font-size:14px;
+  margin:5px 0 0;
+  position:relative;
 }
 
-.team-modal-content p {
-  color: var(--muted);
-  line-height: 1.6;
+/* Additional Supabase team members */
+.dynamic-team{
+  margin-top:28px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:22px;
 }
 
-@media(max-width:900px) {
-  .team-grid {
-    grid-template-columns: repeat(2, 1fr);
+.dynamic-team-card{
+  background:var(--paper-2);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:14px;
+}
+
+.dynamic-team-card img{
+  width:100%;
+  aspect-ratio:1/1;
+  object-fit:cover;
+  border-radius:18px;
+}
+
+.dynamic-team-card h3{
+  margin:16px 8px 4px;
+}
+
+.dynamic-team-card p{
+  margin:0 8px 12px;
+  color:var(--muted);
+}
+
+.team-modal-role{
+  color:var(--accent);
+  font-size:11px;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+}
+
+@media(max-width:900px){
+
+  .team-showcase{
+    grid-template-columns:1fr;
   }
 
-  .team-intro {
-    display: block;
+  .team-lead-photo{
+    aspect-ratio:16/10;
   }
 
-  .team-intro p {
-    margin-top: 20px;
+  .team-intro{
+    display:block;
+  }
+
+  .team-intro p{
+    margin-top:18px;
   }
 }
 
-@media(max-width:600px) {
-  .team-page {
-    padding: 40px 16px 70px;
+@media(max-width:620px){
+
+  .team-page{
+    padding:40px 0 65px;
   }
 
-  .team-grid {
-    grid-template-columns: 1fr;
+  .role-grid{
+    grid-template-columns:1fr;
   }
 
-  .team-modal-content {
-    grid-template-columns: 1fr;
-  }
-
-  .team-modal-content img {
-    max-width: 220px;
+  .role-card{
+    min-height:210px;
   }
 }
 </style>
@@ -200,19 +246,30 @@
     <span class="brand-text">KALYAN CHITTETI</span>
   </a>
 
-  <button class="menu-toggle" type="button">
+  <button
+    class="menu-toggle"
+    type="button"
+    aria-label="Open menu"
+    id="teamMenuToggle">
     ☰
   </button>
 
-  <nav class="main-nav">
+  <nav class="main-nav" id="teamMainNav">
 
     <a href="index.html">Home</a>
+
     <a href="showreel.html">Showreel</a>
+
     <a href="work.html">Work</a>
+
     <a href="projects.html">Projects</a>
-    <a href="team.html">Team</a>
+
+    <a href="team.html" class="active">Team</a>
+
     <a href="tools.html">Tools</a>
+
     <a href="about.html">About</a>
+
     <a href="contact.html">Contact</a>
 
   </nav>
@@ -225,12 +282,14 @@
   <section class="team-intro">
 
     <div>
+
       <div class="eyebrow">TEAM</div>
 
       <h1>
         The people<br>
         behind the frame.
       </h1>
+
     </div>
 
     <p>
@@ -241,47 +300,170 @@
   </section>
 
 
-  <!-- SUPABASE TEAM WILL APPEAR HERE -->
+  <section class="team-showcase" aria-label="Creative team">
+
+
+    <!-- KALYAN - EXISTING PROFILE -->
+
+    <article
+      class="team-lead"
+      data-team='{
+        "image":"assets/images/profile/kalyan--profile.jpg",
+        "name":"Kalyan Chitteti",
+        "role":"Video Editor · Colorist · DI Artist",
+        "bio":"Post-production focused creative work across editing, colour grading, DI, motion and visual storytelling."
+      }'
+      tabindex="0"
+      role="button"
+      aria-label="Open Kalyan Chitteti profile">
+
+      <div class="team-lead-photo">
+
+        <img
+          src="assets/images/profile/kalyan--profile.jpg"
+          alt="Kalyan Chitteti">
+
+      </div>
+
+      <div class="team-lead-copy">
+
+        <div class="eyebrow">
+          KALYAN CHITTETI
+        </div>
+
+        <h2>
+          Video Editor · Colorist · DI Artist
+        </h2>
+
+        <p>
+          Editing, colour grading, DI, motion and visual storytelling.
+        </p>
+
+      </div>
+
+    </article>
+
+
+    <!-- EXISTING ROLE CARDS -->
+
+    <div class="role-grid">
+
+      <article class="role-card">
+
+        <div>
+          <div class="role-number">01</div>
+          <div class="role-icon">F</div>
+        </div>
+
+        <div>
+          <h3>Film Editor</h3>
+          <p>Editing &amp; post-production</p>
+        </div>
+
+      </article>
+
+
+      <article class="role-card">
+
+        <div>
+          <div class="role-number">02</div>
+          <div class="role-icon">P</div>
+        </div>
+
+        <div>
+          <h3>Photographer</h3>
+          <p>Photography &amp; visual direction</p>
+        </div>
+
+      </article>
+
+
+      <article class="role-card">
+
+        <div>
+          <div class="role-number">03</div>
+          <div class="role-icon">V</div>
+        </div>
+
+        <div>
+          <h3>Videographer</h3>
+          <p>Production &amp; cinematography</p>
+        </div>
+
+      </article>
+
+
+      <article class="role-card">
+
+        <div>
+          <div class="role-number">04</div>
+          <div class="role-icon">S</div>
+        </div>
+
+        <div>
+          <h3>Social Media Manager</h3>
+          <p>Content &amp; social storytelling</p>
+        </div>
+
+      </article>
+
+    </div>
+
+  </section>
+
+
+  <!-- ADMIN ADDED TEAM MEMBERS WILL APPEAR HERE -->
 
   <section
-    id="teamLibrary"
-    class="team-grid"
-    aria-live="polite">
+    id="dynamicTeam"
+    class="dynamic-team"
+    aria-label="Additional team members">
   </section>
 
 </main>
 
 
-<!-- TEAM MODAL -->
+<!-- PROFILE MODAL -->
 
-<div id="teamModal" class="team-modal">
+<div
+  class="modal-backdrop"
+  id="teamModal"
+  aria-hidden="true">
 
-  <div class="team-modal-box">
+  <div
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="teamModalName">
 
     <button
-      id="teamModalClose"
-      class="team-modal-close"
-      type="button">
+      class="modal-close"
+      type="button"
+      data-close
+      aria-label="Close">
       ×
     </button>
 
-    <div class="team-modal-content">
+    <div class="modal-team">
 
       <img
-        id="teamModalImage"
-        src=""
-        alt="">
+        data-modal-img
+        src="assets/images/profile/kalyan--profile.jpg"
+        alt="Kalyan Chitteti">
 
-      <div>
+      <div class="modal-content">
 
         <div
-          id="teamModalRole"
-          class="team-role">
+          class="team-modal-role"
+          data-modal-role>
         </div>
 
-        <h2 id="teamModalName"></h2>
+        <h2
+          id="teamModalName"
+          data-modal-name>
+        </h2>
 
-        <p id="teamModalBio"></p>
+        <p data-modal-bio></p>
 
       </div>
 
@@ -315,218 +497,263 @@
 
 <script src="assets/js/config.js"></script>
 
+<script src="js/app.js"></script>
+
+
+<!-- TEAM PAGE FIX -->
+
 <script>
 
 document.addEventListener("DOMContentLoaded", async function () {
 
-  const root = document.getElementById("teamLibrary");
+  /* =========================
+     1. THREE LINE MENU
+  ========================= */
 
-  if (!root) return;
+  const menuButton =
+    document.getElementById("teamMenuToggle");
 
-  root.innerHTML =
-    '<div class="team-empty">Loading team...</div>';
+  const mainNav =
+    document.getElementById("teamMainNav");
 
+  if (menuButton && mainNav) {
 
-  /* CHECK SUPABASE */
+    menuButton.addEventListener("click", function () {
 
-  if (!window.supabaseClient) {
-
-    root.innerHTML =
-      '<div class="team-empty">Supabase connection not found.</div>';
-
-    console.error("supabaseClient is missing");
-
-    return;
-  }
-
-
-  /* GET TEAM */
-
-  const { data, error } =
-    await window.supabaseClient
-      .from("team_members")
-      .select("*")
-      .eq("published", true)
-      .order("created_at", {
-        ascending: true
-      });
-
-
-  /* ERROR */
-
-  if (error) {
-
-    console.error("TEAM ERROR:", error);
-
-    root.innerHTML =
-      `<div class="team-empty">
-        Unable to load team.<br>
-        ${error.message}
-      </div>`;
-
-    return;
-  }
-
-
-  /* NO TEAM */
-
-  if (!data || data.length === 0) {
-
-    root.innerHTML =
-      `<div class="team-empty">
-        No team profiles have been added yet.
-      </div>`;
-
-    return;
-  }
-
-
-  /* CLEAR */
-
-  root.innerHTML = "";
-
-
-  /* CREATE CARDS */
-
-  data.forEach(member => {
-
-    const card =
-      document.createElement("article");
-
-    card.className = "team-card";
-
-
-    const photo =
-      member.photo_url ||
-      "assets/images/profile/kalyan--profile.jpg";
-
-
-    card.innerHTML = `
-
-      <div class="team-photo">
-
-        <img
-          src="${photo}"
-          alt="${escapeHTML(member.name)}"
-          loading="lazy">
-
-      </div>
-
-      <div class="team-info">
-
-        <div class="team-role">
-          ${escapeHTML(member.role || "")}
-        </div>
-
-        <h3>
-          ${escapeHTML(member.name || "")}
-        </h3>
-
-        <p>
-          ${escapeHTML(member.bio || "")}
-        </p>
-
-      </div>
-
-    `;
-
-
-    /* OPEN MODAL */
-
-    card.addEventListener("click", function () {
-
-      openTeamModal(member);
+      mainNav.classList.toggle("open");
 
     });
 
+  }
 
-    root.appendChild(card);
+
+  /* =========================
+     2. YEAR
+  ========================= */
+
+  document.querySelectorAll(".year").forEach(function (el) {
+
+    el.textContent =
+      new Date().getFullYear();
 
   });
 
 
-});
-
-
-/* HTML ESCAPE */
-
-function escapeHTML(value) {
-
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-
-}
-
-
-/* MODAL */
-
-function openTeamModal(member) {
+  /* =========================
+     3. KALYAN PROFILE MODAL
+  ========================= */
 
   const modal =
     document.getElementById("teamModal");
 
-  document.getElementById("teamModalImage").src =
-    member.photo_url ||
-    "assets/images/profile/kalyan--profile.jpg";
+  const modalImg =
+    modal?.querySelector("[data-modal-img]");
 
-  document.getElementById("teamModalImage").alt =
-    member.name || "";
+  const modalName =
+    modal?.querySelector("[data-modal-name]");
 
-  document.getElementById("teamModalName").textContent =
-    member.name || "";
+  const modalRole =
+    modal?.querySelector("[data-modal-role]");
 
-  document.getElementById("teamModalRole").textContent =
-    member.role || "";
-
-  document.getElementById("teamModalBio").textContent =
-    member.bio || "";
-
-  modal.classList.add("active");
-
-}
+  const modalBio =
+    modal?.querySelector("[data-modal-bio]");
 
 
-/* CLOSE */
+  function openProfile(data) {
 
-document
-  .getElementById("teamModalClose")
-  .addEventListener("click", function () {
+    if (!modal) return;
 
-    document
-      .getElementById("teamModal")
-      .classList.remove("active");
+    if (modalImg)
+      modalImg.src = data.image || "";
 
-  });
+    if (modalName)
+      modalName.textContent = data.name || "";
+
+    if (modalRole)
+      modalRole.textContent = data.role || "";
+
+    if (modalBio)
+      modalBio.textContent = data.bio || "";
+
+    modal.classList.add("open");
+
+    modal.setAttribute("aria-hidden", "false");
+
+  }
 
 
-/* CLICK OUTSIDE */
+  function closeProfile() {
 
-document
-  .getElementById("teamModal")
-  .addEventListener("click", function (event) {
+    if (!modal) return;
 
-    if (event.target === this) {
+    modal.classList.remove("open");
 
-      this.classList.remove("active");
+    modal.setAttribute("aria-hidden", "true");
+
+  }
+
+
+  document
+    .querySelectorAll("[data-team]")
+    .forEach(function (card) {
+
+      card.addEventListener("click", function () {
+
+        try {
+
+          const data =
+            JSON.parse(card.dataset.team);
+
+          openProfile(data);
+
+        } catch (error) {
+
+          console.error(error);
+
+        }
+
+      });
+
+    });
+
+
+  document
+    .querySelector("[data-close]")
+    ?.addEventListener(
+      "click",
+      closeProfile
+    );
+
+
+  modal?.addEventListener("click", function (event) {
+
+    if (event.target === modal) {
+
+      closeProfile();
 
     }
 
   });
 
 
-/* ESC KEY */
+  /* =========================
+     4. LOAD ADMIN TEAM MEMBERS
+  ========================= */
 
-document.addEventListener("keydown", function(event) {
+  const dynamicTeam =
+    document.getElementById("dynamicTeam");
 
-  if (event.key === "Escape") {
 
-    document
-      .getElementById("teamModal")
-      .classList.remove("active");
+  if (
+    dynamicTeam &&
+    window.supabaseClient
+  ) {
+
+    try {
+
+      const result =
+        await window.supabaseClient
+          .from("team_members")
+          .select("*")
+          .eq("published", true)
+          .order("created_at", {
+            ascending: true
+          });
+
+
+      const data = result.data;
+      const error = result.error;
+
+
+      if (error) {
+
+        console.error(
+          "Team loading error:",
+          error
+        );
+
+        return;
+
+      }
+
+
+      if (!data || data.length === 0) {
+
+        return;
+
+      }
+
+
+      data.forEach(function (member) {
+
+        const card =
+          document.createElement("article");
+
+        card.className =
+          "dynamic-team-card";
+
+
+        const image =
+          member.photo_url
+            ? `
+              <img
+                src="${member.photo_url}"
+                alt="${member.name || "Team member"}">
+            `
+            : "";
+
+
+        card.innerHTML = `
+
+          ${image}
+
+          <h3>
+            ${member.name || ""}
+          </h3>
+
+          <p>
+            ${member.role || ""}
+          </p>
+
+        `;
+
+
+        card.addEventListener(
+          "click",
+          function () {
+
+            openProfile({
+
+              image:
+                member.photo_url || "",
+
+              name:
+                member.name || "",
+
+              role:
+                member.role || "",
+
+              bio:
+                member.bio || ""
+
+            });
+
+          }
+        );
+
+
+        dynamicTeam.appendChild(card);
+
+      });
+
+    } catch (error) {
+
+      console.error(
+        "Supabase team error:",
+        error
+      );
+
+    }
 
   }
 
