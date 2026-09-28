@@ -257,3 +257,6 @@ img,video{display:block;max-width:100%}
   .modal-team{grid-template-columns:1fr}
   .modal-team img{height:320px}
 }
+
+/* Keep optional public sections invisible until content exists. */
+.is-empty { display:none !important; }
