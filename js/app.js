@@ -74,9 +74,6 @@ function openVideoModal(src,title,category,vertical=false){
         <div class="eyebrow" data-modal-category></div>
         <h2 data-modal-title></h2>
         <video class="video-modal-player" controls playsinline preload="metadata"></video>
-        <div class="empty-state" data-video-error style="display:none;margin-top:14px">
-          This video could not be played. Make sure the MP4 is valid and committed to GitHub.
-        </div>
       </div>`;
     document.body.appendChild(modal);
 
@@ -96,12 +93,10 @@ function openVideoModal(src,title,category,vertical=false){
   const player = $('video',modal);
   $('[data-modal-category]',modal).textContent = `${category} · ${vertical?'9:16':'16:9'}`;
   $('[data-modal-title]',modal).textContent = title;
-  $('[data-video-error]',modal).style.display='none';
   player.style.aspectRatio = vertical ? '9 / 16' : '16 / 9';
   player.style.objectFit='contain';
   player.src=src;
   player.load();
-  player.onerror=()=>{$('[data-video-error]',modal).style.display='block'};
   modal.classList.add('open');
   document.body.classList.add('modal-open');
 }
@@ -124,7 +119,6 @@ function makeVideoCard(file, meta){
     <div class="video-info">
       <div class="meta"><span>${meta.label}</span><span>${meta.ratio}</span></div>
       <h3>${title}</h3>
-      <div class="video-status">${file.name}</div>
     </div>`;
 
   const video = $('video',card);
@@ -151,7 +145,7 @@ async function initWorkLibrary(){
 
   container.innerHTML='';
   if(!groups.length){
-    container.innerHTML=`<div class="empty-state">No videos have been uploaded yet.</div>`;
+    container.closest('.section')?.classList.add('is-empty');
     return;
   }
 
@@ -164,7 +158,10 @@ async function initWorkLibrary(){
     files.forEach(file=>container.appendChild(makeVideoCard(file,meta)));
   });
 
+  // Only show category filters that currently contain work.
+  const available = new Set(groups.map(({meta}) => meta.folder));
   $$('.filter',filterBar).forEach(btn=>{
+    if(btn.dataset.videoFilter !== 'all' && !available.has(btn.dataset.videoFilter)) btn.hidden = true;
     btn.addEventListener('click',()=>{
       $$('.filter',filterBar).forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
@@ -193,7 +190,7 @@ async function initFeaturedWork(){
 
   grid.innerHTML='';
   if(!found.length){
-    grid.innerHTML=`<div class="empty-state">Upload videos to your video folders and they will appear here automatically.</div>`;
+    grid.closest('section')?.classList.add('is-empty');
     return;
   }
 
@@ -267,3 +264,14 @@ function init(){
 }
 
 document.addEventListener('DOMContentLoaded',init);
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const player = document.querySelector('.showreel-player');
+  const missing = document.querySelector('.showreel-missing');
+  if (!player || !missing) return;
+  player.addEventListener('error', () => {
+    player.hidden = true;
+    missing.hidden = false;
+  });
+});
