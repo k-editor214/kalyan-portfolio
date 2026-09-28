@@ -1,17 +1,27 @@
 <!doctype html>
 <html lang="en">
+
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="KalyanEditz creative team — editing, photography, video and social media.">
+
+<meta
+  name="description"
+  content="KalyanEditz creative team — editing, photography, video and social media."
+>
+
 <title>Team — Kalyan Chitteti</title>
 
 <link rel="stylesheet" href="css/style.css">
 
 <style>
 
+/* =========================
+   TEAM PAGE
+========================= */
+
 .team-page{
-  padding:54px 0 90px
+  padding:54px 0 90px;
 }
 
 .team-intro{
@@ -19,7 +29,7 @@
   justify-content:space-between;
   align-items:end;
   gap:40px;
-  margin-bottom:38px
+  margin-bottom:38px;
 }
 
 .team-intro h1{
@@ -27,20 +37,20 @@
   font-size:clamp(58px,7vw,94px);
   line-height:.9;
   margin:0;
-  letter-spacing:-.025em
+  letter-spacing:-.025em;
 }
 
 .team-intro p{
   max-width:430px;
   color:var(--muted);
-  margin:0
+  margin:0;
 }
 
 .team-showcase{
   display:grid;
   grid-template-columns:minmax(280px,1.15fr) minmax(0,1.85fr);
   gap:22px;
-  align-items:stretch
+  align-items:stretch;
 }
 
 .team-lead{
@@ -50,50 +60,55 @@
   padding:14px;
   cursor:pointer;
   box-shadow:0 10px 35px rgba(50,38,25,.05);
-  transition:transform .2s ease,box-shadow .2s ease
+  transition:transform .2s ease,box-shadow .2s ease;
 }
 
 .team-lead:hover{
   transform:translateY(-4px);
-  box-shadow:0 18px 45px rgba(50,38,25,.09)
+  box-shadow:0 18px 45px rgba(50,38,25,.09);
 }
 
 .team-lead-photo{
   aspect-ratio:4/4.7;
   border-radius:18px;
   overflow:hidden;
-  background:#ddd0c2
+  background:#ddd0c2;
 }
 
 .team-lead-photo img{
   width:100%;
   height:100%;
-  object-fit:cover
+  object-fit:cover;
 }
 
 .team-lead-copy{
-  padding:20px 8px 10px
+  padding:20px 8px 10px;
 }
 
 .team-lead-copy .eyebrow{
-  margin-bottom:8px
+  margin-bottom:8px;
 }
 
 .team-lead-copy h2{
   font-size:clamp(25px,2.6vw,36px);
-  margin:0 0 7px
+  margin:0 0 7px;
 }
 
 .team-lead-copy p{
   margin:0;
   color:var(--muted);
-  font-size:15px
+  font-size:15px;
 }
+
+
+/* =========================
+   ROLE CARDS
+========================= */
 
 .role-grid{
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:22px
+  gap:22px;
 }
 
 .role-card{
@@ -107,7 +122,7 @@
   display:flex;
   flex-direction:column;
   justify-content:space-between;
-  transition:transform .2s ease,box-shadow .2s ease
+  transition:transform .2s ease,box-shadow .2s ease;
 }
 
 .role-card::before{
@@ -122,18 +137,18 @@
     circle,
     rgba(189,128,110,.22),
     rgba(189,128,110,0) 68%
-  )
+  );
 }
 
 .role-card:hover{
   transform:translateY(-4px);
-  box-shadow:0 18px 45px rgba(50,38,25,.08)
+  box-shadow:0 18px 45px rgba(50,38,25,.08);
 }
 
 .role-number{
   font-size:11px;
   letter-spacing:.18em;
-  color:var(--accent)
+  color:var(--accent);
 }
 
 .role-icon{
@@ -145,37 +160,38 @@
   place-items:center;
   font:500 27px "Cormorant Garamond",serif;
   background:#fffaf2;
-  margin-top:25px
+  margin-top:25px;
 }
 
 .role-card h3{
   font-size:clamp(25px,2.4vw,34px);
   margin:18px 0 0;
-  position:relative
+  position:relative;
 }
 
 .role-card p{
   color:var(--muted);
   font-size:14px;
   margin:5px 0 0;
-  position:relative
+  position:relative;
 }
+
+
+/* =========================
+   TEAM MODAL
+========================= */
 
 .team-modal-role{
   color:var(--accent);
   font-size:11px;
   letter-spacing:.15em;
-  text-transform:uppercase
+  text-transform:uppercase;
 }
 
 
-/* =========================================
-   MOBILE MENU FIX
-   ========================================= */
-
-.site-header{
-  position:relative;
-}
+/* =========================
+   MOBILE MENU
+========================= */
 
 .menu-toggle{
   display:none;
@@ -194,8 +210,14 @@
   align-items:center;
 }
 
+.site-header{
+  position:relative;
+}
 
-/* TABLET + MOBILE */
+
+/* =========================
+   TABLET / MOBILE
+========================= */
 
 @media(max-width:900px){
 
@@ -203,24 +225,29 @@
     display:block;
   }
 
-  .site-header{
-    position:relative;
-  }
-
   .main-nav{
     position:absolute;
     left:0;
     right:0;
     top:100%;
+
     display:flex;
     flex-direction:column;
     align-items:stretch;
+
     gap:0;
+
     max-height:0;
     overflow:hidden;
+
     background:#fffaf2;
+
     border-bottom:1px solid transparent;
-    transition:max-height .35s ease;
+
+    transition:
+      max-height .35s ease,
+      border-color .35s ease;
+
     z-index:1000;
   }
 
@@ -235,37 +262,40 @@
   }
 
   .team-showcase{
-    grid-template-columns:1fr
+    grid-template-columns:1fr;
   }
 
   .team-lead-photo{
-    aspect-ratio:16/10
+    aspect-ratio:16/10;
   }
 
   .team-intro{
-    display:block
+    display:block;
   }
 
   .team-intro p{
-    margin-top:18px
+    margin-top:18px;
   }
+
 }
 
 
-/* SMALL MOBILE */
+/* =========================
+   SMALL MOBILE
+========================= */
 
 @media(max-width:620px){
 
   .team-page{
-    padding:40px 0 65px
+    padding:40px 0 65px;
   }
 
   .role-grid{
-    grid-template-columns:1fr
+    grid-template-columns:1fr;
   }
 
   .role-card{
-    min-height:210px
+    min-height:210px;
   }
 
 }
@@ -276,19 +306,33 @@
 
 <body>
 
+
+<!-- =========================
+     HEADER
+========================= -->
+
 <header class="site-header">
 
   <a class="brand" href="index.html">
+
     <span class="brand-mark">K</span>
-    <span class="brand-text">KALYAN CHITTETI</span>
+
+    <span class="brand-text">
+      KALYAN CHITTETI
+    </span>
+
   </a>
+
 
   <button
     class="menu-toggle"
     type="button"
     aria-label="Open menu"
     aria-expanded="false"
-  >☰</button>
+  >
+    ☰
+  </button>
+
 
   <nav class="main-nav">
 
@@ -329,7 +373,13 @@
 </header>
 
 
+
+<!-- =========================
+     MAIN
+========================= -->
+
 <main class="container team-page">
+
 
   <section class="team-intro">
 
@@ -346,6 +396,7 @@
 
     </div>
 
+
     <p>
       A creative team built around post-production,
       photography, video and digital storytelling.
@@ -354,10 +405,14 @@
   </section>
 
 
-  <section class="team-showcase" aria-label="Creative team">
+
+  <section
+    class="team-showcase"
+    aria-label="Creative team"
+  >
 
 
-    <!-- KALYAN PROFILE -->
+    <!-- KALYAN -->
 
     <article
       class="team-lead"
@@ -534,7 +589,9 @@
 
 
 
-<!-- TEAM MODAL -->
+<!-- =========================
+     TEAM MODAL
+========================= -->
 
 <div
   class="modal-backdrop"
@@ -594,7 +651,9 @@
 
 
 
-<!-- FOOTER -->
+<!-- =========================
+     FOOTER
+========================= -->
 
 <footer class="footer container">
 
@@ -614,41 +673,12 @@
 
 
 
-<!-- APP SCRIPT -->
+<!-- IMPORTANT:
+     ONLY ONE app.js
+     It already contains the menu handler.
+-->
 
 <script src="js/app.js"></script>
-
-
-<!-- EXTRA MOBILE MENU CONTROL -->
-
-<script>
-
-document.addEventListener("DOMContentLoaded", function(){
-
-  const menuButton = document.querySelector(".menu-toggle");
-  const mainNav = document.querySelector(".main-nav");
-
-  if(menuButton && mainNav){
-
-    menuButton.addEventListener("click", function(){
-
-      mainNav.classList.toggle("open");
-
-      const isOpen =
-        mainNav.classList.contains("open");
-
-      menuButton.setAttribute(
-        "aria-expanded",
-        isOpen ? "true" : "false"
-      );
-
-    });
-
-  }
-
-});
-
-</script>
 
 
 </body>
