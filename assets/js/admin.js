@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loginMsg.textContent = "Signing in...";
 
     const { data, error } =
-      await supabaseClient.auth.signInWithPassword({
+      await window.supabaseClient.auth.signInWithPassword({
         email,
         password
       });
@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // --------------------------------------------------
 
   logoutBtn?.addEventListener("click", async () => {
-    await supabaseClient.auth.signOut();
+    await window.supabaseClient.auth.signOut();
     showLogin();
   });
 
@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function checkSession() {
     const { data, error } =
-      await supabaseClient.auth.getSession();
+      await window.supabaseClient.auth.getSession();
 
     if (error || !data.session) {
       showLogin();
@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showDashboard(data.session.user);
   }
 
-  supabaseClient.auth.onAuthStateChange((event, session) => {
+  window.supabaseClient.auth.onAuthStateChange((event, session) => {
     if (session) {
       showDashboard(session.user);
     } else {
@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Upload video to Supabase Storage
       const { error: uploadError } =
-        await supabaseClient.storage
+        await window.supabaseClient.storage
           .from("portfolio-videos")
           .upload(filePath, file, {
             cacheControl: "3600",
@@ -170,7 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Get public URL
       const { data: publicData } =
-        supabaseClient.storage
+        window.supabaseClient.storage
           .from("portfolio-videos")
           .getPublicUrl(filePath);
 
@@ -178,7 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Save information in database
       const { error: dbError } =
-        await supabaseClient
+        await window.supabaseClient
           .from("videos")
           .insert({
             title: title,
@@ -191,7 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (dbError) {
         // Try to remove uploaded file if database insert fails
-        await supabaseClient.storage
+        await window.supabaseClient.storage
           .from("portfolio-videos")
           .remove([filePath]);
 
@@ -223,7 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
     list.innerHTML = "Loading videos...";
 
     const { data, error } =
-      await supabaseClient
+      await window.supabaseClient
         .from("videos")
         .select("*")
         .order("created_at", { ascending: false });
@@ -293,7 +293,7 @@ document.addEventListener("DOMContentLoaded", () => {
     msg.textContent = "Deleting video...";
 
     const { error: dbError } =
-      await supabaseClient
+      await window.supabaseClient
         .from("videos")
         .delete()
         .eq("id", id);
@@ -305,7 +305,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (filePath) {
-      await supabaseClient.storage
+      await window.supabaseClient.storage
         .from("portfolio-videos")
         .remove([filePath]);
     }
@@ -371,7 +371,7 @@ document.addEventListener("DOMContentLoaded", () => {
           Date.now() + "-" + safeName + "." + extension;
 
         const { error: uploadError } =
-          await supabaseClient.storage
+          await window.supabaseClient.storage
             .from("team-images")
             .upload(photoPath, photo, {
               cacheControl: "3600",
@@ -384,7 +384,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const { data } =
-          supabaseClient.storage
+          window.supabaseClient.storage
             .from("team-images")
             .getPublicUrl(photoPath);
 
@@ -392,7 +392,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const { error } =
-        await supabaseClient
+        await window.supabaseClient
           .from("team_members")
           .insert({
             name,
@@ -435,7 +435,7 @@ document.addEventListener("DOMContentLoaded", () => {
     list.innerHTML = "Loading team...";
 
     const { data, error } =
-      await supabaseClient
+      await window.supabaseClient
         .from("team_members")
         .select("*")
         .order("created_at", { ascending: false });
@@ -501,7 +501,7 @@ document.addEventListener("DOMContentLoaded", () => {
     msg.textContent = "Deleting...";
 
     const { error } =
-      await supabaseClient
+      await window.supabaseClient
         .from("team_members")
         .delete()
         .eq("id", id);
@@ -569,7 +569,7 @@ document.addEventListener("DOMContentLoaded", () => {
           Date.now() + "-" + safeName + "." + extension;
 
         const { error: uploadError } =
-          await supabaseClient.storage
+          await window.supabaseClient.storage
             .from("project-images")
             .upload(imagePath, thumbnail, {
               cacheControl: "3600",
@@ -582,7 +582,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const { data } =
-          supabaseClient.storage
+          window.supabaseClient.storage
             .from("project-images")
             .getPublicUrl(imagePath);
 
@@ -590,7 +590,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const { error } =
-        await supabaseClient
+        await window.supabaseClient
           .from("projects")
           .insert({
             title,
@@ -632,7 +632,7 @@ document.addEventListener("DOMContentLoaded", () => {
     list.innerHTML = "Loading projects...";
 
     const { data, error } =
-      await supabaseClient
+      await window.supabaseClient
         .from("projects")
         .select("*")
         .order("created_at", { ascending: false });
@@ -699,7 +699,7 @@ document.addEventListener("DOMContentLoaded", () => {
     msg.textContent = "Deleting...";
 
     const { error } =
-      await supabaseClient
+      await window.supabaseClient
         .from("projects")
         .delete()
         .eq("id", id);
