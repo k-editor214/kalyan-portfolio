@@ -1,9 +1,26 @@
 // ============================================================
 // KALYANEDITZ PORTFOLIO
-// Existing portfolio videos + Supabase videos
+// Unified application
+//
+// Supports:
+// • Existing GitHub/static portfolio videos
+// • Supabase uploaded videos
+// • Supabase projects
+// • Supabase team members when available
+// • Existing Team profile modal
+// • Featured work
+// • Contact form
+// • Mobile navigation
+// • Showreel fallback
+// ============================================================
+
+
+// ============================================================
+// CATEGORIES
 // ============================================================
 
 const CATEGORIES = {
+
   reels: {
     label: "Reels",
     folder: "reels",
@@ -51,7 +68,16 @@ const CATEGORIES = {
     folder: "color-grading",
     ratio: "16:9"
   }
+
 };
+
+
+// ============================================================
+// GITHUB REPOSITORY
+// ============================================================
+
+const REPO_API =
+  "https://api.github.com/repos/k-editor214/kalyan-portfolio/contents/assets/videos";
 
 
 // ============================================================
@@ -73,7 +99,7 @@ async function setupSupabase() {
 
   try {
 
-    // Load Supabase library if necessary
+    // Load Supabase library if not already loaded
     if (!window.supabase) {
 
       await new Promise((resolve, reject) => {
@@ -94,7 +120,7 @@ async function setupSupabase() {
     }
 
 
-    // Load config.js if necessary
+    // Load config.js if needed
     if (!window.supabaseClient) {
 
       await new Promise((resolve, reject) => {
@@ -117,7 +143,7 @@ async function setupSupabase() {
 
     if (!window.supabaseClient) {
 
-      console.error(
+      console.warn(
         "Supabase client was not created."
       );
 
@@ -155,14 +181,46 @@ function initNav() {
     $(".main-nav");
 
 
-  toggle?.addEventListener(
-    "click",
-    () => {
+  if (toggle && nav) {
 
-      nav?.classList.toggle("open");
+    toggle.addEventListener(
+      "click",
+      () => {
 
-    }
-  );
+        nav.classList.toggle("open");
+
+        toggle.setAttribute(
+          "aria-expanded",
+          nav.classList.contains("open")
+            ? "true"
+            : "false"
+        );
+
+      }
+    );
+
+
+    // Close mobile menu after selecting a page
+    $$(".main-nav a")
+      .forEach(link => {
+
+        link.addEventListener(
+          "click",
+          () => {
+
+            nav.classList.remove("open");
+
+            toggle.setAttribute(
+              "aria-expanded",
+              "false"
+            );
+
+          }
+        );
+
+      });
+
+  }
 
 
   const file =
@@ -236,7 +294,7 @@ function initImages() {
 
 
 // ============================================================
-// CATEGORY HELPER
+// CATEGORY META
 // ============================================================
 
 function getCategoryMeta(category) {
@@ -255,7 +313,9 @@ function getCategoryMeta(category) {
 
 
   if (found) {
+
     return found;
+
   }
 
 
@@ -276,10 +336,12 @@ function getCategoryMeta(category) {
 
 
 // ============================================================
-// EXISTING STATIC PORTFOLIO VIDEOS
+// EXISTING STATIC VIDEOS
 // ============================================================
 //
-// These are the videos already inside your project.
+// IMPORTANT:
+// These are your existing portfolio videos.
+// They remain in the website.
 // They do NOT need to be uploaded again.
 //
 
@@ -327,25 +389,37 @@ function getStaticVideos() {
 
 
   Object.entries(STATIC_VIDEOS)
-    .forEach(([folder, files]) => {
+    .forEach(([categoryKey, files]) => {
+
+      const meta =
+        CATEGORIES[categoryKey];
+
+
+      if (!meta) {
+
+        return;
+
+      }
+
 
       files.forEach(file => {
 
         videos.push({
 
           id:
-            `static-${folder}-${file}`,
+            `static-${categoryKey}-${file}`,
 
           name:
-            file
-              .replace(/\.[^/.]+$/, "")
-              .replace(/[-_]/g, " "),
+            prettyName(
+              file,
+              meta.label
+            ),
 
           url:
-            `assets/videos/${folder}/${encodeURIComponent(file)}`,
+            `assets/videos/${meta.folder}/${encodeURIComponent(file)}`,
 
           category:
-            folder,
+            meta.folder,
 
           static:
             true
@@ -363,16 +437,134 @@ function getStaticVideos() {
 
 
 // ============================================================
-// GET SUPABASE VIDEOS
+// GITHUB VIDEO LOADER
+// ============================================================
+
+async function listVideos(folder) {
+
+  try {
+
+    const response =
+      await fetch(
+        `${REPO_API}/${folder}?ref=main&ts=${Date.now()}`,
+        {
+          cache: "no-store",
+          headers: {
+            "Accept":
+              "application/vnd.github+json"
+          }
+        }
+      );
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        `GitHub API ${response.status}`
+      );
+
+    }
+
+
+    const data =
+      await response.json();
+
+
+    const files =
+      Array.isArray(data)
+
+        ? data.filter(item =>
+            item.type === "file" &&
+            /\.(mp4|webm|mov)$/i.test(
+              item.name
+            )
+          )
+
+        : [];
+
+
+    files.sort(
+      (a, b) =>
+        a.name.localeCompare(
+          b.name,
+          undefined,
+          { numeric: true }
+        )
+    );
+
+
+    return files;
+
+  } catch (error) {
+
+    console.warn(
+      `Could not load ${folder}:`,
+      error
+    );
+
+    return [];
+
+  }
+
+}
+
+
+// ============================================================
+// PRETTY VIDEO NAME
+// ============================================================
+
+function prettyName(
+  filename,
+  category
+) {
+
+  const stem =
+    String(filename || "")
+      .replace(/\.[^.]+$/, "")
+      .replace(/[-_]+/g, " ");
+
+
+  const cleanCategory =
+    String(category || "")
+      .replace(
+        /[.*+?^${}()|[\]\\]/g,
+        "\\$&"
+      );
+
+
+  const withoutPrefix =
+    stem.replace(
+      new RegExp(
+        `^${cleanCategory}\\s*`,
+        "i"
+      ),
+      ""
+    );
+
+
+  return (
+    `${category}${
+      withoutPrefix
+        ? " " + withoutPrefix
+        : ""
+    }`
+  )
+    .trim()
+    .replace(
+      /\b\w/g,
+      letter => letter.toUpperCase()
+    );
+
+}
+
+
+// ============================================================
+// SUPABASE VIDEOS
 // ============================================================
 
 async function getSupabaseVideos() {
 
   if (!window.supabaseClient) {
-
-    console.warn(
-      "Supabase client unavailable."
-    );
 
     return [];
 
@@ -381,14 +573,20 @@ async function getSupabaseVideos() {
 
   try {
 
-    const { data, error } =
+    const {
+      data,
+      error
+    } =
       await window.supabaseClient
         .from("videos")
         .select("*")
         .eq("published", true)
-        .order("created_at", {
-          ascending: false
-        });
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        );
 
 
     if (error) {
@@ -420,7 +618,7 @@ async function getSupabaseVideos() {
 
 
 // ============================================================
-// GET ALL VIDEOS
+// ALL VIDEOS
 // STATIC + SUPABASE
 // ============================================================
 
@@ -435,35 +633,45 @@ async function getAllVideos() {
 
 
   const databaseVideos =
-    supabaseVideos.map(video => ({
+    supabaseVideos.map(video => {
 
-      id:
-        video.id,
-
-      name:
-        video.title,
-
-      url:
-        video.file_url,
-
-      category:
-        String(video.category || "")
+      const category =
+        String(
+          video.category || ""
+        )
           .trim()
-          .toLowerCase(),
+          .toLowerCase();
 
-      file_path:
-        video.file_path,
 
-      media_type:
-        video.media_type,
+      return {
 
-      created_at:
-        video.created_at,
+        id:
+          video.id,
 
-      static:
-        false
+        name:
+          video.title ||
+          getCategoryMeta(category).label,
 
-    }));
+        url:
+          video.file_url,
+
+        category,
+
+        file_path:
+          video.file_path,
+
+        media_type:
+          video.media_type,
+
+        created_at:
+          video.created_at,
+
+        static:
+          false
+
+      };
+
+    });
 
 
   return [
@@ -540,30 +748,35 @@ function openVideoModal(
     document.body.appendChild(modal);
 
 
-    const close = () => {
+    const close =
+      () => {
 
-      const player =
-        $("video", modal);
-
-
-      if (player) {
-
-        player.pause();
-
-        player.removeAttribute("src");
-
-        player.load();
-
-      }
+        const player =
+          $("video", modal);
 
 
-      modal.classList.remove("open");
+        if (player) {
 
-      document.body.classList.remove(
-        "modal-open"
-      );
+          player.pause();
 
-    };
+          player.removeAttribute(
+            "src"
+          );
+
+          player.load();
+
+        }
+
+
+        modal.classList.remove(
+          "open"
+        );
+
+        document.body.classList.remove(
+          "modal-open"
+        );
+
+      };
 
 
     $(".modal-close", modal)
@@ -616,7 +829,9 @@ function openVideoModal(
     modal
   ).textContent =
     `${category} · ${
-      vertical ? "9:16" : "16:9"
+      vertical
+        ? "9:16"
+        : "16:9"
     }`;
 
 
@@ -633,13 +848,21 @@ function openVideoModal(
       : "16 / 9";
 
 
+  player.style.objectFit =
+    "contain";
+
+
   player.src =
     src;
+
 
   player.load();
 
 
-  modal.classList.add("open");
+  modal.classList.add(
+    "open"
+  );
+
 
   document.body.classList.add(
     "modal-open"
@@ -665,7 +888,8 @@ function createVideoCard(video) {
 
 
   const title =
-    video.name || meta.label;
+    video.name ||
+    meta.label;
 
 
   const card =
@@ -706,7 +930,6 @@ function createVideoCard(video) {
 
     </div>
 
-
     <div class="video-info">
 
       <div class="meta">
@@ -720,7 +943,6 @@ function createVideoCard(video) {
         </span>
 
       </div>
-
 
       <h3>
         ${title}
@@ -739,9 +961,8 @@ function createVideoCard(video) {
     "error",
     () => {
 
-      console.warn(
-        "Video could not load:",
-        video.url
+      card.classList.add(
+        "video-error"
       );
 
     }
@@ -780,7 +1001,9 @@ async function initWorkLibrary() {
 
 
   if (!container) {
+
     return;
+
   }
 
 
@@ -797,7 +1020,8 @@ async function initWorkLibrary() {
     await getAllVideos();
 
 
-  container.innerHTML = "";
+  container.innerHTML =
+    "";
 
 
   if (!allVideos.length) {
@@ -823,6 +1047,7 @@ async function initWorkLibrary() {
   }
 
 
+  // Group videos by category
   Object.values(CATEGORIES)
     .forEach(meta => {
 
@@ -838,7 +1063,9 @@ async function initWorkLibrary() {
 
 
       if (!categoryVideos.length) {
+
         return;
+
       }
 
 
@@ -858,30 +1085,33 @@ async function initWorkLibrary() {
         meta.label;
 
 
-      container.appendChild(label);
+      container.appendChild(
+        label
+      );
 
 
-      categoryVideos.forEach(video => {
+      categoryVideos.forEach(
+        video => {
 
-        container.appendChild(
-          createVideoCard(video)
-        );
+          container.appendChild(
+            createVideoCard(video)
+          );
 
-      });
+        }
+      );
 
     });
 
 
-  // ==========================================================
-  // FILTER BUTTONS
-  // ==========================================================
-
+  // Filters
   const filterBar =
     $(".video-filters");
 
 
   if (!filterBar) {
+
     return;
+
   }
 
 
@@ -909,7 +1139,8 @@ async function initWorkLibrary() {
         !available.has(filter)
       ) {
 
-        button.hidden = true;
+        button.hidden =
+          true;
 
       }
 
@@ -973,7 +1204,9 @@ async function initFeaturedWork() {
 
 
   if (!grid) {
+
     return;
+
   }
 
 
@@ -981,21 +1214,17 @@ async function initFeaturedWork() {
     await getAllVideos();
 
 
-  grid.innerHTML = "";
+  grid.innerHTML =
+    "";
 
 
   const wanted = [
 
     "reels",
-
     "advertisements",
-
     "wedding-videos",
-
     "color-grading",
-
     "short-films",
-
     "product-promotions"
 
   ];
@@ -1011,23 +1240,25 @@ async function initFeaturedWork() {
 
 
     if (!meta) {
+
       return;
+
     }
 
 
     const video =
-      allVideos.find(item => {
-
-        return String(
+      allVideos.find(item =>
+        String(
           item.category || ""
         ).toLowerCase() ===
-        folder.toLowerCase();
-
-      });
+        folder.toLowerCase()
+      );
 
 
     if (!video) {
+
       return;
+
     }
 
 
@@ -1036,7 +1267,9 @@ async function initFeaturedWork() {
 
 
     const card =
-      document.createElement("article");
+      document.createElement(
+        "article"
+      );
 
 
     card.className =
@@ -1119,10 +1352,10 @@ async function initFeaturedWork() {
       "error",
       () => {
 
-        console.warn(
-          "Featured video could not load:",
-          video.url
-        );
+        $(".featured-media", card)
+          ?.classList.remove(
+            "has-video"
+          );
 
       }
     );
@@ -1152,8 +1385,176 @@ async function initFeaturedWork() {
 
 
 // ============================================================
-// TEAM PAGE
+// EXISTING TEAM MODAL
 // ============================================================
+
+function initTeam() {
+
+  const modal =
+    $("#teamModal");
+
+
+  if (!modal) {
+
+    return;
+
+  }
+
+
+  $$("[data-team]")
+    .forEach(card => {
+
+      const open =
+        () => {
+
+          try {
+
+            const data =
+              JSON.parse(
+                card.dataset.team
+              );
+
+
+            $(
+              "[data-modal-img]",
+              modal
+            ).src =
+              data.image;
+
+
+            $(
+              "[data-modal-name]",
+              modal
+            ).textContent =
+              data.name;
+
+
+            $(
+              "[data-modal-role]",
+              modal
+            ).textContent =
+              data.role;
+
+
+            $(
+              "[data-modal-bio]",
+              modal
+            ).textContent =
+              data.bio;
+
+
+            modal.classList.add(
+              "open"
+            );
+
+
+            document.body.classList.add(
+              "modal-open"
+            );
+
+          } catch (error) {
+
+            console.warn(
+              "Invalid team data:",
+              error
+            );
+
+          }
+
+        };
+
+
+      card.addEventListener(
+        "click",
+        open
+      );
+
+
+      card.addEventListener(
+        "keydown",
+        event => {
+
+          if (
+            event.key === "Enter" ||
+            event.key === " "
+          ) {
+
+            event.preventDefault();
+
+            open();
+
+          }
+
+        }
+      );
+
+    });
+
+
+  const close =
+    () => {
+
+      modal.classList.remove(
+        "open"
+      );
+
+      document.body.classList.remove(
+        "modal-open"
+      );
+
+    };
+
+
+  $(
+    "[data-close]",
+    modal
+  )?.addEventListener(
+    "click",
+    close
+  );
+
+
+  modal.addEventListener(
+    "click",
+    event => {
+
+      if (
+        event.target === modal
+      ) {
+
+        close();
+
+      }
+
+    }
+  );
+
+
+  document.addEventListener(
+    "keydown",
+    event => {
+
+      if (
+        event.key === "Escape"
+      ) {
+
+        close();
+
+      }
+
+    }
+  );
+
+}
+
+
+// ============================================================
+// SUPABASE TEAM
+// ============================================================
+//
+// This only activates if a page contains #teamGrid.
+// Therefore it does NOT destroy your current Team design.
+//
 
 async function initPublicTeam() {
 
@@ -1161,26 +1562,32 @@ async function initPublicTeam() {
     $("#teamGrid");
 
 
-  if (!grid) {
-    return;
-  }
+  if (
+    !grid ||
+    !window.supabaseClient
+  ) {
 
-
-  if (!window.supabaseClient) {
     return;
+
   }
 
 
   try {
 
-    const { data, error } =
+    const {
+      data,
+      error
+    } =
       await window.supabaseClient
         .from("team_members")
         .select("*")
         .eq("published", true)
-        .order("created_at", {
-          ascending: true
-        });
+        .order(
+          "created_at",
+          {
+            ascending: true
+          }
+        );
 
 
     if (error) {
@@ -1196,17 +1603,22 @@ async function initPublicTeam() {
 
 
     if (!data || !data.length) {
+
       return;
+
     }
 
 
-    grid.innerHTML = "";
+    grid.innerHTML =
+      "";
 
 
     data.forEach(member => {
 
       const card =
-        document.createElement("article");
+        document.createElement(
+          "article"
+        );
 
 
       card.className =
@@ -1219,14 +1631,18 @@ async function initPublicTeam() {
           ? `
             <img
               src="${member.photo_url}"
-              alt="${member.name}">
+              alt="${member.name || ""}">
           `
 
           : `
             <div class="team-avatar">
-              ${String(
-                member.name || "?"
-              ).charAt(0).toUpperCase()}
+              ${
+                String(
+                  member.name || "?"
+                )
+                  .charAt(0)
+                  .toUpperCase()
+              }
             </div>
           `;
 
@@ -1252,10 +1668,11 @@ async function initPublicTeam() {
       `;
 
 
-      grid.appendChild(card);
+      grid.appendChild(
+        card
+      );
 
     });
-
 
   } catch (error) {
 
@@ -1270,35 +1687,49 @@ async function initPublicTeam() {
 
 
 // ============================================================
-// PROJECTS PAGE
+// PROJECTS
 // ============================================================
+//
+// Supports BOTH:
+// #projectLibrary
+// #projectGrid
+//
+// This fixes the ID mismatch in the previous version.
+//
 
 async function initPublicProjects() {
 
   const grid =
+    $("#projectLibrary") ||
     $("#projectGrid");
 
 
-  if (!grid) {
-    return;
-  }
+  if (
+    !grid ||
+    !window.supabaseClient
+  ) {
 
-
-  if (!window.supabaseClient) {
     return;
+
   }
 
 
   try {
 
-    const { data, error } =
+    const {
+      data,
+      error
+    } =
       await window.supabaseClient
         .from("projects")
         .select("*")
         .eq("published", true)
-        .order("created_at", {
-          ascending: true
-        });
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        );
 
 
     if (error) {
@@ -1314,71 +1745,100 @@ async function initPublicProjects() {
 
 
     if (!data || !data.length) {
+
       return;
+
     }
 
 
-    grid.innerHTML = "";
+    // Clear existing project cards
+    grid.innerHTML =
+      "";
 
 
-    data.forEach((project, index) => {
+    data.forEach(
+      (project, index) => {
 
-      const card =
-        document.createElement("article");
-
-
-      card.className =
-        "project-card";
-
-
-      card.innerHTML = `
-
-        <div class="num">
-          ${String(
-            index + 1
-          ).padStart(2, "0")}
-        </div>
-
-        ${
-          project.thumbnail_url
-            ? `
-              <img
-                src="${project.thumbnail_url}"
-                alt="${project.title}"
-                style="
-                  width:100%;
-                  height:220px;
-                  object-fit:cover;
-                  border-radius:14px;
-                  margin-top:18px;
-                ">
-            `
-            : ""
-        }
-
-        <h3>
-          ${project.title || ""}
-        </h3>
-
-        <p>
-          ${project.description || ""}
-        </p>
-
-        <div class="project-tags">
-
-          <span>
-            ${project.category || "Project"}
-          </span>
-
-        </div>
-
-      `;
+        const card =
+          document.createElement(
+            "article"
+          );
 
 
-      grid.appendChild(card);
+        card.className =
+          "project-card";
 
-    });
 
+        card.innerHTML = `
+
+          ${
+            project.thumbnail_url
+
+              ? `
+                <div class="project-media">
+
+                  <img
+                    src="${project.thumbnail_url}"
+                    alt="${project.title || "Project"}"
+                    style="
+                      width:100%;
+                      height:100%;
+                      object-fit:cover;
+                      display:block;
+                    ">
+
+                </div>
+              `
+
+              : ""
+          }
+
+
+          <div class="project-content">
+
+            <div class="eyebrow">
+              ${
+                project.category ||
+                "Project"
+              }
+            </div>
+
+            <div class="project-number">
+              ${String(
+                index + 1
+              ).padStart(2, "0")}
+            </div>
+
+            <h3>
+              ${
+                project.title ||
+                "Untitled Project"
+              }
+            </h3>
+
+            ${
+              project.description
+
+                ? `
+                  <p>
+                    ${project.description}
+                  </p>
+                `
+
+                : ""
+            }
+
+          </div>
+
+        `;
+
+
+        grid.appendChild(
+          card
+        );
+
+      }
+    );
 
   } catch (error) {
 
@@ -1403,7 +1863,9 @@ function initContactForm() {
 
 
   if (!form) {
+
     return;
+
   }
 
 
@@ -1495,9 +1957,11 @@ function initShowreel() {
     "error",
     () => {
 
-      player.hidden = true;
+      player.hidden =
+        true;
 
-      missing.hidden = false;
+      missing.hidden =
+        false;
 
     }
   );
@@ -1516,17 +1980,21 @@ async function init() {
   );
 
 
+  // Basic website functions
   initNav();
 
   setYear();
 
   initImages();
 
+  initTeam();
+
   initContactForm();
 
   initShowreel();
 
 
+  // Supabase
   const supabaseReady =
     await setupSupabase();
 
@@ -1534,22 +2002,23 @@ async function init() {
   if (!supabaseReady) {
 
     console.warn(
-      "Supabase unavailable. Static portfolio content will still load."
+      "Supabase unavailable. Static content will still work."
     );
 
   }
 
 
-  // Work always loads:
-  // old local videos + Supabase videos
-
+  // Work:
+  // Existing static videos +
+  // Supabase uploaded videos
   await initWorkLibrary();
 
+
+  // Home featured work
   await initFeaturedWork();
 
 
-  // Team and Projects require Supabase
-
+  // Supabase content
   if (supabaseReady) {
 
     await initPublicTeam();
@@ -1578,4 +2047,4 @@ if (
 
   init();
 
-  }
+      }
