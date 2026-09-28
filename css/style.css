@@ -309,3 +309,8 @@ img,video{display:block;max-width:100%}
 .tool-card{transition:transform .2s ease,box-shadow .2s ease}
 .tool-card:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(20,20,20,.10)}
 @media(max-width:620px){.page-shell{padding:36px 0 52px}.site-footer{width:92vw}}
+
+/* Dynamic project thumbnails */
+.project-thumb{width:100%;height:240px;object-fit:cover;border-radius:16px;margin-bottom:20px;background:#ddd0c2;display:block}
+.team-placeholder{cursor:default}
+.team-placeholder:hover{transform:none}
