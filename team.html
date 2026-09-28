@@ -1,19 +1,19 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Kalyan Chitteti — Video Editor, Colorist and DI Artist.">
-<title>Team — Kalyan Chitteti</title>
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team — Kalyan Chitteti</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    .single-team { max-width:430px; margin:0 auto; }
+    .single-team img { width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:24px; display:block; }
+    .single-team .team-copy { padding:22px 4px; }
+  </style>
 </head>
 <body>
-
 <header class="site-header">
-  <a class="brand" href="index.html">
-    <span class="brand-mark">K</span>
-    <span class="brand-text">KALYAN CHITTETI</span>
-  </a>
+  <a class="brand" href="index.html"><span class="brand-mark">K</span><span>Kalyan Chitteti</span></a>
   <button class="menu-toggle" type="button" aria-label="Open menu">☰</button>
   <nav class="main-nav">
     <a href="index.html" data-page="home">Home</a>
@@ -27,20 +27,24 @@
   </nav>
 </header>
 
-<main>
+<main class="page-shell">
+  <section class="page-hero">
+    <div class="eyebrow">TEAM</div>
+    <h1>The creative lead.</h1>
+    <p>More team members will be added when their real profiles and images are ready.</p>
+  </section>
 
-<section class="container page-head"><div><div class="eyebrow">People Behind The Work</div><h1>Team.</h1><p>A small creative team with shared focus on strong visuals, clean post-production and reliable delivery.</p></div></section>
-<section class="section container" style="padding-top:20px"><div class="team-grid"><article class="team-card" data-team='{&quot;name&quot;: &quot;Kalyan Chitteti&quot;, &quot;role&quot;: &quot;Founder \u00b7 Video Editor \u00b7 Colorist&quot;, &quot;image&quot;: &quot;assets/images/team/team-1.jpg&quot;, &quot;bio&quot;: &quot;Lead editor and post-production artist. Handles editing, color grading, DI finishing, sound polish and creative direction.&quot;}'><div class="team-photo"><img src="assets/images/team/team-1.jpg" alt="Kalyan Chitteti"><div class="team-avatar">K</div></div><div class="team-role">Founder · Video Editor · Colorist</div><h3>Kalyan Chitteti</h3><p>Tap to view details →</p></article><article class="team-card" data-team='{&quot;name&quot;: &quot;Rohit&quot;, &quot;role&quot;: &quot;Cinematographer&quot;, &quot;image&quot;: &quot;assets/images/team/team-2.jpg&quot;, &quot;bio&quot;: &quot;Camera and production support for shoots, visual capture and project-specific production.&quot;}'><div class="team-photo"><img src="assets/images/team/team-2.jpg" alt="Rohit"><div class="team-avatar">K</div></div><div class="team-role">Cinematographer</div><h3>Rohit</h3><p>Tap to view details →</p></article><article class="team-card" data-team='{&quot;name&quot;: &quot;Arjun&quot;, &quot;role&quot;: &quot;Colorist&quot;, &quot;image&quot;: &quot;assets/images/team/team-3.jpg&quot;, &quot;bio&quot;: &quot;Color finishing and visual look support for cinematic, commercial and social projects.&quot;}'><div class="team-photo"><img src="assets/images/team/team-3.jpg" alt="Arjun"><div class="team-avatar">K</div></div><div class="team-role">Colorist</div><h3>Arjun</h3><p>Tap to view details →</p></article><article class="team-card" data-team='{&quot;name&quot;: &quot;Creative Team&quot;, &quot;role&quot;: &quot;Production \u00b7 Photo \u00b7 Video&quot;, &quot;image&quot;: &quot;assets/images/team/team-1.jpg&quot;, &quot;bio&quot;: &quot;Additional collaborators can support photography, video shoots, editing and larger production workflows.&quot;}'><div class="team-photo"><img src="assets/images/team/team-1.jpg" alt="Creative Team"><div class="team-avatar">K</div></div><div class="team-role">Production · Photo · Video</div><h3>Creative Team</h3><p>Tap to view details →</p></article></div></section>
-<div id="teamModal" class="modal-backdrop" aria-hidden="true"><div class="modal"><button class="modal-close" data-close>×</button><div class="modal-team"><img data-modal-img alt="Team member"><div class="modal-content"><div class="eyebrow">Team member</div><h2 data-modal-name></h2><div class="role" data-modal-role></div><p data-modal-bio></p><a class="btn-primary" href="contact.html">Work Together →</a></div></div></div></div>
-
+  <section class="single-team">
+    <img src="assets/images/profile/kalyan--profile.jpg" alt="Kalyan Chitteti" onerror="this.alt='Kalyan Chitteti — profile image unavailable'; this.classList.add('image-missing');">
+    <div class="team-copy">
+      <div class="eyebrow">KALYAN CHITTETI</div>
+      <h2>Video Editor · Colorist · DI Artist</h2>
+      <p>Post-production focused creative work across editing, colour grading, motion, and visual storytelling.</p>
+    </div>
+  </section>
 </main>
 
-<footer class="footer container">
-  <span>© <span class="year"></span> Kalyan Chitteti</span>
-  <span>Video Editor · Colorist · DI Artist</span>
-  <span>India</span>
-</footer>
-
-<script src="js/app.js"></script>
+<footer class="site-footer"><span>© <span class="year"></span> Kalyan Chitteti</span></footer>
+<script src="assets/js/app.js"></script>
 </body>
 </html>

@@ -1,19 +1,20 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Kalyan Chitteti — Video Editor, Colorist and DI Artist.">
-<title>Tools — Kalyan Chitteti</title>
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tools — Kalyan Chitteti</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tools-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:24px; }
+    .tool-card { background:#fff; border-radius:22px; padding:28px; text-align:center; box-shadow:0 12px 35px rgba(20,20,20,.08); border:1px solid rgba(20,20,20,.08); }
+    .tool-card img { width:82px; height:82px; object-fit:contain; display:block; margin:0 auto 18px; }
+    .tool-card h3 { margin:0; }
+  </style>
 </head>
 <body>
-
 <header class="site-header">
-  <a class="brand" href="index.html">
-    <span class="brand-mark">K</span>
-    <span class="brand-text">KALYAN CHITTETI</span>
-  </a>
+  <a class="brand" href="index.html"><span class="brand-mark">K</span><span>Kalyan Chitteti</span></a>
   <button class="menu-toggle" type="button" aria-label="Open menu">☰</button>
   <nav class="main-nav">
     <a href="index.html" data-page="home">Home</a>
@@ -27,19 +28,26 @@
   </nav>
 </header>
 
-<main>
+<main class="page-shell">
+  <section class="page-hero">
+    <div class="eyebrow">TOOLS</div>
+    <h1>The tools behind the work.</h1>
+    <p>Editing, design, motion, colour, and data tools used across creative projects.</p>
+  </section>
 
-<section class="container page-head"><div><div class="eyebrow">Post Production Stack</div><h1>Tools.</h1><p>The software used across editing, design, color, motion and data-driven creative workflows.</p></div></section>
-<section class="section container" style="padding-top:20px"><div class="tools-grid"><article class="tool"><div class="tool-logo">DR</div><h3>DaVinci Resolve</h3><p>Editing · Color Grading · DI</p></article><article class="tool"><div class="tool-logo">Pr</div><h3>Adobe Premiere Pro</h3><p>Video Editing</p></article><article class="tool"><div class="tool-logo">Ae</div><h3>After Effects</h3><p>Motion Graphics · VFX</p></article><article class="tool"><div class="tool-logo">Ps</div><h3>Photoshop</h3><p>Photo Editing</p></article><article class="tool"><div class="tool-logo">C</div><h3>Canva</h3><p>Designs · Thumbnails</p></article><article class="tool"><div class="tool-logo">F</div><h3>Figma</h3><p>UI · Storyboards</p></article><article class="tool"><div class="tool-logo">Ex</div><h3>Excel</h3><p>Data · Reporting</p></article><article class="tool"><div class="tool-logo">BI</div><h3>Power BI</h3><p>Dashboards · Data Visualization</p></article></div></section>
-
+  <section class="tools-grid" aria-label="Creative tools">
+    <article class="tool-card"><img src="assets/images/tools/premiere-pro.png" alt="Adobe Premiere Pro"><h3>Adobe Premiere Pro</h3></article>
+    <article class="tool-card"><img src="assets/images/tools/photoshop.png" alt="Adobe Photoshop"><h3>Adobe Photoshop</h3></article>
+    <article class="tool-card"><img src="assets/images/tools/canva.png" alt="Canva"><h3>Canva</h3></article>
+    <article class="tool-card"><img src="assets/images/tools/figma.png" alt="Figma"><h3>Figma</h3></article>
+    <article class="tool-card"><img src="assets/images/tools/davinci-resolve.png" alt="DaVinci Resolve"><h3>DaVinci Resolve</h3></article>
+    <article class="tool-card"><img src="assets/images/tools/after-effects.png" alt="Adobe After Effects"><h3>Adobe After Effects</h3></article>
+    <article class="tool-card"><img src="assets/images/tools/excel.png" alt="Microsoft Excel"><h3>Microsoft Excel</h3></article>
+    <article class="tool-card"><img src="assets/images/tools/power-bi.png" alt="Microsoft Power BI"><h3>Power BI</h3></article>
+  </section>
 </main>
 
-<footer class="footer container">
-  <span>© <span class="year"></span> Kalyan Chitteti</span>
-  <span>Video Editor · Colorist · DI Artist</span>
-  <span>India</span>
-</footer>
-
-<script src="js/app.js"></script>
+<footer class="site-footer"><span>© <span class="year"></span> Kalyan Chitteti</span></footer>
+<script src="assets/js/app.js"></script>
 </body>
 </html>
