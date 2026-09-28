@@ -1,97 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Projects — Kalyan Chitteti</title>
-  <link rel="stylesheet" href="css/style.css">
-  <style>
-    .projects-intro{max-width:760px;margin-bottom:38px}
-    .project-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
-    .project-card{background:#fff;border:1px solid rgba(20,20,20,.08);border-radius:24px;overflow:hidden;box-shadow:0 12px 35px rgba(20,20,20,.07)}
-    .project-media{position:relative;background:#111;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center}
-    .project-media.vertical{aspect-ratio:9/16;max-width:330px;margin:auto}
-    .project-media video{width:100%;height:100%;object-fit:cover;display:block}
-    .project-content{padding:20px}
-    .project-content h3{margin:6px 0}
-    .project-play{position:absolute;left:18px;bottom:18px;border:0;border-radius:999px;padding:12px 16px;cursor:pointer;font-size:18px}
-  </style>
-</head>
-<body>
-<header class="site-header">
-  <a class="brand" href="index.html"><span class="brand-mark">K</span><span>Kalyan Chitteti</span></a>
-  <button class="menu-toggle" type="button" aria-label="Open menu">☰</button>
-  <nav class="main-nav">
-    <a href="index.html" data-page="home">Home</a>
-    <a href="showreel.html" data-page="showreel">Showreel</a>
-    <a href="work.html" data-page="work">Work</a>
-    <a href="projects.html" data-page="projects">Projects</a>
-    <a href="team.html" data-page="team">Team</a>
-    <a href="tools.html" data-page="tools">Tools</a>
-    <a href="about.html" data-page="about">About</a>
-    <a href="contact.html" data-page="contact">Contact</a>
-  </nav>
-</header>
+<section class="admin-section" id="tab-projects">
 
-<main class="page-shell">
-  <section class="page-hero projects-intro">
-    <div class="eyebrow">PROJECTS · VISUAL WORK</div>
-    <h1>A closer look at the work.</h1>
-    
-  </section>
+  <h2>Projects Manager</h2>
 
-  <section id="projectLibrary" class="project-grid" aria-live="polite"></section>
-</main>
+  <form id="projectForm">
 
-<footer class="site-footer"><span>© <span class="year"></span> Kalyan Chitteti</span></footer>
-<script src="js/app.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', async () => {
-  const root = document.getElementById('projectLibrary');
-  if(!root) return;
+    <div class="admin-field">
+      <label for="projectTitle">Project Title</label>
+      <input
+        type="text"
+        id="projectTitle"
+        placeholder="Project name"
+        required
+      >
+    </div>
 
-  const order = ['short-films','advertisements','wedding-videos','color-grading','company-designs','product-promotions','story','reels'];
-  const groups = [];
+    <div class="admin-field">
+      <label for="projectCategory">Category</label>
+      <input
+        type="text"
+        id="projectCategory"
+        placeholder="Short Film, Advertisement, Reel, etc."
+        required
+      >
+    </div>
 
-  for(const folder of order){
-    const meta = Object.values(CATEGORIES).find(x => x.folder === folder);
-    if(!meta) continue;
-    const files = await listVideos(folder);
-    files.forEach(file => groups.push({meta,file}));
-  }
+    <div class="admin-field">
+      <label for="projectDescription">Description</label>
+      <textarea
+        id="projectDescription"
+        placeholder="Project description"
+        rows="4"
+      ></textarea>
+    </div>
 
-  root.innerHTML = '';
+    <div class="admin-field">
+      <label for="projectThumb">Project Thumbnail</label>
+      <input
+        type="file"
+        id="projectThumb"
+        accept="image/*"
+      >
+    </div>
 
-  if(!groups.length){
-    root.closest('main')?.classList.add('is-empty');
-    return;
-  }
+    <button type="submit" class="admin-btn">
+      Add Project
+    </button>
 
-  groups.forEach(({meta,file}) => {
-    const src = `assets/videos/${meta.folder}/${encodeURIComponent(file.name)}`;
-    const vertical = meta.ratio === '9:16';
-    const title = prettyName(file.name, meta.label);
+    <p id="projectMsg"></p>
 
-    const card = document.createElement('article');
-    card.className = 'project-card';
-    card.innerHTML = `
-      <div class="project-media ${vertical ? 'vertical' : ''}">
-        <video controls playsinline preload="metadata" src="${src}"></video>
-        <button class="project-play" type="button">▶ Play</button>
-      </div>
-      <div class="project-content">
-        <div class="eyebrow">${meta.label} · ${meta.ratio}</div>
-        <h3>${title}</h3>
-      </div>`;
+  </form>
 
-    const video = card.querySelector('video');
-    card.querySelector('.project-play').addEventListener('click', () => {
-      if(video.paused) video.play().catch(()=>{});
-      else video.pause();
-    });
-    root.appendChild(card);
-  });
-});
-</script>
-</body>
-</html>
+  <div id="projectList"></div>
+
+</section>
