@@ -13,26 +13,23 @@
 
     body {
       margin: 0;
-      min-height: 100vh;
       font-family: Arial, sans-serif;
       background: #f5f1e8;
       color: #24211f;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
     }
 
     .container {
-      width: 100%;
-      max-width: 460px;
+      width: 92%;
+      max-width: 1000px;
+      margin: 40px auto;
     }
 
     .card {
       background: white;
-      padding: 40px;
       border-radius: 20px;
-      box-shadow: 0 15px 50px rgba(0,0,0,0.10);
+      padding: 30px;
+      margin-bottom: 25px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.08);
     }
 
     .logo {
@@ -44,21 +41,25 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
       font-weight: bold;
-      margin-bottom: 25px;
+      font-size: 24px;
+      margin-bottom: 20px;
     }
 
     .eyebrow {
-      font-size: 12px;
-      letter-spacing: 3px;
       text-transform: uppercase;
+      letter-spacing: 3px;
+      font-size: 12px;
       color: #8b7768;
     }
 
     h1 {
-      font-size: 42px;
-      margin: 8px 0 12px;
+      font-size: 40px;
+      margin: 8px 0;
+    }
+
+    h2 {
+      margin-top: 0;
     }
 
     p {
@@ -68,72 +69,132 @@
 
     label {
       display: block;
-      margin: 20px 0 8px;
-      font-weight: 600;
+      margin: 18px 0 7px;
+      font-weight: bold;
     }
 
-    input {
+    input,
+    select,
+    textarea {
       width: 100%;
-      padding: 15px;
+      padding: 14px;
       border: 1px solid #ccc;
       border-radius: 10px;
       font-size: 16px;
-      outline: none;
+      background: white;
     }
 
-    input:focus {
-      border-color: #24211f;
+    textarea {
+      min-height: 100px;
+      resize: vertical;
     }
 
     button {
-      width: 100%;
-      margin-top: 24px;
-      padding: 15px;
       border: 0;
       border-radius: 10px;
+      padding: 14px 20px;
       background: #24211f;
       color: white;
-      font-size: 16px;
-      font-weight: 600;
+      font-size: 15px;
+      font-weight: bold;
       cursor: pointer;
     }
 
     button:hover {
-      opacity: 0.9;
-    }
-
-    #message {
-      margin-top: 18px;
-      min-height: 24px;
-      font-size: 14px;
-    }
-
-    .dashboard {
-      display: none;
-    }
-
-    .dashboard h2 {
-      font-size: 30px;
-    }
-
-    .dashboard-card {
-      padding: 20px;
-      margin-top: 15px;
-      background: #f5f1e8;
-      border-radius: 12px;
+      opacity: .9;
     }
 
     .logout {
-      background: #8f2d24;
+      background: #9d3027;
     }
 
-    @media (max-width: 500px) {
+    .login-button {
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin: 25px 0;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      background: #eee8dd;
+      color: #24211f;
+    }
+
+    .tab.active {
+      background: #24211f;
+      color: white;
+    }
+
+    .video-item {
+      border: 1px solid #ddd;
+      border-radius: 15px;
+      padding: 18px;
+      margin-top: 15px;
+      background: #faf9f6;
+    }
+
+    .video-item video {
+      width: 100%;
+      max-height: 400px;
+      border-radius: 10px;
+      background: #111;
+      margin-bottom: 12px;
+    }
+
+    .video-info {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .delete {
+      background: #9d3027;
+    }
+
+    .message {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    .success {
+      color: #16803c;
+    }
+
+    .error {
+      color: #b42318;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        width: 94%;
+        margin: 20px auto;
+      }
+
       .card {
-        padding: 28px 22px;
+        padding: 22px;
       }
 
       h1 {
-        font-size: 34px;
+        font-size: 32px;
       }
     }
   </style>
@@ -141,167 +202,798 @@
 
 <body>
 
-  <div class="container">
+<div class="container">
 
-    <!-- LOGIN -->
-    <div class="card" id="loginCard">
+  <!-- LOGIN -->
+  <div id="loginCard" class="card">
 
-      <div class="logo">K</div>
+    <div class="logo">K</div>
 
-      <div class="eyebrow">Private Area</div>
+    <div class="eyebrow">Private Area</div>
 
-      <h1>Admin.</h1>
+    <h1>Admin.</h1>
 
-      <p>
-        Sign in to manage your KalyanEditz portfolio.
-      </p>
+    <p>
+      Sign in to manage your KalyanEditz portfolio.
+    </p>
 
-      <form id="loginForm">
+    <form id="loginForm">
 
-        <label for="email">Email</label>
-        <input
-          id="email"
-          type="email"
-          autocomplete="username"
-          required
-        >
+      <label>Email</label>
+      <input
+        id="email"
+        type="email"
+        autocomplete="username"
+        required
+      >
 
-        <label for="password">Password</label>
-        <input
-          id="password"
-          type="password"
-          autocomplete="current-password"
-          required
-        >
+      <label>Password</label>
+      <input
+        id="password"
+        type="password"
+        autocomplete="current-password"
+        required
+      >
 
-        <button type="submit">
-          Sign In
+      <button class="login-button" type="submit">
+        Sign In
+      </button>
+
+    </form>
+
+    <div id="loginMessage" class="message"></div>
+
+  </div>
+
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="hidden">
+
+    <div class="card">
+
+      <div class="topbar">
+
+        <div>
+          <div class="eyebrow">Private Dashboard</div>
+          <h1>KalyanEditz</h1>
+          <p id="loggedUser"></p>
+        </div>
+
+        <button id="logoutButton" class="logout">
+          Sign Out
         </button>
 
-      </form>
-
-      <div id="message"></div>
-
-    </div>
-
-
-    <!-- DASHBOARD -->
-    <div class="card dashboard" id="dashboard">
-
-      <div class="logo">K</div>
-
-      <div class="eyebrow">Private Dashboard</div>
-
-      <h2>KalyanEditz</h2>
-
-      <p>
-        You are successfully logged in.
-      </p>
-
-      <div class="dashboard-card">
-        <strong>Videos</strong>
-        <p>Manage portfolio videos.</p>
       </div>
 
-      <div class="dashboard-card">
-        <strong>Team</strong>
-        <p>Manage team profiles.</p>
+
+      <!-- TABS -->
+      <div class="tabs">
+
+        <button
+          class="tab active"
+          data-tab="videos"
+        >
+          Videos
+        </button>
+
+        <button
+          class="tab"
+          data-tab="team"
+        >
+          Team
+        </button>
+
+        <button
+          class="tab"
+          data-tab="projects"
+        >
+          Projects
+        </button>
+
       </div>
 
-      <div class="dashboard-card">
-        <strong>Projects</strong>
-        <p>Manage portfolio projects.</p>
+
+      <!-- VIDEOS -->
+      <div id="videosTab">
+
+        <h2>Upload Video</h2>
+
+        <form id="videoForm">
+
+          <label>Video Title</label>
+
+          <input
+            id="videoTitle"
+            type="text"
+            placeholder="Example: Wedding Campaign Reel"
+            required
+          >
+
+
+          <label>Category</label>
+
+          <select id="videoCategory">
+
+            <option value="showreel">
+              Showreel
+            </option>
+
+            <option value="reels">
+              Reels
+            </option>
+
+            <option value="advertisements">
+              Advertisements
+            </option>
+
+            <option value="company-designs">
+              Company Designs
+            </option>
+
+            <option value="short-films">
+              Short Films
+            </option>
+
+            <option value="wedding-videos">
+              Wedding Videos
+            </option>
+
+            <option value="story">
+              Story
+            </option>
+
+            <option value="product-promotions">
+              Product Promotions
+            </option>
+
+            <option value="color-grading">
+              Color Grading / DI
+            </option>
+
+          </select>
+
+
+          <label>Video File</label>
+
+          <input
+            id="videoFile"
+            type="file"
+            accept="video/*"
+            required
+          >
+
+
+          <label>
+            <input
+              id="published"
+              type="checkbox"
+              checked
+              style="width:auto"
+            >
+            Publish on website
+          </label>
+
+
+          <button type="submit">
+            Upload Video
+          </button>
+
+        </form>
+
+        <div id="videoMessage" class="message"></div>
+
+
+        <h2 style="margin-top:40px;">
+          Uploaded Videos
+        </h2>
+
+        <div id="videoList">
+          Loading...
+        </div>
+
       </div>
 
-      <button class="logout" id="logoutBtn">
-        Sign Out
-      </button>
+
+      <!-- TEAM -->
+      <div id="teamTab" class="hidden">
+
+        <h2>Team Manager</h2>
+
+        <p>
+          Team management will be connected next.
+        </p>
+
+      </div>
+
+
+      <!-- PROJECTS -->
+      <div id="projectsTab" class="hidden">
+
+        <h2>Projects Manager</h2>
+
+        <p>
+          Project management will be connected next.
+        </p>
+
+      </div>
 
     </div>
 
   </div>
 
-
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <!-- Your Supabase configuration -->
-  <script src="assets/js/config.js"></script>
+</div>
 
 
-  <script>
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    const loginForm = document.getElementById("loginForm");
-    const message = document.getElementById("message");
-
-    const loginCard = document.getElementById("loginCard");
-    const dashboard = document.getElementById("dashboard");
-
-    const logoutBtn = document.getElementById("logoutBtn");
+<script src="assets/js/config.js"></script>
 
 
-    // LOGIN
-    loginForm.addEventListener("submit", async function(event) {
+<script>
+
+  /* ================================
+     ELEMENTS
+  ================================= */
+
+  const loginCard =
+    document.getElementById("loginCard");
+
+  const dashboard =
+    document.getElementById("dashboard");
+
+  const loginForm =
+    document.getElementById("loginForm");
+
+  const loginMessage =
+    document.getElementById("loginMessage");
+
+  const videoForm =
+    document.getElementById("videoForm");
+
+  const videoMessage =
+    document.getElementById("videoMessage");
+
+  const videoList =
+    document.getElementById("videoList");
+
+  const logoutButton =
+    document.getElementById("logoutButton");
+
+  const loggedUser =
+    document.getElementById("loggedUser");
+
+
+  /* ================================
+     LOGIN
+  ================================= */
+
+  loginForm.addEventListener(
+    "submit",
+    async function(event) {
 
       event.preventDefault();
 
+      loginMessage.textContent =
+        "Signing in...";
+
+      loginMessage.className =
+        "message";
+
+
       const email =
-        document.getElementById("email").value.trim();
+        document.getElementById("email")
+          .value
+          .trim();
 
       const password =
-        document.getElementById("password").value;
-
-
-      message.textContent = "Signing in...";
-      message.style.color = "#666";
+        document.getElementById("password")
+          .value;
 
 
       const { data, error } =
         await supabaseClient.auth.signInWithPassword({
-          email: email,
-          password: password
+          email,
+          password
         });
 
 
       if (error) {
 
-        message.textContent =
+        loginMessage.textContent =
           "Login failed: " + error.message;
 
-        message.style.color = "#b42318";
+        loginMessage.className =
+          "message error";
 
         return;
       }
 
 
-      if (data.user) {
+      loginMessage.textContent = "";
 
-        message.textContent = "";
+      loginCard.classList.add("hidden");
 
-        loginCard.style.display = "none";
+      dashboard.classList.remove("hidden");
 
-        dashboard.style.display = "block";
+      loggedUser.textContent =
+        data.user.email;
 
-      }
+      loadVideos();
 
-    });
+    }
+  );
 
 
-    // LOGOUT
-    logoutBtn.addEventListener("click", async function() {
+  /* ================================
+     LOGOUT
+  ================================= */
+
+  logoutButton.addEventListener(
+    "click",
+    async function() {
 
       await supabaseClient.auth.signOut();
 
-      dashboard.style.display = "none";
+      dashboard.classList.add("hidden");
 
-      loginCard.style.display = "block";
+      loginCard.classList.remove("hidden");
 
       loginForm.reset();
+
+      videoList.innerHTML = "";
+
+    }
+  );
+
+
+  /* ================================
+     TABS
+  ================================= */
+
+  document.querySelectorAll(".tab")
+    .forEach(function(tab) {
+
+      tab.addEventListener(
+        "click",
+        function() {
+
+          document.querySelectorAll(".tab")
+            .forEach(function(t) {
+              t.classList.remove("active");
+            });
+
+          tab.classList.add("active");
+
+
+          document
+            .getElementById("videosTab")
+            .classList.add("hidden");
+
+          document
+            .getElementById("teamTab")
+            .classList.add("hidden");
+
+          document
+            .getElementById("projectsTab")
+            .classList.add("hidden");
+
+
+          const selected =
+            tab.dataset.tab;
+
+
+          document
+            .getElementById(selected + "Tab")
+            .classList.remove("hidden");
+
+        }
+      );
 
     });
 
 
-  </script>
+  /* ================================
+     UPLOAD VIDEO
+  ================================= */
+
+  videoForm.addEventListener(
+    "submit",
+    async function(event) {
+
+      event.preventDefault();
+
+
+      const title =
+        document.getElementById("videoTitle")
+          .value
+          .trim();
+
+      const category =
+        document.getElementById("videoCategory")
+          .value;
+
+      const file =
+        document.getElementById("videoFile")
+          .files[0];
+
+      const published =
+        document.getElementById("published")
+          .checked;
+
+
+      if (!file) {
+
+        videoMessage.textContent =
+          "Please select a video.";
+
+        videoMessage.className =
+          "message error";
+
+        return;
+      }
+
+
+      videoMessage.textContent =
+        "Uploading video... Please wait.";
+
+      videoMessage.className =
+        "message";
+
+
+      try {
+
+        /*
+          Create a unique file name
+        */
+
+        const extension =
+          file.name.split(".").pop();
+
+        const safeTitle =
+          title
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-|-$/g, "");
+
+        const fileName =
+          Date.now() +
+          "-" +
+          safeTitle +
+          "." +
+          extension;
+
+
+        const filePath =
+          fileName;
+
+
+        /*
+          Upload to Supabase Storage
+        */
+
+        const { error: uploadError } =
+          await supabaseClient
+            .storage
+            .from("portfolio-videos")
+            .upload(
+              filePath,
+              file,
+              {
+                cacheControl: "3600",
+                upsert: false
+              }
+            );
+
+
+        if (uploadError) {
+          throw uploadError;
+        }
+
+
+        /*
+          Get public URL
+        */
+
+        const { data: publicData } =
+          supabaseClient
+            .storage
+            .from("portfolio-videos")
+            .getPublicUrl(filePath);
+
+
+        const fileUrl =
+          publicData.publicUrl;
+
+
+        /*
+          Save video information
+          to database
+        */
+
+        const { error: databaseError } =
+          await supabaseClient
+            .from("videos")
+            .insert({
+
+              title: title,
+
+              category: category,
+
+              file_path: filePath,
+
+              file_url: fileUrl,
+
+              media_type: file.type,
+
+              published: published
+
+            });
+
+
+        if (databaseError) {
+
+          /*
+            If database insert fails,
+            remove uploaded file.
+          */
+
+          await supabaseClient
+            .storage
+            .from("portfolio-videos")
+            .remove([filePath]);
+
+          throw databaseError;
+        }
+
+
+        videoMessage.textContent =
+          "Video uploaded successfully!";
+
+        videoMessage.className =
+          "message success";
+
+
+        videoForm.reset();
+
+        document.getElementById("published")
+          .checked = true;
+
+
+        loadVideos();
+
+      }
+
+      catch(error) {
+
+        console.error(error);
+
+        videoMessage.textContent =
+          "Upload failed: " +
+          error.message;
+
+        videoMessage.className =
+          "message error";
+
+      }
+
+    }
+  );
+
+
+  /* ================================
+     LOAD VIDEOS
+  ================================= */
+
+  async function loadVideos() {
+
+    videoList.innerHTML =
+      "Loading videos...";
+
+
+    const { data, error } =
+      await supabaseClient
+        .from("videos")
+        .select("*")
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        );
+
+
+    if (error) {
+
+      videoList.innerHTML =
+        "<p class='error'>" +
+        error.message +
+        "</p>";
+
+      return;
+    }
+
+
+    if (!data || data.length === 0) {
+
+      videoList.innerHTML =
+        "<p>No videos uploaded yet.</p>";
+
+      return;
+    }
+
+
+    videoList.innerHTML = "";
+
+
+    data.forEach(function(video) {
+
+      const item =
+        document.createElement("div");
+
+      item.className =
+        "video-item";
+
+
+      item.innerHTML = `
+
+        <video
+          controls
+          playsinline
+          preload="metadata"
+          src="${video.file_url}">
+        </video>
+
+        <div class="video-info">
+
+          <div>
+
+            <strong>
+              ${escapeHtml(video.title)}
+            </strong>
+
+            <p>
+              Category:
+              ${escapeHtml(video.category)}
+              <br>
+
+              Status:
+              ${video.published
+                ? "Published"
+                : "Hidden"}
+            </p>
+
+          </div>
+
+          <button
+            class="delete"
+            onclick="deleteVideo(
+              '${video.id}',
+              '${encodeURIComponent(video.file_path)}'
+            )"
+          >
+            Delete
+          </button>
+
+        </div>
+
+      `;
+
+
+      videoList.appendChild(item);
+
+    });
+
+  }
+
+
+  /* ================================
+     DELETE VIDEO
+  ================================= */
+
+  window.deleteVideo =
+    async function(id, encodedPath) {
+
+      const filePath =
+        decodeURIComponent(encodedPath);
+
+
+      const confirmed =
+        confirm(
+          "Delete this video permanently?"
+        );
+
+
+      if (!confirmed) {
+        return;
+      }
+
+
+      const { error: databaseError } =
+        await supabaseClient
+          .from("videos")
+          .delete()
+          .eq("id", id);
+
+
+      if (databaseError) {
+
+        alert(
+          "Could not delete database record: " +
+          databaseError.message
+        );
+
+        return;
+      }
+
+
+      const { error: storageError } =
+        await supabaseClient
+          .storage
+          .from("portfolio-videos")
+          .remove([filePath]);
+
+
+      if (storageError) {
+
+        alert(
+          "Database deleted, but storage file could not be removed: " +
+          storageError.message
+        );
+
+      }
+
+
+      loadVideos();
+
+    };
+
+
+  /* ================================
+     HTML SAFETY
+  ================================= */
+
+  function escapeHtml(value) {
+
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  /* ================================
+     CHECK EXISTING SESSION
+  ================================= */
+
+  async function checkSession() {
+
+    const { data } =
+      await supabaseClient.auth.getSession();
+
+
+    if (data.session) {
+
+      loginCard.classList.add("hidden");
+
+      dashboard.classList.remove("hidden");
+
+      loggedUser.textContent =
+        data.session.user.email;
+
+      loadVideos();
+
+    }
+
+  }
+
+
+  checkSession();
+
+</script>
 
 </body>
 </html>
