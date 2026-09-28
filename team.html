@@ -3,17 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
-<meta name="description"
-content="KalyanEditz creative team — editing, photography, video and social media.">
-
+<meta name="description" content="KalyanEditz creative team — editing, photography, video and social media.">
 <title>Team — Kalyan Chitteti</title>
 
 <link rel="stylesheet" href="css/style.css">
 
 <style>
+
 .team-page{
-  padding:54px 0 90px;
+  padding:54px 0 90px
 }
 
 .team-intro{
@@ -21,7 +19,7 @@ content="KalyanEditz creative team — editing, photography, video and social me
   justify-content:space-between;
   align-items:end;
   gap:40px;
-  margin-bottom:38px;
+  margin-bottom:38px
 }
 
 .team-intro h1{
@@ -29,20 +27,20 @@ content="KalyanEditz creative team — editing, photography, video and social me
   font-size:clamp(58px,7vw,94px);
   line-height:.9;
   margin:0;
-  letter-spacing:-.025em;
+  letter-spacing:-.025em
 }
 
 .team-intro p{
   max-width:430px;
   color:var(--muted);
-  margin:0;
+  margin:0
 }
 
 .team-showcase{
   display:grid;
   grid-template-columns:minmax(280px,1.15fr) minmax(0,1.85fr);
   gap:22px;
-  align-items:stretch;
+  align-items:stretch
 }
 
 .team-lead{
@@ -52,50 +50,50 @@ content="KalyanEditz creative team — editing, photography, video and social me
   padding:14px;
   cursor:pointer;
   box-shadow:0 10px 35px rgba(50,38,25,.05);
-  transition:transform .2s ease,box-shadow .2s ease;
+  transition:transform .2s ease,box-shadow .2s ease
 }
 
 .team-lead:hover{
   transform:translateY(-4px);
-  box-shadow:0 18px 45px rgba(50,38,25,.09);
+  box-shadow:0 18px 45px rgba(50,38,25,.09)
 }
 
 .team-lead-photo{
   aspect-ratio:4/4.7;
   border-radius:18px;
   overflow:hidden;
-  background:#ddd0c2;
+  background:#ddd0c2
 }
 
 .team-lead-photo img{
   width:100%;
   height:100%;
-  object-fit:cover;
+  object-fit:cover
 }
 
 .team-lead-copy{
-  padding:20px 8px 10px;
+  padding:20px 8px 10px
 }
 
 .team-lead-copy .eyebrow{
-  margin-bottom:8px;
+  margin-bottom:8px
 }
 
 .team-lead-copy h2{
   font-size:clamp(25px,2.6vw,36px);
-  margin:0 0 7px;
+  margin:0 0 7px
 }
 
 .team-lead-copy p{
   margin:0;
   color:var(--muted);
-  font-size:15px;
+  font-size:15px
 }
 
 .role-grid{
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:22px;
+  gap:22px
 }
 
 .role-card{
@@ -109,7 +107,7 @@ content="KalyanEditz creative team — editing, photography, video and social me
   display:flex;
   flex-direction:column;
   justify-content:space-between;
-  transition:transform .2s ease,box-shadow .2s ease;
+  transition:transform .2s ease,box-shadow .2s ease
 }
 
 .role-card::before{
@@ -124,18 +122,18 @@ content="KalyanEditz creative team — editing, photography, video and social me
     circle,
     rgba(189,128,110,.22),
     rgba(189,128,110,0) 68%
-  );
+  )
 }
 
 .role-card:hover{
   transform:translateY(-4px);
-  box-shadow:0 18px 45px rgba(50,38,25,.08);
+  box-shadow:0 18px 45px rgba(50,38,25,.08)
 }
 
 .role-number{
   font-size:11px;
   letter-spacing:.18em;
-  color:var(--accent);
+  color:var(--accent)
 }
 
 .role-icon{
@@ -147,95 +145,134 @@ content="KalyanEditz creative team — editing, photography, video and social me
   place-items:center;
   font:500 27px "Cormorant Garamond",serif;
   background:#fffaf2;
-  margin-top:25px;
+  margin-top:25px
 }
 
 .role-card h3{
   font-size:clamp(25px,2.4vw,34px);
   margin:18px 0 0;
-  position:relative;
+  position:relative
 }
 
 .role-card p{
   color:var(--muted);
   font-size:14px;
   margin:5px 0 0;
-  position:relative;
-}
-
-/* Additional Supabase team members */
-.dynamic-team{
-  margin-top:28px;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-  gap:22px;
-}
-
-.dynamic-team-card{
-  background:var(--paper-2);
-  border:1px solid var(--line);
-  border-radius:24px;
-  padding:14px;
-}
-
-.dynamic-team-card img{
-  width:100%;
-  aspect-ratio:1/1;
-  object-fit:cover;
-  border-radius:18px;
-}
-
-.dynamic-team-card h3{
-  margin:16px 8px 4px;
-}
-
-.dynamic-team-card p{
-  margin:0 8px 12px;
-  color:var(--muted);
+  position:relative
 }
 
 .team-modal-role{
   color:var(--accent);
   font-size:11px;
   letter-spacing:.15em;
-  text-transform:uppercase;
+  text-transform:uppercase
 }
+
+
+/* =========================================
+   MOBILE MENU FIX
+   ========================================= */
+
+.site-header{
+  position:relative;
+}
+
+.menu-toggle{
+  display:none;
+  cursor:pointer;
+  border:0;
+  background:transparent;
+  font-size:28px;
+  color:inherit;
+  padding:8px;
+  z-index:1001;
+}
+
+.main-nav{
+  display:flex;
+  gap:24px;
+  align-items:center;
+}
+
+
+/* TABLET + MOBILE */
 
 @media(max-width:900px){
 
-  .team-showcase{
-    grid-template-columns:1fr;
-  }
-
-  .team-lead-photo{
-    aspect-ratio:16/10;
-  }
-
-  .team-intro{
+  .menu-toggle{
     display:block;
   }
 
+  .site-header{
+    position:relative;
+  }
+
+  .main-nav{
+    position:absolute;
+    left:0;
+    right:0;
+    top:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    gap:0;
+    max-height:0;
+    overflow:hidden;
+    background:#fffaf2;
+    border-bottom:1px solid transparent;
+    transition:max-height .35s ease;
+    z-index:1000;
+  }
+
+  .main-nav.open{
+    max-height:500px;
+    border-bottom:1px solid var(--line);
+  }
+
+  .main-nav a{
+    padding:16px 22px;
+    border-bottom:1px solid var(--line);
+  }
+
+  .team-showcase{
+    grid-template-columns:1fr
+  }
+
+  .team-lead-photo{
+    aspect-ratio:16/10
+  }
+
+  .team-intro{
+    display:block
+  }
+
   .team-intro p{
-    margin-top:18px;
+    margin-top:18px
   }
 }
+
+
+/* SMALL MOBILE */
 
 @media(max-width:620px){
 
   .team-page{
-    padding:40px 0 65px;
+    padding:40px 0 65px
   }
 
   .role-grid{
-    grid-template-columns:1fr;
+    grid-template-columns:1fr
   }
 
   .role-card{
-    min-height:210px;
+    min-height:210px
   }
+
 }
+
 </style>
 </head>
+
 
 <body>
 
@@ -250,27 +287,42 @@ content="KalyanEditz creative team — editing, photography, video and social me
     class="menu-toggle"
     type="button"
     aria-label="Open menu"
-    id="teamMenuToggle">
-    ☰
-  </button>
+    aria-expanded="false"
+  >☰</button>
 
-  <nav class="main-nav" id="teamMainNav">
+  <nav class="main-nav">
 
-    <a href="index.html">Home</a>
+    <a href="index.html" data-page="home">
+      Home
+    </a>
 
-    <a href="showreel.html">Showreel</a>
+    <a href="showreel.html" data-page="showreel">
+      Showreel
+    </a>
 
-    <a href="work.html">Work</a>
+    <a href="work.html" data-page="work">
+      Work
+    </a>
 
-    <a href="projects.html">Projects</a>
+    <a href="projects.html" data-page="projects">
+      Projects
+    </a>
 
-    <a href="team.html" class="active">Team</a>
+    <a href="team.html" data-page="team">
+      Team
+    </a>
 
-    <a href="tools.html">Tools</a>
+    <a href="tools.html" data-page="tools">
+      Tools
+    </a>
 
-    <a href="about.html">About</a>
+    <a href="about.html" data-page="about">
+      About
+    </a>
 
-    <a href="contact.html">Contact</a>
+    <a href="contact.html" data-page="contact">
+      Contact
+    </a>
 
   </nav>
 
@@ -283,7 +335,9 @@ content="KalyanEditz creative team — editing, photography, video and social me
 
     <div>
 
-      <div class="eyebrow">TEAM</div>
+      <div class="eyebrow">
+        TEAM
+      </div>
 
       <h1>
         The people<br>
@@ -303,7 +357,7 @@ content="KalyanEditz creative team — editing, photography, video and social me
   <section class="team-showcase" aria-label="Creative team">
 
 
-    <!-- KALYAN - EXISTING PROFILE -->
+    <!-- KALYAN PROFILE -->
 
     <article
       class="team-lead"
@@ -315,15 +369,18 @@ content="KalyanEditz creative team — editing, photography, video and social me
       }'
       tabindex="0"
       role="button"
-      aria-label="Open Kalyan Chitteti profile">
+      aria-label="Open Kalyan Chitteti profile"
+    >
 
       <div class="team-lead-photo">
 
         <img
           src="assets/images/profile/kalyan--profile.jpg"
-          alt="Kalyan Chitteti">
+          alt="Kalyan Chitteti"
+        >
 
       </div>
+
 
       <div class="team-lead-copy">
 
@@ -344,126 +401,188 @@ content="KalyanEditz creative team — editing, photography, video and social me
     </article>
 
 
-    <!-- EXISTING ROLE CARDS -->
+
+    <!-- ROLE CARDS -->
 
     <div class="role-grid">
 
+
       <article class="role-card">
 
         <div>
-          <div class="role-number">01</div>
-          <div class="role-icon">F</div>
+
+          <div class="role-number">
+            01
+          </div>
+
+          <div class="role-icon">
+            F
+          </div>
+
         </div>
 
         <div>
-          <h3>Film Editor</h3>
-          <p>Editing &amp; post-production</p>
+
+          <h3>
+            Film Editor
+          </h3>
+
+          <p>
+            Editing &amp; post-production
+          </p>
+
         </div>
 
       </article>
 
 
+
       <article class="role-card">
 
         <div>
-          <div class="role-number">02</div>
-          <div class="role-icon">P</div>
+
+          <div class="role-number">
+            02
+          </div>
+
+          <div class="role-icon">
+            P
+          </div>
+
         </div>
 
         <div>
-          <h3>Photographer</h3>
-          <p>Photography &amp; visual direction</p>
+
+          <h3>
+            Photographer
+          </h3>
+
+          <p>
+            Photography &amp; visual direction
+          </p>
+
         </div>
 
       </article>
 
 
+
       <article class="role-card">
 
         <div>
-          <div class="role-number">03</div>
-          <div class="role-icon">V</div>
+
+          <div class="role-number">
+            03
+          </div>
+
+          <div class="role-icon">
+            V
+          </div>
+
         </div>
 
         <div>
-          <h3>Videographer</h3>
-          <p>Production &amp; cinematography</p>
+
+          <h3>
+            Videographer
+          </h3>
+
+          <p>
+            Production &amp; cinematography
+          </p>
+
         </div>
 
       </article>
 
 
+
       <article class="role-card">
 
         <div>
-          <div class="role-number">04</div>
-          <div class="role-icon">S</div>
+
+          <div class="role-number">
+            04
+          </div>
+
+          <div class="role-icon">
+            S
+          </div>
+
         </div>
 
         <div>
-          <h3>Social Media Manager</h3>
-          <p>Content &amp; social storytelling</p>
+
+          <h3>
+            Social Media Manager
+          </h3>
+
+          <p>
+            Content &amp; social storytelling
+          </p>
+
         </div>
 
       </article>
+
 
     </div>
 
   </section>
 
-
-  <!-- ADMIN ADDED TEAM MEMBERS WILL APPEAR HERE -->
-
-  <section
-    id="dynamicTeam"
-    class="dynamic-team"
-    aria-label="Additional team members">
-  </section>
-
 </main>
 
 
-<!-- PROFILE MODAL -->
+
+<!-- TEAM MODAL -->
 
 <div
   class="modal-backdrop"
   id="teamModal"
-  aria-hidden="true">
+  aria-hidden="true"
+>
 
   <div
     class="modal"
     role="dialog"
     aria-modal="true"
-    aria-labelledby="teamModalName">
+    aria-labelledby="teamModalName"
+  >
 
     <button
       class="modal-close"
       type="button"
       data-close
-      aria-label="Close">
+      aria-label="Close"
+    >
       ×
     </button>
+
 
     <div class="modal-team">
 
       <img
         data-modal-img
         src="assets/images/profile/kalyan--profile.jpg"
-        alt="Kalyan Chitteti">
+        alt="Kalyan Chitteti"
+      >
+
 
       <div class="modal-content">
 
         <div
           class="team-modal-role"
-          data-modal-role>
-        </div>
+          data-modal-role
+        ></div>
 
         <h2
           id="teamModalName"
-          data-modal-name>
-        </h2>
+          data-modal-name
+        ></h2>
 
-        <p data-modal-bio></p>
+        <p
+          data-modal-bio
+        ></p>
 
       </div>
 
@@ -473,6 +592,9 @@ content="KalyanEditz creative team — editing, photography, video and social me
 
 </div>
 
+
+
+<!-- FOOTER -->
 
 <footer class="footer container">
 
@@ -491,275 +613,43 @@ content="KalyanEditz creative team — editing, photography, video and social me
 </footer>
 
 
-<!-- SUPABASE -->
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script src="assets/js/config.js"></script>
+<!-- APP SCRIPT -->
 
 <script src="js/app.js"></script>
 
 
-<!-- TEAM PAGE FIX -->
+<!-- EXTRA MOBILE MENU CONTROL -->
 
 <script>
 
-document.addEventListener("DOMContentLoaded", async function () {
+document.addEventListener("DOMContentLoaded", function(){
 
-  /* =========================
-     1. THREE LINE MENU
-  ========================= */
+  const menuButton = document.querySelector(".menu-toggle");
+  const mainNav = document.querySelector(".main-nav");
 
-  const menuButton =
-    document.getElementById("teamMenuToggle");
+  if(menuButton && mainNav){
 
-  const mainNav =
-    document.getElementById("teamMainNav");
-
-  if (menuButton && mainNav) {
-
-    menuButton.addEventListener("click", function () {
+    menuButton.addEventListener("click", function(){
 
       mainNav.classList.toggle("open");
 
-    });
-
-  }
-
-
-  /* =========================
-     2. YEAR
-  ========================= */
-
-  document.querySelectorAll(".year").forEach(function (el) {
-
-    el.textContent =
-      new Date().getFullYear();
-
-  });
-
-
-  /* =========================
-     3. KALYAN PROFILE MODAL
-  ========================= */
-
-  const modal =
-    document.getElementById("teamModal");
-
-  const modalImg =
-    modal?.querySelector("[data-modal-img]");
-
-  const modalName =
-    modal?.querySelector("[data-modal-name]");
-
-  const modalRole =
-    modal?.querySelector("[data-modal-role]");
-
-  const modalBio =
-    modal?.querySelector("[data-modal-bio]");
-
-
-  function openProfile(data) {
-
-    if (!modal) return;
-
-    if (modalImg)
-      modalImg.src = data.image || "";
-
-    if (modalName)
-      modalName.textContent = data.name || "";
-
-    if (modalRole)
-      modalRole.textContent = data.role || "";
-
-    if (modalBio)
-      modalBio.textContent = data.bio || "";
-
-    modal.classList.add("open");
-
-    modal.setAttribute("aria-hidden", "false");
-
-  }
-
-
-  function closeProfile() {
-
-    if (!modal) return;
-
-    modal.classList.remove("open");
-
-    modal.setAttribute("aria-hidden", "true");
-
-  }
-
-
-  document
-    .querySelectorAll("[data-team]")
-    .forEach(function (card) {
-
-      card.addEventListener("click", function () {
-
-        try {
-
-          const data =
-            JSON.parse(card.dataset.team);
-
-          openProfile(data);
-
-        } catch (error) {
-
-          console.error(error);
-
-        }
-
-      });
-
-    });
-
-
-  document
-    .querySelector("[data-close]")
-    ?.addEventListener(
-      "click",
-      closeProfile
-    );
-
-
-  modal?.addEventListener("click", function (event) {
-
-    if (event.target === modal) {
-
-      closeProfile();
-
-    }
-
-  });
-
-
-  /* =========================
-     4. LOAD ADMIN TEAM MEMBERS
-  ========================= */
-
-  const dynamicTeam =
-    document.getElementById("dynamicTeam");
-
-
-  if (
-    dynamicTeam &&
-    window.supabaseClient
-  ) {
-
-    try {
-
-      const result =
-        await window.supabaseClient
-          .from("team_members")
-          .select("*")
-          .eq("published", true)
-          .order("created_at", {
-            ascending: true
-          });
-
-
-      const data = result.data;
-      const error = result.error;
-
-
-      if (error) {
-
-        console.error(
-          "Team loading error:",
-          error
-        );
-
-        return;
-
-      }
-
-
-      if (!data || data.length === 0) {
-
-        return;
-
-      }
-
-
-      data.forEach(function (member) {
-
-        const card =
-          document.createElement("article");
-
-        card.className =
-          "dynamic-team-card";
-
-
-        const image =
-          member.photo_url
-            ? `
-              <img
-                src="${member.photo_url}"
-                alt="${member.name || "Team member"}">
-            `
-            : "";
-
-
-        card.innerHTML = `
-
-          ${image}
-
-          <h3>
-            ${member.name || ""}
-          </h3>
-
-          <p>
-            ${member.role || ""}
-          </p>
-
-        `;
-
-
-        card.addEventListener(
-          "click",
-          function () {
-
-            openProfile({
-
-              image:
-                member.photo_url || "",
-
-              name:
-                member.name || "",
-
-              role:
-                member.role || "",
-
-              bio:
-                member.bio || ""
-
-            });
-
-          }
-        );
-
-
-        dynamicTeam.appendChild(card);
-
-      });
-
-    } catch (error) {
-
-      console.error(
-        "Supabase team error:",
-        error
+      const isOpen =
+        mainNav.classList.contains("open");
+
+      menuButton.setAttribute(
+        "aria-expanded",
+        isOpen ? "true" : "false"
       );
 
-    }
+    });
 
   }
 
 });
 
 </script>
+
 
 </body>
 </html>
