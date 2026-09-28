@@ -1,61 +1,67 @@
-// KalyanEditz Portfolio
-// Videos are loaded from Supabase
-// Navigation, Work, Featured Work, Team modal and Contact form
+// ============================================================
+// KALYANEDITZ PORTFOLIO
+// Supabase-powered Work / Videos
+// ============================================================
+
+
+// ============================================================
+// CATEGORIES
+// ============================================================
 
 const CATEGORIES = {
   reels: {
-    label: 'Reels',
-    folder: 'reels',
-    ratio: '9:16'
+    label: "Reels",
+    folder: "reels",
+    ratio: "9:16"
   },
 
   advertisements: {
-    label: 'Advertisements',
-    folder: 'advertisements',
-    ratio: '16:9'
+    label: "Advertisements",
+    folder: "advertisements",
+    ratio: "16:9"
   },
 
   companyDesigns: {
-    label: 'Company Designs',
-    folder: 'company-designs',
-    ratio: '16:9'
+    label: "Company Designs",
+    folder: "company-designs",
+    ratio: "16:9"
   },
 
   shortFilms: {
-    label: 'Short Films',
-    folder: 'short-films',
-    ratio: '16:9'
+    label: "Short Films",
+    folder: "short-films",
+    ratio: "16:9"
   },
 
   weddingVideos: {
-    label: 'Wedding Videos',
-    folder: 'wedding-videos',
-    ratio: '16:9'
+    label: "Wedding Videos",
+    folder: "wedding-videos",
+    ratio: "16:9"
   },
 
   story: {
-    label: 'Story',
-    folder: 'story',
-    ratio: '16:9'
+    label: "Story",
+    folder: "story",
+    ratio: "16:9"
   },
 
   productPromotions: {
-    label: 'Product Promotions',
-    folder: 'product-promotions',
-    ratio: '16:9'
+    label: "Product Promotions",
+    folder: "product-promotions",
+    ratio: "16:9"
   },
 
   colorGrading: {
-    label: 'Color Grading / DI',
-    folder: 'color-grading',
-    ratio: '16:9'
+    label: "Color Grading / DI",
+    folder: "color-grading",
+    ratio: "16:9"
   }
 };
 
 
-// --------------------------------------------------
-// BASIC HELPERS
-// --------------------------------------------------
+// ============================================================
+// HELPERS
+// ============================================================
 
 const $ = (selector, root = document) =>
   root.querySelector(selector);
@@ -64,170 +70,195 @@ const $$ = (selector, root = document) =>
   [...root.querySelectorAll(selector)];
 
 
-// --------------------------------------------------
-// SUPABASE LOADER
-// --------------------------------------------------
+// ============================================================
+// SUPABASE
+// ============================================================
 
-function loadScript(src) {
-  return new Promise((resolve, reject) => {
-
-    const existing = document.querySelector(
-      `script[src="${src}"]`
-    );
-
-    if (existing) {
-      existing.addEventListener('load', resolve);
-      existing.addEventListener('error', reject);
-
-      if (
-        src.includes('supabase') &&
-        window.supabase
-      ) {
-        resolve();
-      }
-
-      return;
-    }
-
-    const script = document.createElement('script');
-
-    script.src = src;
-    script.onload = resolve;
-    script.onerror = reject;
-
-    document.head.appendChild(script);
-  });
-}
-
-
-async function ensureSupabase() {
+async function setupSupabase() {
 
   try {
 
-    // Load Supabase library
+    // Supabase library
     if (!window.supabase) {
-      await loadScript(
-        'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'
-      );
+
+      await new Promise((resolve, reject) => {
+
+        const script =
+          document.createElement("script");
+
+        script.src =
+          "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+
+        script.onload = resolve;
+        script.onerror = reject;
+
+        document.head.appendChild(script);
+
+      });
+
     }
 
-    // Load our config file
+
+    // config.js
     if (!window.supabaseClient) {
-      await loadScript('assets/js/config.js');
+
+      await new Promise((resolve, reject) => {
+
+        const script =
+          document.createElement("script");
+
+        script.src =
+          "assets/js/config.js";
+
+        script.onload = resolve;
+        script.onerror = reject;
+
+        document.head.appendChild(script);
+
+      });
+
     }
 
+
     if (!window.supabaseClient) {
+
       console.error(
-        'Supabase client could not be created.'
+        "Supabase client was not created."
       );
 
       return false;
+
     }
+
 
     return true;
 
   } catch (error) {
 
     console.error(
-      'Could not load Supabase:',
+      "Supabase setup failed:",
       error
     );
 
     return false;
+
   }
+
 }
 
 
-// --------------------------------------------------
+// ============================================================
 // NAVIGATION
-// --------------------------------------------------
+// ============================================================
 
 function initNav() {
 
-  const toggle = $('.menu-toggle');
-  const nav = $('.main-nav');
+  const toggle =
+    $(".menu-toggle");
 
-  toggle?.addEventListener('click', () => {
+  const nav =
+    $(".main-nav");
 
-    nav?.classList.toggle('open');
 
-  });
+  toggle?.addEventListener(
+    "click",
+    () => {
+
+      nav?.classList.toggle("open");
+
+    }
+  );
 
 
   const file =
-    location.pathname.split('/').pop() ||
-    'index.html';
+    location.pathname
+      .split("/")
+      .pop() || "index.html";
+
 
   const page =
-    file === 'index.html' || file === ''
-      ? 'home'
-      : file.replace('.html', '');
+    file === "index.html" || file === ""
+      ? "home"
+      : file.replace(".html", "");
 
 
-  $$('.main-nav a[data-page]').forEach(link => {
+  $$(".main-nav a[data-page]")
+    .forEach(link => {
 
-    if (link.dataset.page === page) {
+      if (
+        link.dataset.page === page
+      ) {
 
-      link.classList.add('active');
+        link.classList.add("active");
 
-    }
+      }
 
-  });
+    });
 
 }
 
 
-// --------------------------------------------------
+// ============================================================
 // YEAR
-// --------------------------------------------------
+// ============================================================
 
 function setYear() {
 
-  $$('.year').forEach(element => {
+  $$(".year").forEach(
+    element => {
 
-    element.textContent =
-      new Date().getFullYear();
+      element.textContent =
+        new Date().getFullYear();
 
-  });
+    }
+  );
 
 }
 
 
-// --------------------------------------------------
-// IMAGE ERROR HANDLING
-// --------------------------------------------------
+// ============================================================
+// IMAGE ERROR
+// ============================================================
 
 function initImages() {
 
-  $$('img').forEach(image => {
+  $$("img").forEach(
+    image => {
 
-    image.addEventListener(
-      'error',
-      () => image.classList.add('image-load-error')
-    );
+      image.addEventListener(
+        "error",
+        () => {
 
-  });
+          image.classList.add(
+            "image-load-error"
+          );
+
+        }
+      );
+
+    }
+  );
 
 }
 
 
-// --------------------------------------------------
-// VIDEO CATEGORY HELPER
-// --------------------------------------------------
+// ============================================================
+// CATEGORY
+// ============================================================
 
 function getCategoryMeta(category) {
 
-  const normalized =
-    String(category || '')
+  const value =
+    String(category || "")
       .trim()
       .toLowerCase();
 
 
   const found =
-    Object.values(CATEGORIES).find(
-      item =>
-        item.folder.toLowerCase() === normalized
-    );
+    Object.values(CATEGORIES)
+      .find(item =>
+        item.folder.toLowerCase() === value
+      );
 
 
   if (found) {
@@ -240,31 +271,31 @@ function getCategoryMeta(category) {
   return {
 
     label:
-      category || 'Work',
+      category || "Work",
 
     folder:
-      normalized || 'other',
+      value || "other",
 
     ratio:
-      '16:9'
+      "16:9"
 
   };
 
 }
 
 
-// --------------------------------------------------
+// ============================================================
 // LOAD VIDEOS FROM SUPABASE
-// --------------------------------------------------
+// ============================================================
 
-async function listVideos(folder) {
+async function getSupabaseVideos() {
 
   try {
 
     if (!window.supabaseClient) {
 
-      console.warn(
-        'Supabase client is not available.'
+      console.error(
+        "Supabase client unavailable."
       );
 
       return [];
@@ -272,30 +303,24 @@ async function listVideos(folder) {
     }
 
 
-    const { data, error } =
+    const result =
       await window.supabaseClient
-
-        .from('videos')
-
-        .select(
-          'id,title,category,file_path,file_url,media_type,published,created_at'
-        )
-
-        .eq('published', true)
-
-        .eq('category', folder)
-
+        .from("videos")
+        .select("*")
+        .eq("published", true)
         .order(
-          'created_at',
-          { ascending: false }
+          "created_at",
+          {
+            ascending: false
+          }
         );
 
 
-    if (error) {
+    if (result.error) {
 
       console.error(
-        `Could not load ${folder}:`,
-        error
+        "Supabase videos error:",
+        result.error
       );
 
       return [];
@@ -303,7 +328,50 @@ async function listVideos(folder) {
     }
 
 
-    return (data || []).map(video => ({
+    return result.data || [];
+
+  } catch (error) {
+
+    console.error(
+      "Video loading error:",
+      error
+    );
+
+    return [];
+
+  }
+
+}
+
+
+// ============================================================
+// GET VIDEOS FOR CATEGORY
+// ============================================================
+
+async function listVideos(category) {
+
+  const allVideos =
+    await getSupabaseVideos();
+
+
+  const wanted =
+    String(category || "")
+      .trim()
+      .toLowerCase();
+
+
+  return allVideos
+    .filter(video => {
+
+      const actual =
+        String(video.category || "")
+          .trim()
+          .toLowerCase();
+
+      return actual === wanted;
+
+    })
+    .map(video => ({
 
       id:
         video.id,
@@ -328,106 +396,12 @@ async function listVideos(folder) {
 
     }));
 
-
-  } catch (error) {
-
-    console.error(
-      `Could not load ${folder}:`,
-      error
-    );
-
-    return [];
-
-  }
-
 }
 
 
-// --------------------------------------------------
-// LOAD ALL VIDEO GROUPS
-// --------------------------------------------------
-
-async function getAllVideoGroups() {
-
-  const groups = [];
-
-
-  for (
-    const meta of Object.values(CATEGORIES)
-  ) {
-
-    const files =
-      await listVideos(meta.folder);
-
-
-    if (files.length) {
-
-      groups.push({
-
-        meta,
-
-        files
-
-      });
-
-    }
-
-  }
-
-
-  return groups;
-
-}
-
-
-// --------------------------------------------------
-// VIDEO TITLE
-// --------------------------------------------------
-
-function prettyName(
-  filename,
-  category
-) {
-
-  const stem =
-    String(filename || '')
-      .replace(/\.[^.]+$/, '')
-      .replace(/[-_]+/g, ' ');
-
-
-  const cleanCategory =
-    String(category || '')
-      .replace(
-        /[.*+?^${}()|[\]\\]/g,
-        '\\$&'
-      );
-
-
-  const withoutPrefix =
-    stem.replace(
-      new RegExp(
-        `^${cleanCategory}\\s*`,
-        'i'
-      ),
-      ''
-    );
-
-
-  return (
-    `${category}${withoutPrefix ? ' ' + withoutPrefix : ''}`
-  )
-    .trim()
-    .replace(
-      /\b\w/g,
-      letter => letter.toUpperCase()
-    );
-
-}
-
-
-// --------------------------------------------------
+// ============================================================
 // VIDEO MODAL
-// --------------------------------------------------
+// ============================================================
 
 function openVideoModal(
   src,
@@ -437,19 +411,19 @@ function openVideoModal(
 ) {
 
   let modal =
-    $('#siteVideoModal');
+    $("#siteVideoModal");
 
 
   if (!modal) {
 
     modal =
-      document.createElement('div');
+      document.createElement("div");
 
     modal.id =
-      'siteVideoModal';
+      "siteVideoModal";
 
     modal.className =
-      'modal-backdrop';
+      "modal-backdrop";
 
 
     modal.innerHTML = `
@@ -490,46 +464,51 @@ function openVideoModal(
     document.body.appendChild(modal);
 
 
-    const close = () => {
+    const close =
+      () => {
 
-      const player =
-        $('video', modal);
-
-
-      if (player) {
-
-        player.pause();
-
-        player.removeAttribute('src');
-
-        player.load();
-
-      }
+        const player =
+          $("video", modal);
 
 
-      modal.classList.remove(
-        'open'
-      );
+        if (player) {
 
-      document.body.classList.remove(
-        'modal-open'
-      );
+          player.pause();
 
-    };
+          player.removeAttribute(
+            "src"
+          );
+
+          player.load();
+
+        }
 
 
-    $('.modal-close', modal)
+        modal.classList.remove(
+          "open"
+        );
+
+        document.body.classList.remove(
+          "modal-open"
+        );
+
+      };
+
+
+    $(".modal-close", modal)
       ?.addEventListener(
-        'click',
+        "click",
         close
       );
 
 
     modal.addEventListener(
-      'click',
+      "click",
       event => {
 
-        if (event.target === modal) {
+        if (
+          event.target === modal
+        ) {
 
           close();
 
@@ -540,11 +519,11 @@ function openVideoModal(
 
 
     document.addEventListener(
-      'keydown',
+      "keydown",
       event => {
 
         if (
-          event.key === 'Escape'
+          event.key === "Escape"
         ) {
 
           close();
@@ -558,29 +537,29 @@ function openVideoModal(
 
 
   const player =
-    $('video', modal);
+    $("video", modal);
 
 
-  $('[data-modal-category]', modal)
-    .textContent =
-      `${category} · ${
-        vertical ? '9:16' : '16:9'
-      }`;
+  $(
+    "[data-modal-category]",
+    modal
+  ).textContent =
+    `${category} · ${
+      vertical ? "9:16" : "16:9"
+    }`;
 
 
-  $('[data-modal-title]', modal)
-    .textContent =
-      title;
+  $(
+    "[data-modal-title]",
+    modal
+  ).textContent =
+    title;
 
 
   player.style.aspectRatio =
     vertical
-      ? '9 / 16'
-      : '16 / 9';
-
-
-  player.style.objectFit =
-    'contain';
+      ? "9 / 16"
+      : "16 / 9";
 
 
   player.src =
@@ -591,46 +570,47 @@ function openVideoModal(
 
 
   modal.classList.add(
-    'open'
+    "open"
   );
 
 
   document.body.classList.add(
-    'modal-open'
+    "modal-open"
   );
 
 }
 
 
-// --------------------------------------------------
+// ============================================================
 // VIDEO CARD
-// --------------------------------------------------
+// ============================================================
 
-function makeVideoCard(
-  file,
+function createVideoCard(
+  video,
   meta
 ) {
 
   const src =
-    file.url;
-
-
-  const vertical =
-    meta.ratio === '9:16';
+    video.url;
 
 
   const title =
-    file.name || meta.label;
+    video.name ||
+    meta.label;
+
+
+  const vertical =
+    meta.ratio === "9:16";
 
 
   const card =
     document.createElement(
-      'article'
+      "article"
     );
 
 
   card.className =
-    'video-card';
+    "video-card";
 
 
   card.dataset.category =
@@ -641,15 +621,15 @@ function makeVideoCard(
 
     <div
       class="video-thumb ${
-        vertical ? 'vertical' : ''
+        vertical ? "vertical" : ""
       }"
     >
 
       <video
+        src="${src}"
         preload="metadata"
         muted
         playsinline
-        src="${src}"
       ></video>
 
       <div class="video-overlay">
@@ -666,7 +646,6 @@ function makeVideoCard(
 
     </div>
 
-
     <div class="video-info">
 
       <div class="meta">
@@ -681,7 +660,6 @@ function makeVideoCard(
 
       </div>
 
-
       <h3>
         ${title}
       </h3>
@@ -691,25 +669,25 @@ function makeVideoCard(
   `;
 
 
-  const video =
-    $('video', card);
+  const videoElement =
+    $("video", card);
 
 
-  video?.addEventListener(
-    'error',
+  videoElement?.addEventListener(
+    "error",
     () => {
 
       card.classList.add(
-        'video-error'
+        "video-error"
       );
 
     }
   );
 
 
-  $('.video-play', card)
+  $(".video-play", card)
     ?.addEventListener(
-      'click',
+      "click",
       () => {
 
         openVideoModal(
@@ -728,14 +706,86 @@ function makeVideoCard(
 }
 
 
-// --------------------------------------------------
-// WORK PAGE
-// --------------------------------------------------
+// ============================================================
+// ALL VIDEO GROUPS
+// ============================================================
+
+async function getAllVideoGroups() {
+
+  const allVideos =
+    await getSupabaseVideos();
+
+
+  const groups = [];
+
+
+  Object.values(CATEGORIES)
+    .forEach(meta => {
+
+      const files =
+        allVideos.filter(video => {
+
+          const category =
+            String(
+              video.category || ""
+            )
+              .trim()
+              .toLowerCase();
+
+
+          return (
+            category ===
+            meta.folder.toLowerCase()
+          );
+
+        });
+
+
+      if (files.length) {
+
+        groups.push({
+
+          meta,
+
+          files: files.map(video => ({
+
+            id:
+              video.id,
+
+            name:
+              video.title,
+
+            url:
+              video.file_url,
+
+            category:
+              video.category,
+
+            file_path:
+              video.file_path
+
+          }))
+
+        };
+
+      }
+
+    });
+
+
+  return groups;
+
+}
+
+
+// ============================================================
+// WORK LIBRARY
+// ============================================================
 
 async function initWorkLibrary() {
 
   const container =
-    $('#videoLibrary');
+    $("#videoLibrary");
 
 
   if (!container) {
@@ -745,12 +795,19 @@ async function initWorkLibrary() {
   }
 
 
+  container.innerHTML = `
+
+    <div class="video-loading">
+
+      Loading work...
+
+    </div>
+
+  `;
+
+
   const filterBar =
-    $('.video-filters');
-
-
-  container.innerHTML =
-    '<p>Loading work...</p>';
+    $(".video-filters");
 
 
   const groups =
@@ -758,18 +815,25 @@ async function initWorkLibrary() {
 
 
   container.innerHTML =
-    '';
+    "";
 
 
   if (!groups.length) {
 
     container.innerHTML = `
+
       <div class="empty-state">
-        <h3>No published work yet.</h3>
+
+        <h3>
+          No published work yet.
+        </h3>
+
         <p>
-          Upload a video from the private admin dashboard.
+          Upload videos from the admin dashboard.
         </p>
+
       </div>
+
     `;
 
     return;
@@ -782,12 +846,12 @@ async function initWorkLibrary() {
 
       const label =
         document.createElement(
-          'div'
+          "div"
         );
 
 
       label.className =
-        'video-section-label';
+        "video-section-label";
 
 
       label.dataset.section =
@@ -807,7 +871,7 @@ async function initWorkLibrary() {
         file => {
 
           container.appendChild(
-            makeVideoCard(
+            createVideoCard(
               file,
               meta
             )
@@ -820,7 +884,14 @@ async function initWorkLibrary() {
   );
 
 
-  // Only show filters that contain work
+  // FILTERS
+
+  if (!filterBar) {
+
+    return;
+
+  }
+
 
   const available =
     new Set(
@@ -831,14 +902,16 @@ async function initWorkLibrary() {
     );
 
 
-  $$('.filter', filterBar)
+  $$(".filter", filterBar)
     .forEach(button => {
 
+      const filter =
+        button.dataset.videoFilter;
+
+
       if (
-        button.dataset.videoFilter !== 'all' &&
-        !available.has(
-          button.dataset.videoFilter
-        )
+        filter !== "all" &&
+        !available.has(filter)
       ) {
 
         button.hidden =
@@ -848,51 +921,47 @@ async function initWorkLibrary() {
 
 
       button.addEventListener(
-        'click',
+        "click",
         () => {
 
-          $$('.filter', filterBar)
+          $$(".filter", filterBar)
             .forEach(
               item =>
                 item.classList.remove(
-                  'active'
+                  "active"
                 )
             );
 
 
           button.classList.add(
-            'active'
+            "active"
           );
 
 
-          const filter =
-            button.dataset.videoFilter;
-
-
-          $$('.video-card', container)
+          $$(".video-card", container)
             .forEach(card => {
 
               card.style.display =
                 (
-                  filter === 'all' ||
+                  filter === "all" ||
                   card.dataset.category === filter
                 )
-                  ? ''
-                  : 'none';
+                  ? ""
+                  : "none";
 
             });
 
 
-          $$('.video-section-label', container)
+          $$(".video-section-label", container)
             .forEach(label => {
 
               label.style.display =
                 (
-                  filter === 'all' ||
+                  filter === "all" ||
                   label.dataset.section === filter
                 )
-                  ? ''
-                  : 'none';
+                  ? ""
+                  : "none";
 
             });
 
@@ -904,14 +973,14 @@ async function initWorkLibrary() {
 }
 
 
-// --------------------------------------------------
-// FEATURED WORK ON HOME PAGE
-// --------------------------------------------------
+// ============================================================
+// FEATURED WORK
+// ============================================================
 
 async function initFeaturedWork() {
 
   const grid =
-    $('[data-featured-work]');
+    $("[data-featured-work]");
 
 
   if (!grid) {
@@ -923,17 +992,17 @@ async function initFeaturedWork() {
 
   const wanted = [
 
-    'reels',
+    "reels",
 
-    'advertisements',
+    "advertisements",
 
-    'wedding-videos',
+    "wedding-videos",
 
-    'color-grading',
+    "color-grading",
 
-    'short-films',
+    "short-films",
 
-    'product-promotions'
+    "product-promotions"
 
   ];
 
@@ -941,56 +1010,74 @@ async function initFeaturedWork() {
   const found = [];
 
 
-  for (
-    const folder of wanted
-  ) {
-
-    const meta =
-      Object.values(
-        CATEGORIES
-      ).find(
-        item =>
-          item.folder === folder
-      );
+  const allVideos =
+    await getSupabaseVideos();
 
 
-    if (!meta) {
+  wanted.forEach(
+    folder => {
 
-      continue;
+      const meta =
+        Object.values(
+          CATEGORIES
+        ).find(
+          item =>
+            item.folder === folder
+        );
+
+
+      if (!meta) {
+
+        return;
+
+      }
+
+
+      const video =
+        allVideos.find(
+          item =>
+            String(
+              item.category || ""
+            )
+              .trim()
+              .toLowerCase() ===
+            folder.toLowerCase()
+        );
+
+
+      if (video) {
+
+        found.push({
+
+          meta,
+
+          file: {
+
+            name:
+              video.title,
+
+            url:
+              video.file_url
+
+          }
+
+        });
+
+      }
 
     }
-
-
-    const files =
-      await listVideos(
-        folder
-      );
-
-
-    if (files.length) {
-
-      found.push({
-
-        meta,
-
-        file: files[0]
-
-      });
-
-    }
-
-  }
+  );
 
 
   grid.innerHTML =
-    '';
+    "";
 
 
   if (!found.length) {
 
-    grid.closest('section')
+    grid.closest("section")
       ?.classList.add(
-        'is-empty'
+        "is-empty"
       );
 
     return;
@@ -1001,30 +1088,21 @@ async function initFeaturedWork() {
   found.forEach(
     ({ meta, file }) => {
 
-      const src =
-        file.url;
-
-
       const vertical =
-        meta.ratio === '9:16';
-
-
-      const title =
-        file.name ||
-        meta.label;
+        meta.ratio === "9:16";
 
 
       const card =
         document.createElement(
-          'article'
+          "article"
         );
 
 
       card.className =
         `featured-card ${
           vertical
-            ? 'is-vertical'
-            : ''
+            ? "is-vertical"
+            : ""
         }`;
 
 
@@ -1033,7 +1111,7 @@ async function initFeaturedWork() {
         <div class="featured-media">
 
           <video
-            src="${src}"
+            src="${file.url}"
             muted
             playsinline
             preload="metadata"
@@ -1044,7 +1122,7 @@ async function initFeaturedWork() {
             <div>
 
               <strong>
-                ${title}
+                ${file.name}
               </strong>
 
               <small>
@@ -1072,7 +1150,7 @@ async function initFeaturedWork() {
           </span>
 
           <h3>
-            ${title}
+            ${file.name}
           </h3>
 
         </div>
@@ -1080,44 +1158,44 @@ async function initFeaturedWork() {
       `;
 
 
-      const video =
-        $('video', card);
+      const player =
+        $("video", card);
 
 
-      video?.addEventListener(
-        'loadeddata',
+      player?.addEventListener(
+        "loadeddata",
         () => {
 
-          $('.featured-media', card)
+          $(".featured-media", card)
             ?.classList.add(
-              'has-video'
+              "has-video"
             );
 
         }
       );
 
 
-      video?.addEventListener(
-        'error',
+      player?.addEventListener(
+        "error",
         () => {
 
-          $('.featured-media', card)
-            ?.classList.remove(
-              'has-video'
-            );
+          console.warn(
+            "Featured video could not load:",
+            file.url
+          );
 
         }
       );
 
 
-      $('.featured-play', card)
+      $(".featured-play", card)
         ?.addEventListener(
-          'click',
+          "click",
           () => {
 
             openVideoModal(
-              src,
-              title,
+              file.url,
+              file.name,
               meta.label,
               vertical
             );
@@ -1136,14 +1214,14 @@ async function initFeaturedWork() {
 }
 
 
-// --------------------------------------------------
+// ============================================================
 // TEAM MODAL
-// --------------------------------------------------
+// ============================================================
 
 function initTeam() {
 
   const modal =
-    $('#teamModal');
+    $("#teamModal");
 
 
   if (!modal) {
@@ -1153,11 +1231,11 @@ function initTeam() {
   }
 
 
-  $$('[data-team]')
+  $$("[data-team]")
     .forEach(card => {
 
       card.addEventListener(
-        'click',
+        "click",
         () => {
 
           try {
@@ -1168,40 +1246,48 @@ function initTeam() {
               );
 
 
-            $('[data-modal-img]', modal)
-              .src =
+            $(
+              "[data-modal-img]",
+              modal
+            ).src =
               data.image;
 
 
-            $('[data-modal-name]', modal)
-              .textContent =
+            $(
+              "[data-modal-name]",
+              modal
+            ).textContent =
               data.name;
 
 
-            $('[data-modal-role]', modal)
-              .textContent =
+            $(
+              "[data-modal-role]",
+              modal
+            ).textContent =
               data.role;
 
 
-            $('[data-modal-bio]', modal)
-              .textContent =
+            $(
+              "[data-modal-bio]",
+              modal
+            ).textContent =
               data.bio;
 
 
             modal.classList.add(
-              'open'
+              "open"
             );
 
 
             document.body.classList.add(
-              'modal-open'
+              "modal-open"
             );
 
 
           } catch (error) {
 
             console.warn(
-              'Invalid team data',
+              "Invalid team data:",
               error
             );
 
@@ -1213,28 +1299,31 @@ function initTeam() {
     });
 
 
-  const close = () => {
+  const close =
+    () => {
 
-    modal.classList.remove(
-      'open'
-    );
+      modal.classList.remove(
+        "open"
+      );
 
-    document.body.classList.remove(
-      'modal-open'
-    );
+      document.body.classList.remove(
+        "modal-open"
+      );
 
-  };
+    };
 
 
-  $('[data-close]', modal)
-    ?.addEventListener(
-      'click',
-      close
-    );
+  $(
+    "[data-close]",
+    modal
+  )?.addEventListener(
+    "click",
+    close
+  );
 
 
   modal.addEventListener(
-    'click',
+    "click",
     event => {
 
       if (
@@ -1250,11 +1339,11 @@ function initTeam() {
 
 
   document.addEventListener(
-    'keydown',
+    "keydown",
     event => {
 
       if (
-        event.key === 'Escape'
+        event.key === "Escape"
       ) {
 
         close();
@@ -1267,14 +1356,14 @@ function initTeam() {
 }
 
 
-// --------------------------------------------------
-// CONTACT FORM
-// --------------------------------------------------
+// ============================================================
+// CONTACT
+// ============================================================
 
 function initContactForm() {
 
   const form =
-    $('#contactForm');
+    $("#contactForm");
 
 
   if (!form) {
@@ -1285,24 +1374,24 @@ function initContactForm() {
 
 
   form.addEventListener(
-    'submit',
+    "submit",
     event => {
 
       event.preventDefault();
 
 
       const name =
-        $('#contactName')
+        $("#contactName")
           ?.value.trim();
 
 
       const email =
-        $('#contactEmail')
+        $("#contactEmail")
           ?.value.trim();
 
 
       const message =
-        $('#contactMessage')
+        $("#contactMessage")
           ?.value.trim();
 
 
@@ -1313,7 +1402,7 @@ function initContactForm() {
       ) {
 
         alert(
-          'Please complete your name, email and message.'
+          "Please complete your name, email and message."
         );
 
         return;
@@ -1324,12 +1413,13 @@ function initContactForm() {
       window.location.href =
         `mailto:kalyanjpc84@gmail.com?subject=${
           encodeURIComponent(
-            'Portfolio enquiry from ' + name
+            "Portfolio enquiry from " +
+            name
           )
         }&body=${
           encodeURIComponent(
             message +
-            '\n\nReply to: ' +
+            "\n\nReply to: " +
             email
           )
         }`;
@@ -1340,21 +1430,21 @@ function initContactForm() {
 }
 
 
-// --------------------------------------------------
-// SHOWREEL ERROR HANDLING
-// --------------------------------------------------
+// ============================================================
+// SHOWREEL
+// ============================================================
 
 function initShowreel() {
 
   const player =
     document.querySelector(
-      '.showreel-player'
+      ".showreel-player"
     );
 
 
   const missing =
     document.querySelector(
-      '.showreel-missing'
+      ".showreel-missing"
     );
 
 
@@ -1369,7 +1459,7 @@ function initShowreel() {
 
 
   player.addEventListener(
-    'error',
+    "error",
     () => {
 
       player.hidden =
@@ -1385,9 +1475,9 @@ function initShowreel() {
 }
 
 
-// --------------------------------------------------
-// MAIN INITIALIZATION
-// --------------------------------------------------
+// ============================================================
+// MAIN
+// ============================================================
 
 async function init() {
 
@@ -1404,16 +1494,14 @@ async function init() {
   initShowreel();
 
 
-  // Load Supabase before loading videos
-
-  const supabaseReady =
-    await ensureSupabase();
+  const ready =
+    await setupSupabase();
 
 
-  if (!supabaseReady) {
+  if (!ready) {
 
     console.error(
-      'Supabase is not ready. Videos cannot be loaded.'
+      "Supabase connection failed."
     );
 
     return;
@@ -1428,11 +1516,11 @@ async function init() {
 }
 
 
-// --------------------------------------------------
+// ============================================================
 // START
-// --------------------------------------------------
+// ============================================================
 
 document.addEventListener(
-  'DOMContentLoaded',
+  "DOMContentLoaded",
   init
 );
