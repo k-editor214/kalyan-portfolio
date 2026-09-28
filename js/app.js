@@ -1,5 +1,5 @@
-
 const REPO_API = 'https://api.github.com/repos/k-editor214/kalyan-portfolio/contents/assets/videos';
+
 const CATEGORIES = {
   reels: {label:'Reels', folder:'reels', ratio:'9:16'},
   advertisements: {label:'Advertisements', folder:'advertisements', ratio:'16:9'},
@@ -18,41 +18,35 @@ function initNav(){
   const toggle = $('.menu-toggle');
   const nav = $('.main-nav');
   toggle?.addEventListener('click', () => nav?.classList.toggle('open'));
-
   const file = location.pathname.split('/').pop() || 'index.html';
   const page = file === 'index.html' || file === '' ? 'home' : file.replace('.html','');
-  $$('.main-nav a[data-page]').forEach(a=>{
+  $$('.main-nav a[data-page]').forEach(a => {
     if(a.dataset.page === page) a.classList.add('active');
   });
 }
 
-function setYear(){ $$('.year').forEach(el => el.textContent = new Date().getFullYear()); }
+function setYear(){
+  $$('.year').forEach(el => el.textContent = new Date().getFullYear());
+}
 
-function imageFallback(img){
-  img.addEventListener('error', ()=> {
-    img.style.display='none';
-    img.parentElement?.classList.add('image-missing');
+function initImages(){
+  $$('img').forEach(img => {
+    img.addEventListener('error', () => img.classList.add('image-load-error'));
   });
 }
 
-function initImages(){ $$('img').forEach(imageFallback); }
-
 async function listVideos(folder){
-  const cacheKey = `kalyan-videos-${folder}`;
   try{
-    const cached = sessionStorage.getItem(cacheKey);
-    if(cached) return JSON.parse(cached);
-
-    const res = await fetch(`${REPO_API}/${folder}?ref=main`, {cache:'no-store'});
+    const res = await fetch(`${REPO_API}/${folder}?ref=main&ts=${Date.now()}`, {
+      cache:'no-store',
+      headers:{'Accept':'application/vnd.github+json'}
+    });
     if(!res.ok) throw new Error(`GitHub API ${res.status}`);
     const data = await res.json();
-
     const files = Array.isArray(data)
-      ? data.filter(x => x.type === 'file' && /\.mp4$/i.test(x.name))
+      ? data.filter(x => x.type === 'file' && /\.(mp4|webm|mov)$/i.test(x.name))
       : [];
-
     files.sort((a,b)=>a.name.localeCompare(b.name, undefined, {numeric:true}));
-    sessionStorage.setItem(cacheKey, JSON.stringify(files));
     return files;
   }catch(err){
     console.warn(`Could not load ${folder}:`, err);
@@ -60,14 +54,12 @@ async function listVideos(folder){
   }
 }
 
-function clearVideoCaches(){
-  Object.keys(sessionStorage).filter(k=>k.startsWith('kalyan-videos-')).forEach(k=>sessionStorage.removeItem(k));
-}
-
 function prettyName(filename, category){
   const stem = filename.replace(/\.[^.]+$/,'').replace(/[-_]+/g,' ');
-  const withoutPrefix = stem.replace(new RegExp(`^${category.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}\\s*`, 'i'),'');
-  return `${category} ${withoutPrefix || ''}`.trim().replace(/\b\w/g,m=>m.toUpperCase());
+  const cleanCategory = category.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  const withoutPrefix = stem.replace(new RegExp(`^${cleanCategory}\\s*`, 'i'),'');
+  return `${category}${withoutPrefix ? ' ' + withoutPrefix : ''}`.trim()
+    .replace(/\b\w/g,m=>m.toUpperCase());
 }
 
 function openVideoModal(src,title,category,vertical=false){
@@ -80,18 +72,21 @@ function openVideoModal(src,title,category,vertical=false){
       <div class="modal" role="dialog" aria-modal="true">
         <button class="modal-close" type="button" aria-label="Close">×</button>
         <div class="eyebrow" data-modal-category></div>
-        <h2 data-modal-title style="font:600 48px 'Cormorant Garamond',serif;margin:4px 0 18px"></h2>
+        <h2 data-modal-title></h2>
         <video class="video-modal-player" controls playsinline preload="metadata"></video>
         <div class="empty-state" data-video-error style="display:none;margin-top:14px">
-          This video could not be played. Check that the file is a valid MP4 and is below GitHub's 100 MB file limit.
+          This video could not be played. Make sure the MP4 is valid and committed to GitHub.
         </div>
       </div>`;
     document.body.appendChild(modal);
 
     const close = ()=>{
       const p=$('video',modal);
-      p.pause(); p.removeAttribute('src'); p.load();
-      modal.classList.remove('open'); document.body.classList.remove('modal-open');
+      p.pause();
+      p.removeAttribute('src');
+      p.load();
+      modal.classList.remove('open');
+      document.body.classList.remove('modal-open');
     };
     $('.modal-close',modal).addEventListener('click',close);
     modal.addEventListener('click',e=>{if(e.target===modal)close()});
@@ -105,13 +100,14 @@ function openVideoModal(src,title,category,vertical=false){
   player.style.aspectRatio = vertical ? '9 / 16' : '16 / 9';
   player.style.objectFit='contain';
   player.src=src;
+  player.load();
   player.onerror=()=>{$('[data-video-error]',modal).style.display='block'};
-  modal.classList.add('open'); document.body.classList.add('modal-open');
-  player.play().catch(()=>{});
+  modal.classList.add('open');
+  document.body.classList.add('modal-open');
 }
 
 function makeVideoCard(file, meta){
-  const src = `assets/videos/${meta.folder}/${file.name}`;
+  const src = `assets/videos/${meta.folder}/${encodeURIComponent(file.name)}`;
   const vertical = meta.ratio === '9:16';
   const title = prettyName(file.name, meta.label);
 
@@ -137,18 +133,21 @@ function makeVideoCard(file, meta){
   return card;
 }
 
+async function getAllVideoGroups(){
+  const groups=[];
+  for(const meta of Object.values(CATEGORIES)){
+    const files=await listVideos(meta.folder);
+    if(files.length) groups.push({meta,files});
+  }
+  return groups;
+}
+
 async function initWorkLibrary(){
   const container = $('#videoLibrary');
   if(!container) return;
 
   const filterBar = $('.video-filters');
-  const allBtn = $('[data-video-filter="all"]');
-
-  const groups = [];
-  for(const meta of Object.values(CATEGORIES)){
-    const files = await listVideos(meta.folder);
-    if(files.length) groups.push({meta,files});
-  }
+  const groups = await getAllVideoGroups();
 
   container.innerHTML='';
   if(!groups.length){
@@ -162,10 +161,7 @@ async function initWorkLibrary(){
     label.dataset.section=meta.folder;
     label.textContent=meta.label;
     container.appendChild(label);
-    files.forEach(file=>{
-      const card=makeVideoCard(file,meta);
-      container.appendChild(card);
-    });
+    files.forEach(file=>container.appendChild(makeVideoCard(file,meta)));
   });
 
   $$('.filter',filterBar).forEach(btn=>{
@@ -187,7 +183,7 @@ async function initFeaturedWork(){
   const grid=$('[data-featured-work]');
   if(!grid) return;
 
-  const wanted = ['reels','advertisements','wedding-videos','color-grading','short-films','product-promotions'];
+  const wanted=['reels','advertisements','wedding-videos','color-grading','short-films','product-promotions'];
   const found=[];
   for(const folder of wanted){
     const meta=Object.values(CATEGORIES).find(x=>x.folder===folder);
@@ -202,7 +198,7 @@ async function initFeaturedWork(){
   }
 
   found.forEach(({meta,file})=>{
-    const src=`assets/videos/${meta.folder}/${file.name}`;
+    const src=`assets/videos/${meta.folder}/${encodeURIComponent(file.name)}`;
     const vertical=meta.ratio==='9:16';
     const title=prettyName(file.name,meta.label);
     const card=document.createElement('article');
@@ -227,16 +223,20 @@ function initTeam(){
   if(!modal) return;
   $$('[data-team]').forEach(card=>{
     card.addEventListener('click',()=>{
-      const data=JSON.parse(card.dataset.team);
-      $('[data-modal-img]',modal).src=data.image;
-      $('[data-modal-name]',modal).textContent=data.name;
-      $('[data-modal-role]',modal).textContent=data.role;
-      $('[data-modal-bio]',modal).textContent=data.bio;
-      modal.classList.add('open'); document.body.classList.add('modal-open');
+      try{
+        const data=JSON.parse(card.dataset.team);
+        $('[data-modal-img]',modal).src=data.image;
+        $('[data-modal-name]',modal).textContent=data.name;
+        $('[data-modal-role]',modal).textContent=data.role;
+        $('[data-modal-bio]',modal).textContent=data.bio;
+        modal.classList.add('open');
+        document.body.classList.add('modal-open');
+      }catch(e){console.warn('Invalid team data',e)}
     });
   });
   const close=()=>{
-    modal.classList.remove('open');document.body.classList.remove('modal-open');
+    modal.classList.remove('open');
+    document.body.classList.remove('modal-open');
   };
   $('[data-close]',modal)?.addEventListener('click',close);
   modal.addEventListener('click',e=>{if(e.target===modal)close()});
@@ -252,7 +252,7 @@ function initContactForm(){
     const email=$('#contactEmail')?.value.trim();
     const message=$('#contactMessage')?.value.trim();
     if(!name||!email||!message){alert('Please complete your name, email and message.');return;}
-    window.location.href=`mailto:kalyanjpc84@gmail.com?subject=${encodeURIComponent('Portfolio enquiry from '+name)}&body=${encodeURIComponent(message+'\n\nReply to: '+email)}`;
+    window.location.href=`mailto:kalyanjpc84@gmail.com?subject=${encodeURIComponent('Portfolio enquiry from '+name)}&body=${encodeURIComponent(message+'\\n\\nReply to: '+email)}`;
   });
 }
 
