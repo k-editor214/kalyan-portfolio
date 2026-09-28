@@ -766,7 +766,7 @@ async function getAllVideoGroups() {
 
           }))
 
-        };
+        });
 
       }
 
@@ -1219,140 +1219,181 @@ async function initFeaturedWork() {
 // ============================================================
 
 function initTeam() {
+  const grid = $("#teamGrid");
+  const modal = $("#teamModal");
 
-  const modal =
-    $("#teamModal");
+  if (!grid) return;
 
+  const openModal = (data) => {
+    if (!modal) return;
 
-  if (!modal) {
+    const image = $("[data-modal-img]", modal);
+    const name = $("[data-modal-name]", modal);
+    const role = $("[data-modal-role]", modal);
+    const bio = $("[data-modal-bio]", modal);
+    const instagram = $("[data-modal-instagram]", modal);
+    const linkedin = $("[data-modal-linkedin]", modal);
 
-    return;
+    if (image) {
+      image.src = data.image || "";
+      image.alt = data.name || "Team member";
+      image.hidden = !data.image;
+    }
+    if (name) name.textContent = data.name || "Team";
+    if (role) role.textContent = data.role || "";
+    if (bio) bio.textContent = data.bio || "Profile details will be added soon.";
 
+    if (instagram) {
+      instagram.href = data.instagram || "#";
+      instagram.hidden = !data.instagram;
+    }
+    if (linkedin) {
+      linkedin.href = data.linkedin || "#";
+      linkedin.hidden = !data.linkedin;
+    }
+
+    modal.classList.add("open");
+    document.body.classList.add("modal-open");
+  };
+
+  const closeModal = () => {
+    if (!modal) return;
+    modal.classList.remove("open");
+    document.body.classList.remove("modal-open");
+  };
+
+  if (modal) {
+    $("[data-close]", modal)?.addEventListener("click", closeModal);
+    modal.addEventListener("click", event => {
+      if (event.target === modal) closeModal();
+    });
   }
 
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") closeModal();
+  });
 
-  $$("[data-team]")
-    .forEach(card => {
+  (async () => {
+    const { data, error } = await window.supabaseClient
+      .from("team_members")
+      .select("*")
+      .eq("published", true)
+      .order("created_at", { ascending: false });
 
-      card.addEventListener(
-        "click",
-        () => {
+    if (error) {
+      console.error("Team loading error:", error);
+    }
 
-          try {
+    grid.innerHTML = "";
 
-            const data =
-              JSON.parse(
-                card.dataset.team
-              );
+    if (!error && data && data.length) {
+      data.forEach(member => {
+        const card = document.createElement("article");
+        card.className = "team-card";
+        card.tabIndex = 0;
 
+        const photo = member.photo_url
+          ? `<img src="${member.photo_url}" alt="${escapeHtml(member.name)}">`
+          : `<div class="team-avatar">${escapeHtml((member.role || "Team").slice(0, 1))}</div>`;
 
-            $(
-              "[data-modal-img]",
-              modal
-            ).src =
-              data.image;
+        card.innerHTML = `
+          <div class="team-photo">${photo}</div>
+          <div class="team-role">${escapeHtml(member.role)}</div>
+          <h3>${escapeHtml(member.name)}</h3>
+          <p>${escapeHtml(member.bio || "")}</p>
+        `;
 
+        const details = {
+          name: member.name,
+          role: member.role,
+          bio: member.bio,
+          image: member.photo_url,
+          instagram: member.instagram,
+          linkedin: member.linkedin
+        };
 
-            $(
-              "[data-modal-name]",
-              modal
-            ).textContent =
-              data.name;
-
-
-            $(
-              "[data-modal-role]",
-              modal
-            ).textContent =
-              data.role;
-
-
-            $(
-              "[data-modal-bio]",
-              modal
-            ).textContent =
-              data.bio;
-
-
-            modal.classList.add(
-              "open"
-            );
-
-
-            document.body.classList.add(
-              "modal-open"
-            );
-
-
-          } catch (error) {
-
-            console.warn(
-              "Invalid team data:",
-              error
-            );
-
+        card.addEventListener("click", () => openModal(details));
+        card.addEventListener("keydown", event => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            openModal(details);
           }
+        });
 
-        }
-      );
+        grid.appendChild(card);
+      });
+      return;
+    }
 
+    // Clean role placeholders — no fake names or photos.
+    [
+      ["Film Editor", "Editing, pacing and story structure."],
+      ["Photographer", "Photography and visual capture."],
+      ["Social Media Team", "Social-first content and publishing."],
+      ["Production Team", "Shoot support and end-to-end production."]
+    ].forEach(([role, bio]) => {
+      const card = document.createElement("article");
+      card.className = "team-card team-placeholder";
+      card.innerHTML = `
+        <div class="team-photo"><div class="team-avatar">+</div></div>
+        <div class="team-role">${role}</div>
+        <h3>Profile coming soon</h3>
+        <p>${bio}</p>
+      `;
+      grid.appendChild(card);
     });
+  })();
+}
 
+function initProjects() {
+  const grid = $("#projectGrid");
+  if (!grid) return;
 
-  const close =
-    () => {
+  (async () => {
+    const { data, error } = await window.supabaseClient
+      .from("projects")
+      .select("*")
+      .eq("published", true)
+      .order("created_at", { ascending: false });
 
-      modal.classList.remove(
-        "open"
-      );
-
-      document.body.classList.remove(
-        "modal-open"
-      );
-
-    };
-
-
-  $(
-    "[data-close]",
-    modal
-  )?.addEventListener(
-    "click",
-    close
-  );
-
-
-  modal.addEventListener(
-    "click",
-    event => {
-
-      if (
-        event.target === modal
-      ) {
-
-        close();
-
-      }
-
+    if (error) {
+      console.error("Projects loading error:", error);
     }
-  );
 
+    grid.innerHTML = "";
 
-  document.addEventListener(
-    "keydown",
-    event => {
-
-      if (
-        event.key === "Escape"
-      ) {
-
-        close();
-
-      }
-
+    if (!error && data && data.length) {
+      data.forEach((project, index) => {
+        const card = document.createElement("article");
+        card.className = "project-card";
+        card.innerHTML = `
+          ${project.thumbnail_url ? `<img class="project-thumb" src="${project.thumbnail_url}" alt="${escapeHtml(project.title)}">` : ""}
+          <div class="num">${String(index + 1).padStart(2, "0")}</div>
+          <h3>${escapeHtml(project.title)}</h3>
+          <p>${escapeHtml(project.description || "")}</p>
+          <div class="project-tags"><span>${escapeHtml(project.category)}</span></div>
+        `;
+        grid.appendChild(card);
+      });
+      return;
     }
-  );
 
+    grid.innerHTML = `
+      <div class="empty-state">
+        <h3>No projects published yet.</h3>
+        <p>Add projects from the private admin dashboard.</p>
+      </div>
+    `;
+  })();
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 
@@ -1487,8 +1528,6 @@ async function init() {
 
   initImages();
 
-  initTeam();
-
   initContactForm();
 
   initShowreel();
@@ -1512,6 +1551,9 @@ async function init() {
   await initWorkLibrary();
 
   await initFeaturedWork();
+
+  initTeam();
+  initProjects();
 
 }
 
