@@ -1,3 +1,307 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Admin — Kalyan Portfolio</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="css/style.css"></head><body class="admin-body">
-<main class="admin-shell"><div class="admin-login"><p class="eyebrow">PRIVATE AREA</p><h1>Portfolio<br><em>Admin.</em></h1><p>Front-end prototype. Secure production login and uploads require Supabase/Firebase or another backend.</p><form onsubmit="return demoAdmin(event)"><input id="adminEmail" type="email" placeholder="Email" required><input id="adminPassword" type="password" placeholder="Password" required><button class="btn btn-primary">Sign In</button></form><small>Public visitors will never see this page in the main navigation.</small></div>
-<div class="admin-panel" id="adminPanel"><div class="admin-top"><h2>Content Manager</h2><a href="index.html">View website →</a></div><div class="admin-cards"><article><strong>Videos</strong><p>Upload through your GitHub repository or connect storage in production.</p></article><article><strong>Team</strong><p>Add member name, role, photo and biography.</p></article><article><strong>Projects</strong><p>Edit titles, categories, descriptions and featured work.</p></article><article><strong>Tools</strong><p>Manage the software/tools displayed on the site.</p></article></div></div></main><script src="js/app.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>KalyanEditz Admin</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #f5f1e8;
+      color: #24211f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 460px;
+    }
+
+    .card {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 15px 50px rgba(0,0,0,0.10);
+    }
+
+    .logo {
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      background: #24211f;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 25px;
+    }
+
+    .eyebrow {
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #8b7768;
+    }
+
+    h1 {
+      font-size: 42px;
+      margin: 8px 0 12px;
+    }
+
+    p {
+      color: #666;
+      line-height: 1.6;
+    }
+
+    label {
+      display: block;
+      margin: 20px 0 8px;
+      font-weight: 600;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #24211f;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 24px;
+      padding: 15px;
+      border: 0;
+      border-radius: 10px;
+      background: #24211f;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    #message {
+      margin-top: 18px;
+      min-height: 24px;
+      font-size: 14px;
+    }
+
+    .dashboard {
+      display: none;
+    }
+
+    .dashboard h2 {
+      font-size: 30px;
+    }
+
+    .dashboard-card {
+      padding: 20px;
+      margin-top: 15px;
+      background: #f5f1e8;
+      border-radius: 12px;
+    }
+
+    .logout {
+      background: #8f2d24;
+    }
+
+    @media (max-width: 500px) {
+      .card {
+        padding: 28px 22px;
+      }
+
+      h1 {
+        font-size: 34px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- LOGIN -->
+    <div class="card" id="loginCard">
+
+      <div class="logo">K</div>
+
+      <div class="eyebrow">Private Area</div>
+
+      <h1>Admin.</h1>
+
+      <p>
+        Sign in to manage your KalyanEditz portfolio.
+      </p>
+
+      <form id="loginForm">
+
+        <label for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          autocomplete="username"
+          required
+        >
+
+        <label for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          autocomplete="current-password"
+          required
+        >
+
+        <button type="submit">
+          Sign In
+        </button>
+
+      </form>
+
+      <div id="message"></div>
+
+    </div>
+
+
+    <!-- DASHBOARD -->
+    <div class="card dashboard" id="dashboard">
+
+      <div class="logo">K</div>
+
+      <div class="eyebrow">Private Dashboard</div>
+
+      <h2>KalyanEditz</h2>
+
+      <p>
+        You are successfully logged in.
+      </p>
+
+      <div class="dashboard-card">
+        <strong>Videos</strong>
+        <p>Manage portfolio videos.</p>
+      </div>
+
+      <div class="dashboard-card">
+        <strong>Team</strong>
+        <p>Manage team profiles.</p>
+      </div>
+
+      <div class="dashboard-card">
+        <strong>Projects</strong>
+        <p>Manage portfolio projects.</p>
+      </div>
+
+      <button class="logout" id="logoutBtn">
+        Sign Out
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Your Supabase configuration -->
+  <script src="assets/js/config.js"></script>
+
+
+  <script>
+
+    const loginForm = document.getElementById("loginForm");
+    const message = document.getElementById("message");
+
+    const loginCard = document.getElementById("loginCard");
+    const dashboard = document.getElementById("dashboard");
+
+    const logoutBtn = document.getElementById("logoutBtn");
+
+
+    // LOGIN
+    loginForm.addEventListener("submit", async function(event) {
+
+      event.preventDefault();
+
+      const email =
+        document.getElementById("email").value.trim();
+
+      const password =
+        document.getElementById("password").value;
+
+
+      message.textContent = "Signing in...";
+      message.style.color = "#666";
+
+
+      const { data, error } =
+        await supabaseClient.auth.signInWithPassword({
+          email: email,
+          password: password
+        });
+
+
+      if (error) {
+
+        message.textContent =
+          "Login failed: " + error.message;
+
+        message.style.color = "#b42318";
+
+        return;
+      }
+
+
+      if (data.user) {
+
+        message.textContent = "";
+
+        loginCard.style.display = "none";
+
+        dashboard.style.display = "block";
+
+      }
+
+    });
+
+
+    // LOGOUT
+    logoutBtn.addEventListener("click", async function() {
+
+      await supabaseClient.auth.signOut();
+
+      dashboard.style.display = "none";
+
+      loginCard.style.display = "block";
+
+      loginForm.reset();
+
+    });
+
+
+  </script>
+
+</body>
+</html>
