@@ -1,304 +1,286 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Kalyan Chitteti — Selected video projects.">
+<title>Projects — Kalyan Chitteti</title>
 
-  <meta
-    name="description"
-    content="Kalyan Chitteti — Selected visual projects, creative work and post-production."
-  >
+<link rel="stylesheet" href="css/style.css">
 
-  <title>Projects — Kalyan Chitteti</title>
+<style>
+.projects-intro{
+  max-width:900px;
+  margin:0 auto;
+  padding:70px 24px 35px;
+}
 
-  <link rel="stylesheet" href="css/style.css">
+.projects-intro .eyebrow{
+  margin-bottom:10px;
+}
 
-  <style>
-    /* =====================================================
-       PROJECTS PAGE
-       ===================================================== */
+.projects-intro h1{
+  margin:0;
+}
 
-    .projects-intro {
-      max-width: 820px;
-      margin-bottom: 42px;
-    }
+.project-grid{
+  max-width:1200px;
+  margin:0 auto;
+  padding:20px 24px 80px;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:28px;
+}
 
-    .projects-intro h1 {
-      margin-bottom: 14px;
-    }
+.project-card{
+  overflow:hidden;
+  border:1px solid rgba(0,0,0,.12);
+  background:#fff;
+  border-radius:16px;
+}
 
-    .projects-intro p {
-      max-width: 680px;
-      color: var(--muted);
-      line-height: 1.7;
-    }
+.project-media{
+  position:relative;
+  width:100%;
+  aspect-ratio:16 / 9;
+  background:#111;
+  overflow:hidden;
+}
 
-    .project-grid {
-      display: grid;
-      grid-template-columns:
-        repeat(auto-fit, minmax(280px, 1fr));
-      gap: 26px;
-    }
+.project-media.vertical{
+  aspect-ratio:9 / 16;
+  max-height:650px;
+}
 
-    .project-card {
-      background: #fff;
-      border: 1px solid rgba(20, 20, 20, 0.08);
-      border-radius: 24px;
-      overflow: hidden;
-      box-shadow:
-        0 12px 35px rgba(20, 20, 20, 0.07);
-      transition:
-        transform 0.3s ease,
-        box-shadow 0.3s ease;
-    }
+.project-media video{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+  background:#111;
+}
 
-    .project-card:hover {
-      transform: translateY(-5px);
-      box-shadow:
-        0 18px 45px rgba(20, 20, 20, 0.12);
-    }
+.project-play{
+  position:absolute;
+  left:18px;
+  bottom:18px;
+  border:0;
+  border-radius:999px;
+  padding:11px 17px;
+  background:rgba(255,255,255,.94);
+  color:#111;
+  font:inherit;
+  font-weight:700;
+  cursor:pointer;
+  z-index:2;
+}
 
-    .project-media {
-      position: relative;
-      background: #111;
-      aspect-ratio: 16 / 9;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
+.project-content{
+  padding:20px 20px 22px;
+}
 
-    .project-media img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
+.project-content .eyebrow{
+  margin-bottom:7px;
+}
 
-    .project-content {
-      padding: 22px;
-    }
+.project-content h3{
+  margin:0;
+}
 
-    .project-content h3 {
-      margin: 8px 0 0;
-    }
+.projects-empty{
+  grid-column:1 / -1;
+  padding:60px 20px;
+  text-align:center;
+  opacity:.7;
+}
 
-    .project-content p {
-      margin-top: 10px;
-      color: #666;
-      line-height: 1.6;
-    }
+@media(max-width:800px){
+  .project-grid{
+    grid-template-columns:1fr;
+    padding-left:18px;
+    padding-right:18px;
+  }
 
-    .project-number {
-      float: right;
-      font-size: 12px;
-      color: #999;
-    }
-
-    .projects-loading,
-    .projects-empty {
-      padding: 60px 20px;
-      text-align: center;
-      color: var(--muted);
-      grid-column: 1 / -1;
-    }
-
-    /* =====================================================
-       MOBILE
-       ===================================================== */
-
-    @media (max-width: 700px) {
-
-      .projects-intro {
-        margin-bottom: 28px;
-      }
-
-      .project-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
-      }
-
-      .project-card {
-        border-radius: 18px;
-      }
-
-      .project-content {
-        padding: 18px;
-      }
-
-    }
-  </style>
+  .projects-intro{
+    padding-left:18px;
+    padding-right:18px;
+  }
+}
+</style>
 </head>
-
 
 <body>
 
-  <!-- =====================================================
-       HEADER
-       ===================================================== -->
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <span class="brand-mark">K</span>
+    <span class="brand-text">KALYAN CHITTETI</span>
+  </a>
 
-  <header class="site-header">
+  <button class="menu-toggle" type="button" aria-label="Open menu">
+    ☰
+  </button>
 
-    <a class="brand" href="index.html">
+  <nav class="main-nav">
+    <a href="index.html" data-page="home">Home</a>
+    <a href="showreel.html" data-page="showreel">Showreel</a>
+    <a href="work.html" data-page="work">Work</a>
+    <a href="projects.html" data-page="projects">Projects</a>
+    <a href="team.html" data-page="team">Team</a>
+    <a href="tools.html" data-page="tools">Tools</a>
+    <a href="about.html" data-page="about">About</a>
+    <a href="contact.html" data-page="contact">Contact</a>
+  </nav>
+</header>
 
-      <span class="brand-mark">
-        K
-      </span>
+<main>
 
-      <span class="brand-text">
-        KALYAN CHITTETI
-      </span>
+  <section class="projects-intro">
+    <div class="eyebrow">Project Library</div>
+    <h1>Selected Projects.</h1>
+  </section>
 
-    </a>
+  <section
+    id="projectLibrary"
+    class="project-grid"
+    aria-live="polite">
+  </section>
 
+</main>
 
-    <button
-      class="menu-toggle"
-      type="button"
-      aria-label="Open menu"
-      aria-expanded="false"
-    >
-      ☰
-    </button>
+<footer class="site-footer">
+  <span>© <span class="year"></span> Kalyan Chitteti</span>
+  <span>Video Editor · Colorist · DI Artist</span>
+  <span>India</span>
+</footer>
 
+<!-- Keep the existing app.js unchanged -->
+<script src="js/app.js"></script>
 
-    <nav class="main-nav">
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
 
-      <a
-        href="index.html"
-        data-page="home"
-      >
-        Home
-      </a>
+  const root = document.getElementById('projectLibrary');
 
-      <a
-        href="showreel.html"
-        data-page="showreel"
-      >
-        Showreel
-      </a>
+  if (!root) return;
 
-      <a
-        href="work.html"
-        data-page="work"
-      >
-        Work
-      </a>
+  /*
+    IMPORTANT:
+    Projects uses the same GitHub assets/videos system
+    already used by the Work page.
 
-      <a
-        href="projects.html"
-        data-page="projects"
-      >
-        Projects
-      </a>
+    No Supabase projects table is used here.
+  */
 
-      <a
-        href="team.html"
-        data-page="team"
-      >
-        Team
-      </a>
+  const groups = [];
 
-      <a
-        href="tools.html"
-        data-page="tools"
-      >
-        Tools
-      </a>
+  for (const meta of Object.values(CATEGORIES)) {
 
-      <a
-        href="about.html"
-        data-page="about"
-      >
-        About
-      </a>
+    const files = await listVideos(meta.folder);
 
-      <a
-        href="contact.html"
-        data-page="contact"
-      >
-        Contact
-      </a>
+    files.forEach(file => {
+      groups.push({
+        meta,
+        file
+      });
+    });
+  }
 
-    </nav>
+  root.innerHTML = '';
 
-  </header>
+  if (!groups.length) {
 
+    root.innerHTML = `
+      <div class="projects-empty">
+        <p>No project videos were found.</p>
+      </div>
+    `;
 
-  <!-- =====================================================
-       MAIN
-       ===================================================== -->
+    return;
+  }
 
-  <main class="page-shell">
+  groups.forEach(({ meta, file }) => {
 
-    <section class="page-hero projects-intro">
+    const src =
+      `assets/videos/${meta.folder}/${encodeURIComponent(file.name)}`;
 
-      <div class="eyebrow">
-        PROJECTS
+    const vertical = meta.ratio === '9:16';
+
+    const title =
+      prettyName(file.name, meta.label);
+
+    const card =
+      document.createElement('article');
+
+    card.className = 'project-card';
+
+    card.innerHTML = `
+      <div class="project-media ${vertical ? 'vertical' : ''}">
+
+        <video
+          controls
+          playsinline
+          preload="metadata"
+          src="${src}">
+        </video>
+
+        <button
+          class="project-play"
+          type="button"
+          aria-label="Play ${title}">
+          ▶ Play
+        </button>
+
       </div>
 
-      <h1>
-        Selected visual projects.
-      </h1>
+      <div class="project-content">
 
-      <p>
-        A collection of creative projects,
-        visual experiments and post-production work
-        by Kalyan Chitteti.
-      </p>
+        <div class="eyebrow">
+          ${meta.label} · ${meta.ratio}
+        </div>
 
-    </section>
+        <h3>${title}</h3>
 
-
-    <!-- ===================================================
-         PROJECTS LOADED BY APP.JS
-         =================================================== -->
-
-    <section
-      id="projectLibrary"
-      class="project-grid"
-      aria-live="polite"
-    >
-
-      <div class="projects-loading">
-        Loading projects...
       </div>
+    `;
 
-    </section>
+    const video =
+      card.querySelector('video');
 
-  </main>
+    const playButton =
+      card.querySelector('.project-play');
 
+    playButton.addEventListener('click', () => {
 
-  <!-- =====================================================
-       FOOTER
-       ===================================================== -->
+      if (video.paused) {
 
-  <footer class="site-footer">
+        video.play().catch(() => {});
 
-    <span>
-      ©
-      <span class="year"></span>
-      Kalyan Chitteti
-    </span>
+        playButton.textContent = '❚❚ Pause';
 
-    <span>
-      Video Editor · Colorist · DI Artist
-    </span>
+      } else {
 
-    <span>
-      India
-    </span>
+        video.pause();
 
-  </footer>
+        playButton.textContent = '▶ Play';
+      }
 
+    });
 
-  <!-- =====================================================
-       MAIN APPLICATION
-       ===================================================== -->
+    video.addEventListener('play', () => {
+      playButton.textContent = '❚❚ Pause';
+    });
 
-  <script src="js/app.js"></script>
+    video.addEventListener('pause', () => {
+      playButton.textContent = '▶ Play';
+    });
+
+    root.appendChild(card);
+
+  });
+
+});
+</script>
 
 </body>
-
 </html>
