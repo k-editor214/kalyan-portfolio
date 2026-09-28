@@ -1,6 +1,6 @@
 // ============================================================
 // KALYANEDITZ PORTFOLIO
-// Existing portfolio videos + Supabase uploaded videos
+// Existing portfolio videos + Supabase videos
 // ============================================================
 
 const CATEGORIES = {
@@ -66,17 +66,20 @@ const $$ = (selector, root = document) =>
 
 
 // ============================================================
-// SUPABASE
+// SUPABASE SETUP
 // ============================================================
 
 async function setupSupabase() {
+
   try {
 
+    // Load Supabase library if necessary
     if (!window.supabase) {
 
       await new Promise((resolve, reject) => {
 
-        const script = document.createElement("script");
+        const script =
+          document.createElement("script");
 
         script.src =
           "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
@@ -90,13 +93,17 @@ async function setupSupabase() {
 
     }
 
+
+    // Load config.js if necessary
     if (!window.supabaseClient) {
 
       await new Promise((resolve, reject) => {
 
-        const script = document.createElement("script");
+        const script =
+          document.createElement("script");
 
-        script.src = "assets/js/config.js";
+        script.src =
+          "assets/js/config.js";
 
         script.onload = resolve;
         script.onerror = reject;
@@ -107,15 +114,31 @@ async function setupSupabase() {
 
     }
 
-    return !!window.supabaseClient;
+
+    if (!window.supabaseClient) {
+
+      console.error(
+        "Supabase client was not created."
+      );
+
+      return false;
+
+    }
+
+
+    return true;
 
   } catch (error) {
 
-    console.error("Supabase setup failed:", error);
+    console.error(
+      "Supabase setup failed:",
+      error
+    );
 
     return false;
 
   }
+
 }
 
 
@@ -125,28 +148,47 @@ async function setupSupabase() {
 
 function initNav() {
 
-  const toggle = $(".menu-toggle");
-  const nav = $(".main-nav");
+  const toggle =
+    $(".menu-toggle");
 
-  toggle?.addEventListener("click", () => {
-    nav?.classList.toggle("open");
-  });
+  const nav =
+    $(".main-nav");
+
+
+  toggle?.addEventListener(
+    "click",
+    () => {
+
+      nav?.classList.toggle("open");
+
+    }
+  );
+
 
   const file =
-    location.pathname.split("/").pop() || "index.html";
+    location.pathname
+      .split("/")
+      .pop() || "index.html";
+
 
   const page =
     file === "index.html" || file === ""
       ? "home"
       : file.replace(".html", "");
 
-  $$(".main-nav a[data-page]").forEach(link => {
 
-    if (link.dataset.page === page) {
-      link.classList.add("active");
-    }
+  $$(".main-nav a[data-page]")
+    .forEach(link => {
 
-  });
+      if (
+        link.dataset.page === page
+      ) {
+
+        link.classList.add("active");
+
+      }
+
+    });
 
 }
 
@@ -157,18 +199,44 @@ function initNav() {
 
 function setYear() {
 
-  $$(".year").forEach(element => {
+  $$(".year")
+    .forEach(element => {
 
-    element.textContent =
-      new Date().getFullYear();
+      element.textContent =
+        new Date().getFullYear();
 
-  });
+    });
 
 }
 
 
 // ============================================================
-// CATEGORY
+// IMAGE ERROR HANDLING
+// ============================================================
+
+function initImages() {
+
+  $$("img")
+    .forEach(image => {
+
+      image.addEventListener(
+        "error",
+        () => {
+
+          image.classList.add(
+            "image-load-error"
+          );
+
+        }
+      );
+
+    });
+
+}
+
+
+// ============================================================
+// CATEGORY HELPER
 // ============================================================
 
 function getCategoryMeta(category) {
@@ -178,22 +246,42 @@ function getCategoryMeta(category) {
       .trim()
       .toLowerCase();
 
-  const found =
-    Object.values(CATEGORIES).find(
-      item => item.folder.toLowerCase() === value
-    );
 
-  return found || {
-    label: category || "Work",
-    folder: value || "other",
-    ratio: "16:9"
+  const found =
+    Object.values(CATEGORIES)
+      .find(item =>
+        item.folder.toLowerCase() === value
+      );
+
+
+  if (found) {
+    return found;
+  }
+
+
+  return {
+
+    label:
+      category || "Work",
+
+    folder:
+      value || "other",
+
+    ratio:
+      "16:9"
+
   };
+
 }
 
 
 // ============================================================
-// OLD / EXISTING PORTFOLIO VIDEOS
+// EXISTING STATIC PORTFOLIO VIDEOS
 // ============================================================
+//
+// These are the videos already inside your project.
+// They do NOT need to be uploaded again.
+//
 
 const STATIC_VIDEOS = {
 
@@ -230,18 +318,16 @@ const STATIC_VIDEOS = {
 
 
 // ============================================================
-// GET OLD STATIC VIDEOS
+// GET STATIC VIDEOS
 // ============================================================
 
 function getStaticVideos() {
 
   const videos = [];
 
-  Object.entries(STATIC_VIDEOS).forEach(
-    ([folder, files]) => {
 
-      const meta =
-        getCategoryMeta(folder);
+  Object.entries(STATIC_VIDEOS)
+    .forEach(([folder, files]) => {
 
       files.forEach(file => {
 
@@ -268,8 +354,8 @@ function getStaticVideos() {
 
       });
 
-    }
-  );
+    });
+
 
   return videos;
 
@@ -283,8 +369,15 @@ function getStaticVideos() {
 async function getSupabaseVideos() {
 
   if (!window.supabaseClient) {
+
+    console.warn(
+      "Supabase client unavailable."
+    );
+
     return [];
+
   }
+
 
   try {
 
@@ -297,6 +390,7 @@ async function getSupabaseVideos() {
           ascending: false
         });
 
+
     if (error) {
 
       console.error(
@@ -307,6 +401,7 @@ async function getSupabaseVideos() {
       return [];
 
     }
+
 
     return data || [];
 
@@ -320,11 +415,13 @@ async function getSupabaseVideos() {
     return [];
 
   }
+
 }
 
 
 // ============================================================
-// COMBINE OLD + NEW VIDEOS
+// GET ALL VIDEOS
+// STATIC + SUPABASE
 // ============================================================
 
 async function getAllVideos() {
@@ -332,10 +429,12 @@ async function getAllVideos() {
   const staticVideos =
     getStaticVideos();
 
+
   const supabaseVideos =
     await getSupabaseVideos();
 
-  const newVideos =
+
+  const databaseVideos =
     supabaseVideos.map(video => ({
 
       id:
@@ -367,12 +466,12 @@ async function getAllVideos() {
     }));
 
 
-  // IMPORTANT:
-  // Keep old portfolio work AND new Supabase work.
-
   return [
+
     ...staticVideos,
-    ...newVideos
+
+    ...databaseVideos
+
   ];
 
 }
@@ -407,9 +506,10 @@ function openVideoModal(
 
     modal.innerHTML = `
 
-      <div class="modal"
-           role="dialog"
-           aria-modal="true">
+      <div
+        class="modal"
+        role="dialog"
+        aria-modal="true">
 
         <button
           class="modal-close"
@@ -445,6 +545,7 @@ function openVideoModal(
       const player =
         $("video", modal);
 
+
       if (player) {
 
         player.pause();
@@ -454,6 +555,7 @@ function openVideoModal(
         player.load();
 
       }
+
 
       modal.classList.remove("open");
 
@@ -475,8 +577,12 @@ function openVideoModal(
       "click",
       event => {
 
-        if (event.target === modal) {
+        if (
+          event.target === modal
+        ) {
+
           close();
+
         }
 
       }
@@ -487,8 +593,12 @@ function openVideoModal(
       "keydown",
       event => {
 
-        if (event.key === "Escape") {
+        if (
+          event.key === "Escape"
+        ) {
+
           close();
+
         }
 
       }
@@ -501,16 +611,20 @@ function openVideoModal(
     $("video", modal);
 
 
-  $("[data-modal-category]", modal)
-    .textContent =
-      `${category} · ${
-        vertical ? "9:16" : "16:9"
-      }`;
+  $(
+    "[data-modal-category]",
+    modal
+  ).textContent =
+    `${category} · ${
+      vertical ? "9:16" : "16:9"
+    }`;
 
 
-  $("[data-modal-title]", modal)
-    .textContent =
-      title;
+  $(
+    "[data-modal-title]",
+    modal
+  ).textContent =
+    title;
 
 
   player.style.aspectRatio =
@@ -541,10 +655,14 @@ function openVideoModal(
 function createVideoCard(video) {
 
   const meta =
-    getCategoryMeta(video.category);
+    getCategoryMeta(
+      video.category
+    );
+
 
   const vertical =
     meta.ratio === "9:16";
+
 
   const title =
     video.name || meta.label;
@@ -553,8 +671,10 @@ function createVideoCard(video) {
   const card =
     document.createElement("article");
 
+
   card.className =
     "video-card";
+
 
   card.dataset.category =
     meta.folder;
@@ -577,7 +697,8 @@ function createVideoCard(video) {
 
         <button
           class="video-play"
-          type="button">
+          type="button"
+          aria-label="Play ${title}">
           ▶
         </button>
 
@@ -585,17 +706,25 @@ function createVideoCard(video) {
 
     </div>
 
+
     <div class="video-info">
 
       <div class="meta">
 
-        <span>${meta.label}</span>
+        <span>
+          ${meta.label}
+        </span>
 
-        <span>${meta.ratio}</span>
+        <span>
+          ${meta.ratio}
+        </span>
 
       </div>
 
-      <h3>${title}</h3>
+
+      <h3>
+        ${title}
+      </h3>
 
     </div>
 
@@ -649,15 +778,19 @@ async function initWorkLibrary() {
   const container =
     $("#videoLibrary");
 
+
   if (!container) {
     return;
   }
 
 
-  container.innerHTML =
-    `<div class="video-loading">
+  container.innerHTML = `
+
+    <div class="video-loading">
       Loading work...
-    </div>`;
+    </div>
+
+  `;
 
 
   const allVideos =
@@ -673,7 +806,9 @@ async function initWorkLibrary() {
 
       <div class="empty-state">
 
-        <h3>No work available.</h3>
+        <h3>
+          No work available.
+        </h3>
 
         <p>
           Upload videos from the admin dashboard.
@@ -688,58 +823,62 @@ async function initWorkLibrary() {
   }
 
 
-  // ----------------------------------------------------------
-  // GROUP VIDEOS BY CATEGORY
-  // ----------------------------------------------------------
+  Object.values(CATEGORIES)
+    .forEach(meta => {
 
-  Object.values(CATEGORIES).forEach(meta => {
+      const categoryVideos =
+        allVideos.filter(video => {
 
-    const videos =
-      allVideos.filter(video =>
-        String(video.category)
-          .toLowerCase() ===
-        meta.folder.toLowerCase()
-      );
+          return String(
+            video.category || ""
+          ).toLowerCase() ===
+          meta.folder.toLowerCase();
 
-
-    if (!videos.length) {
-      return;
-    }
+        });
 
 
-    const label =
-      document.createElement("div");
-
-    label.className =
-      "video-section-label";
-
-    label.dataset.section =
-      meta.folder;
-
-    label.textContent =
-      meta.label;
+      if (!categoryVideos.length) {
+        return;
+      }
 
 
-    container.appendChild(label);
+      const label =
+        document.createElement("div");
 
 
-    videos.forEach(video => {
+      label.className =
+        "video-section-label";
 
-      container.appendChild(
-        createVideoCard(video)
-      );
+
+      label.dataset.section =
+        meta.folder;
+
+
+      label.textContent =
+        meta.label;
+
+
+      container.appendChild(label);
+
+
+      categoryVideos.forEach(video => {
+
+        container.appendChild(
+          createVideoCard(video)
+        );
+
+      });
 
     });
 
-  });
 
-
-  // ----------------------------------------------------------
-  // FILTERS
-  // ----------------------------------------------------------
+  // ==========================================================
+  // FILTER BUTTONS
+  // ==========================================================
 
   const filterBar =
     $(".video-filters");
+
 
   if (!filterBar) {
     return;
@@ -749,8 +888,9 @@ async function initWorkLibrary() {
   const available =
     new Set(
       allVideos.map(video =>
-        String(video.category)
-          .toLowerCase()
+        String(
+          video.category || ""
+        ).toLowerCase()
       )
     );
 
@@ -759,14 +899,14 @@ async function initWorkLibrary() {
     .forEach(button => {
 
       const filter =
-        button.dataset.videoFilter;
+        String(
+          button.dataset.videoFilter || ""
+        ).toLowerCase();
 
 
       if (
         filter !== "all" &&
-        !available.has(
-          filter.toLowerCase()
-        )
+        !available.has(filter)
       ) {
 
         button.hidden = true;
@@ -780,11 +920,15 @@ async function initWorkLibrary() {
 
           $$(".filter", filterBar)
             .forEach(item =>
-              item.classList.remove("active")
+              item.classList.remove(
+                "active"
+              )
             );
 
 
-          button.classList.add("active");
+          button.classList.add(
+            "active"
+          );
 
 
           $$(".video-card", container)
@@ -819,13 +963,14 @@ async function initWorkLibrary() {
 
 
 // ============================================================
-// FEATURED WORK ON HOME PAGE
+// FEATURED WORK
 // ============================================================
 
 async function initFeaturedWork() {
 
   const grid =
     $("[data-featured-work]");
+
 
   if (!grid) {
     return;
@@ -840,12 +985,19 @@ async function initFeaturedWork() {
 
 
   const wanted = [
+
     "reels",
+
     "advertisements",
+
     "wedding-videos",
+
     "color-grading",
+
     "short-films",
+
     "product-promotions"
+
   ];
 
 
@@ -864,11 +1016,14 @@ async function initFeaturedWork() {
 
 
     const video =
-      allVideos.find(item =>
-        String(item.category)
-          .toLowerCase() ===
-        folder.toLowerCase()
-      );
+      allVideos.find(item => {
+
+        return String(
+          item.category || ""
+        ).toLowerCase() ===
+        folder.toLowerCase();
+
+      });
 
 
     if (!video) {
@@ -883,9 +1038,12 @@ async function initFeaturedWork() {
     const card =
       document.createElement("article");
 
+
     card.className =
       `featured-card ${
-        vertical ? "is-vertical" : ""
+        vertical
+          ? "is-vertical"
+          : ""
       }`;
 
 
@@ -949,7 +1107,22 @@ async function initFeaturedWork() {
       () => {
 
         $(".featured-media", card)
-          ?.classList.add("has-video");
+          ?.classList.add(
+            "has-video"
+          );
+
+      }
+    );
+
+
+    player?.addEventListener(
+      "error",
+      () => {
+
+        console.warn(
+          "Featured video could not load:",
+          video.url
+        );
 
       }
     );
@@ -979,13 +1152,14 @@ async function initFeaturedWork() {
 
 
 // ============================================================
-// TEAM
+// TEAM PAGE
 // ============================================================
 
 async function initPublicTeam() {
 
   const grid =
     $("#teamGrid");
+
 
   if (!grid) {
     return;
@@ -1034,18 +1208,27 @@ async function initPublicTeam() {
       const card =
         document.createElement("article");
 
+
       card.className =
         "team-card";
 
 
       const image =
         member.photo_url
-          ? `<img src="${member.photo_url}" alt="${member.name}">`
-          : `<div class="team-avatar">
-               ${String(member.name)
-                 .charAt(0)
-                 .toUpperCase()}
-             </div>`;
+
+          ? `
+            <img
+              src="${member.photo_url}"
+              alt="${member.name}">
+          `
+
+          : `
+            <div class="team-avatar">
+              ${String(
+                member.name || "?"
+              ).charAt(0).toUpperCase()}
+            </div>
+          `;
 
 
       card.innerHTML = `
@@ -1073,6 +1256,7 @@ async function initPublicTeam() {
 
     });
 
+
   } catch (error) {
 
     console.error(
@@ -1086,13 +1270,14 @@ async function initPublicTeam() {
 
 
 // ============================================================
-// PROJECTS
+// PROJECTS PAGE
 // ============================================================
 
 async function initPublicProjects() {
 
   const grid =
     $("#projectGrid");
+
 
   if (!grid) {
     return;
@@ -1141,6 +1326,7 @@ async function initPublicProjects() {
       const card =
         document.createElement("article");
 
+
       card.className =
         "project-card";
 
@@ -1148,7 +1334,9 @@ async function initPublicProjects() {
       card.innerHTML = `
 
         <div class="num">
-          ${String(index + 1).padStart(2, "0")}
+          ${String(
+            index + 1
+          ).padStart(2, "0")}
         </div>
 
         ${
@@ -1163,8 +1351,7 @@ async function initPublicProjects() {
                   object-fit:cover;
                   border-radius:14px;
                   margin-top:18px;
-                "
-              >
+                ">
             `
             : ""
         }
@@ -1192,6 +1379,7 @@ async function initPublicProjects() {
 
     });
 
+
   } catch (error) {
 
     console.error(
@@ -1205,13 +1393,14 @@ async function initPublicProjects() {
 
 
 // ============================================================
-// CONTACT
+// CONTACT FORM
 // ============================================================
 
 function initContactForm() {
 
   const form =
     $("#contactForm");
+
 
   if (!form) {
     return;
@@ -1226,16 +1415,28 @@ function initContactForm() {
 
 
       const name =
-        $("#contactName")?.value.trim();
+        $("#contactName")
+          ?.value
+          .trim();
+
 
       const email =
-        $("#contactEmail")?.value.trim();
+        $("#contactEmail")
+          ?.value
+          .trim();
+
 
       const message =
-        $("#contactMessage")?.value.trim();
+        $("#contactMessage")
+          ?.value
+          .trim();
 
 
-      if (!name || !email || !message) {
+      if (
+        !name ||
+        !email ||
+        !message
+      ) {
 
         alert(
           "Please complete your name, email and message."
@@ -1249,7 +1450,8 @@ function initContactForm() {
       window.location.href =
         `mailto:kalyanjpc84@gmail.com?subject=${
           encodeURIComponent(
-            "Portfolio enquiry from " + name
+            "Portfolio enquiry from " +
+            name
           )
         }&body=${
           encodeURIComponent(
@@ -1274,12 +1476,18 @@ function initShowreel() {
   const player =
     $(".showreel-player");
 
+
   const missing =
     $(".showreel-missing");
 
 
-  if (!player || !missing) {
+  if (
+    !player ||
+    !missing
+  ) {
+
     return;
+
   }
 
 
@@ -1298,10 +1506,15 @@ function initShowreel() {
 
 
 // ============================================================
-// START
+// START APPLICATION
 // ============================================================
 
 async function init() {
+
+  console.log(
+    "KalyanEditz app.js started"
+  );
+
 
   initNav();
 
@@ -1314,18 +1527,33 @@ async function init() {
   initShowreel();
 
 
-  const ready =
+  const supabaseReady =
     await setupSupabase();
 
 
-  // These work even if Supabase temporarily fails.
+  if (!supabaseReady) {
+
+    console.warn(
+      "Supabase unavailable. Static portfolio content will still load."
+    );
+
+  }
+
+
+  // Work always loads:
+  // old local videos + Supabase videos
+
   await initWorkLibrary();
+
   await initFeaturedWork();
 
 
-  if (ready) {
+  // Team and Projects require Supabase
+
+  if (supabaseReady) {
 
     await initPublicTeam();
+
     await initPublicProjects();
 
   }
@@ -1333,7 +1561,21 @@ async function init() {
 }
 
 
-document.addEventListener(
-  "DOMContentLoaded",
-  init
-);
+// ============================================================
+// DOM READY
+// ============================================================
+
+if (
+  document.readyState === "loading"
+) {
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    init
+  );
+
+} else {
+
+  init();
+
+  }
